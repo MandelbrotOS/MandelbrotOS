@@ -1,8 +1,14 @@
 ARCH=i386
 CROSS=cross
 LLVM?=0
+RUNONDONE?=1
+GRUB?=0
 
-GRUB_MKRESCUE?=grub2-mkrescue
+ifeq ($(GRUB), 1)
+	GRUB_MKRESCUE?=grub2-mkrescue
+else
+	GRUB_MKRESCUE?=grub-mkrescue
+endif
 
 ifeq ($(LLVM), 1)
 	CC=clang
@@ -65,6 +71,9 @@ $(ISO): $(KERNEL)
 	cp $(KERNEL) iso/boot/$(notdir $(KERNEL))
 	cp resources/grub.cfg iso/boot/grub
 	$(GRUB_MKRESCUE) -o $(ISO) iso
+ifeq ($(RUNONDONE), 1)
+	$(QEMU)
+endif
 
 $(KERNEL): $(COBJECTS) $(AOBJECTS) $(NASMOBJECTS)
 	mkdir -p build
