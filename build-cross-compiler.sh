@@ -1,14 +1,13 @@
 #!/bin/sh
 
-GCC="gcc-8.2.0"
-BINUTILS="binutils-2.31.1"
-GDB="gdb-8.2"
+GCC="gcc-10.2.0"
+BINUTILS="binutils-2.36.1"
+GDB="gdb-10.1"
 
 # make multithreading
 NUMCPUS=$(nproc)
 NUMCPUSPLUSONE=$(( NUMCPUS + 1 ))
-MAKEFLAGS="-j${NUMCPUSPLUSONE} -l${NUMCPUS}"
-
+MAKECMD="make -j${NUMCPUSPLUSONE} -l${NUMCPUS}"
 
 CURRDIR=`pwd`
 PREFIX=$CURRDIR/cross
@@ -42,7 +41,7 @@ fi
 # build and install libtools
 cd $BINUTILS
 ./configure --prefix="$PREFIX" --target=i386-elf --disable-nls --disable-werror --with-sysroot
-make && make install
+$MAKECMD && $MAKECMD install
 cd ..
 
 # download gcc prerequisites
@@ -54,13 +53,13 @@ cd ..
 mkdir $GCC-elf-objs
 cd $GCC-elf-objs
 ../$GCC/configure --prefix="$PREFIX" --target=i386-elf --disable-nls --enable-languages=c --without-headers
-make all-gcc && make all-target-libgcc && make install-gcc && make install-target-libgcc
+$MAKECMD all-gcc all-target-libgcc && $MAKECMD install-gcc install-target-libgcc
 cd ..
 
 # build and install GDB
 cd $GDB
 ./configure --prefix="$PREFIX" --target=i386-elf
-make && make install
+$MAKECMD && $MAKECMD install
 cd ..
 
 cd "$CURRDIR"

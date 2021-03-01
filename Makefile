@@ -8,10 +8,12 @@ LD=$(CROSS)/bin/$(ARCH)-elf-ld
 AS=nasm
 GRUB_MKRESCUE?=grub-mkrescue
 
-LIBGCC=$(CROSS)/lib/gcc/$(ARCH)-elf/8.2.0/libgcc.a
+GCC_VERSION=10.2.0
+
+LIBGCC=$(CROSS)/lib/gcc/$(ARCH)-elf/$(GCC_VERSION)/libgcc.a
 
 CWARNINGS= -Wno-unused-variable -Wno-attributes -Wno-unused-parameter -Wno-pointer-to-int-cast -Wno-int-conversion
-CFLAGS=-m32 -std=c99 -nostdlib -nostartfiles -nodefaultlibs -ffreestanding -fno-builtin -fno-omit-frame-pointer $(CWARNINGS) $(CINCLUDES) -Isrc/include/
+CFLAGS=-m32 -std=c99 -fcommon -nostdlib -nostartfiles -nodefaultlibs -ffreestanding -fno-builtin -fno-omit-frame-pointer $(CWARNINGS) $(CINCLUDES) -Isrc/include/
 DFLAGS=-g -DDEBUG -O0
 
 ASFLAGS=-f elf
