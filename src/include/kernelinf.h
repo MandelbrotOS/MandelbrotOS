@@ -1,5 +1,5 @@
 #ifndef __KERNELINF_H__
-#define __KENRELINF_H__
+#define __KERNELINF_H__
 
 #define KERNEL_NAME "mandelbrotOS"
 #define KERNEL_VERS "0.0.1"

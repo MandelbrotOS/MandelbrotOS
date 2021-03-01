@@ -1,19 +1,28 @@
 ARCH=i386
-
 CROSS=cross
+LLVM?=0
 
-CC=$(CROSS)/bin/$(ARCH)-elf-gcc
-LD=$(CROSS)/bin/$(ARCH)-elf-ld
+GRUB_MKRESCUE?=grub2-mkrescue
 
-AS=nasm
-GRUB_MKRESCUE?=grub-mkrescue
-
-GCC_VERSION=10.2.0
+ifeq ($(LLVM), 1)
+	CC=clang
+	LD=ld.lld
+	CFLAGS=--target=i686-elf -mno-sse
+else
+	CC=$(CROSS)/bin/$(ARCH)-elf-gcc
+	LD=$(CROSS)/bin/$(ARCH)-elf-ld
+	CFLAGS=-nostartfiles
+endif
 
 LIBGCC=$(CROSS)/lib/gcc/$(ARCH)-elf/$(GCC_VERSION)/libgcc.a
 
+AS=nasm
 CWARNINGS= -Wno-unused-variable -Wno-attributes -Wno-unused-parameter -Wno-pointer-to-int-cast -Wno-int-conversion
-CFLAGS=-m32 -std=c99 -nostdlib -nostartfiles -nodefaultlibs -ffreestanding -fno-builtin -fno-omit-frame-pointer $(CWARNINGS) $(CINCLUDES) -Isrc/include/
+
+GCC_VERSION=10.2.0
+
+
+CFLAGS+=-m32 -std=c99 -nostdlib -nodefaultlibs -ffreestanding -fno-builtin -fno-omit-frame-pointer $(CWARNINGS) $(CINCLUDES) -Isrc/include/
 DFLAGS=-g -DDEBUG -O0
 
 ASFLAGS=-f elf

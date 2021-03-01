@@ -43,7 +43,7 @@ int init_isr() {
   return 0;
 }
 
-uint8_t *exception_messages[] = {
+char *exception_messages[] = {
     "Division By Zero",
     "Debug",
     "Non Maskable Interrupt",

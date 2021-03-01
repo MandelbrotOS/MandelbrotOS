@@ -136,6 +136,7 @@ char mapndebounce(uint8_t scancode) {
   else if (ch != 0) {
     return ch;
   }
+  return 0;
 }
 
 void handelescape(uint8_t scancode) {
