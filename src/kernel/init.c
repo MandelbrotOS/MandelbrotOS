@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+int inited_funs_no;
+const char *inited_funcs[50];
+
 void init_check(int func, char *name, bool ness) {
   printf("Initing %s", name);
 

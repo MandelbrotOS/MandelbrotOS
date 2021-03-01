@@ -71,6 +71,8 @@ static char kb_shift_map[128] = {
     0, /* all other keys are undefined */
 };
 
+char currkey;
+
 static char shift(char sc) {
   char ch = sc & 0x7f; // clear highest bit
 

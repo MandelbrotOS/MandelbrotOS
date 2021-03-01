@@ -16,8 +16,8 @@ typedef struct idt_ptr {
   uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
-idt_entry_t idt[256];
-idt_ptr_t idtp;
+extern idt_entry_t idt[256];
+extern idt_ptr_t idtp;
 
 extern void idt_load();
 

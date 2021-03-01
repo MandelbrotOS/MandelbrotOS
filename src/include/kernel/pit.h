@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-uint64_t timer_ticks;
+extern uint64_t timer_ticks;
 
 int init_timer();
 void timer_phase(int hz);

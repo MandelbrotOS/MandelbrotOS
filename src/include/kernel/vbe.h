@@ -8,12 +8,12 @@ typedef struct rgb {
   uint8_t r, g, b;
 } argb_t __attribute__((packed));
 
-void *fb_addr;
+extern void *fb_addr;
 
-uint32_t fb_pitch;
-uint32_t fb_width;
-uint32_t fb_height;
-uint8_t fb_bpp;
+extern uint32_t fb_pitch;
+extern uint32_t fb_width;
+extern uint32_t fb_height;
+extern uint8_t fb_bpp;
 
 uint32_t rgb_to_color(argb_t *);
 

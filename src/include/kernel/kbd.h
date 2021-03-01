@@ -23,6 +23,6 @@
 int kbd_init();
 char *gets();
 
-char currkey;
+extern char currkey;
 
 #endif // !__KBD_H__

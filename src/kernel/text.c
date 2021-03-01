@@ -8,6 +8,31 @@
 #include <stdint.h>
 #include <string.h>
 
+int x;
+int y;
+int fg_color;
+int bg_color;
+int border;
+
+int RED;
+int DARK_RED;
+int GREEN;
+int DARK_GREEN;
+int YELLOW;
+int DARK_YELLOW;
+int BLUE;
+int DARK_BLUE;
+int MAGENTA;
+int DARK_MAGENTA;
+int CYAN;
+int DARK_CYAN;
+int WHITE;
+int BLACK;
+int GRAY;
+int DARK_GRAY;
+int BG;
+int FG;
+
 int init_text(int bor) {
   fg_color = FG;
   bg_color = BG;

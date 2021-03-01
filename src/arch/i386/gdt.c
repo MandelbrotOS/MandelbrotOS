@@ -1,6 +1,9 @@
 #include <hw.h>
 #include <kernel/gdt.h>
 
+gdt_entry_t gdt[5];
+gdt_ptr_t gp;
+
 void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t access,
                   uint8_t gran) {
   gdt[num].base_low = (base & 0xFFFF);

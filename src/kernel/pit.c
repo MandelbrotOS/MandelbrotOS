@@ -13,6 +13,8 @@
  *  been smoking something funky */
 // End funny
 
+uint64_t timer_ticks;
+
 void sleep(uint64_t milliseconds) {
   uint64_t eticks;
 

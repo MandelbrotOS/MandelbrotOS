@@ -35,6 +35,8 @@ void sysfetch() {
          "%u\r\n",
          KERNEL_NAME, KERNEL_VERS, KENREL_DATE, KERNEL_TIME, hr, min, sec,
          get_model());
+  printf("Compiler version: gcc %d.%d.%d\n", __GNUC__, __GNUC_MINOR__,
+         __GNUC_PATCHLEVEL__);
   bg_color = RED;
   printf(" ");
   bg_color = GREEN;

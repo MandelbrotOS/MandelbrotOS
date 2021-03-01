@@ -1,30 +1,30 @@
 #ifndef __TEXT_H__
 #define __TEXT_H__
 
-int x;
-int y;
-int fg_color;
-int bg_color;
-int border;
+extern int x;
+extern int y;
+extern int fg_color;
+extern int bg_color;
+extern int border;
 
-int RED;
-int DARK_RED;
-int GREEN;
-int DARK_GREEN;
-int YELLOW;
-int DARK_YELLOW;
-int BLUE;
-int DARK_BLUE;
-int MAGENTA;
-int DARK_MAGENTA;
-int CYAN;
-int DARK_CYAN;
-int WHITE;
-int BLACK;
-int GRAY;
-int DARK_GRAY;
-int BG;
-int FG;
+extern int RED;
+extern int DARK_RED;
+extern int GREEN;
+extern int DARK_GREEN;
+extern int YELLOW;
+extern int DARK_YELLOW;
+extern int BLUE;
+extern int DARK_BLUE;
+extern int MAGENTA;
+extern int DARK_MAGENTA;
+extern int CYAN;
+extern int DARK_CYAN;
+extern int WHITE;
+extern int BLACK;
+extern int GRAY;
+extern int DARK_GRAY;
+extern int BG;
+extern int FG;
 
 int init_text(int bor);
 int init_color(int red, int dred, int green, int dgreen, int yellow,

@@ -4,6 +4,15 @@
 #include <multiboot.h>
 #include <stdbool.h>
 
+void *fb_addr;
+
+uint32_t fb_pitch;
+uint32_t fb_width;
+uint32_t fb_height;
+uint8_t fb_bpp;
+
+uint32_t rgb_to_color(argb_t *);
+
 bool baddraw(int x, int y) {
   if ((uint32_t)x > fb_width || (uint32_t)y > fb_height) {
     return true;
