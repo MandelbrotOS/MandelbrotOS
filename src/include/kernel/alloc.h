@@ -1,8 +1,8 @@
 #ifndef __SHMALL_H__
 #define __SHMALL_H__
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 int init_heap(uint32_t start);
 void *malloc(uint32_t size);

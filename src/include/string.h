@@ -3,19 +3,19 @@
 
 #define DICT_LEN 256
 
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <stdarg.h>
 
 void *memset(void *b, int c, int len);
 unsigned int strlen(const char *s);
 char *strcat(char *s1, const char *s2);
 char *strcpy(char *destination, const char *source);
-char * itoa( int value, char * str, int base );
+char *itoa(int value, char *str, int base);
 int atoi(char *str);
-char* dyncat(char *s1, char *s2);
-int strcmp(char input[],char check[]);
+char *dyncat(char *s1, char *s2);
+int strcmp(char input[], char check[]);
 char *strtok(char *str, char *delim);
 int tolower(int ch);
 float atof(const char *s);

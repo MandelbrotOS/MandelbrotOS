@@ -1,7 +1,7 @@
 #ifndef __TEXT_H__
 #define __TEXT_H__
 
-int x; 
+int x;
 int y;
 int fg_color;
 int bg_color;
@@ -27,7 +27,10 @@ int BG;
 int FG;
 
 int init_text(int bor);
-int init_color(int red, int dred, int green, int dgreen, int yellow, int dyellow, int blue, int dblue, int magenta, int dmagenta, int cyan, int dcyan, int white, int black, int gray, int dgray, int bg, int fg);
+int init_color(int red, int dred, int green, int dgreen, int yellow,
+               int dyellow, int blue, int dblue, int magenta, int dmagenta,
+               int cyan, int dcyan, int white, int black, int gray, int dgray,
+               int bg, int fg);
 
 void put(char c, int x, int y, int fgcol, int bgcol);
 void puts(const char *string);

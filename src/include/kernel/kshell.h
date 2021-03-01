@@ -3,7 +3,7 @@
 
 #include <multiboot.h>
 
-#define check_cmd(c) strcmp((char*)argv[0], (char*)c)
+#define check_cmd(c) strcmp((char *)argv[0], (char *)c)
 
 int kshell(multiboot_info_t *mbi, unsigned long magic);
 
