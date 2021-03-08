@@ -45,12 +45,19 @@ Using our OS is really simple, on boot, you'll be greeted with a shell.
 - `mandelbrot` : show mandelbrot background
 - `ctheme` : change the theme with the following
   - legacy : 
+  
   ![image legacy](./screen/legacy.png)
+  
   - dark : 
+  
   ![image dark](./screen/dark.png)
+  
   - light : 
+  
   ![image light](./screen/light.png)
+  
   - witchcraft : 
+  
   ![image witchcraft](./screen/witchcraft.png)
 
 ## Using code
