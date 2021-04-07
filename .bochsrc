@@ -1,6 +1,0 @@
-megs: 256
- 
-ata0-master: type=disk, path="./mandelbrotos.hdd", mode=flat
-boot: disk
-
-log: bochs.log

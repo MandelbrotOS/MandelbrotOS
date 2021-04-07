@@ -5,6 +5,7 @@
 
 # OS Specific file
 .DS_Store
+.bochsrc
 bochs.log
 
 # Build files
