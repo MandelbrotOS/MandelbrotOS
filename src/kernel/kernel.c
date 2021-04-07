@@ -18,16 +18,13 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_tag *tag;
   struct stivale2_tag *mem;
 
-  if ((tag = stivale2_get_tag(bootloader_info,
-                              STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID)) &&
-      (mem =
-           stivale2_get_tag(bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID))) {
-
-    struct stivale2_struct_tag_framebuffer *framebuffer_info =
-        (struct stivale2_struct_tag_framebuffer *)tag;
-    struct stivale2_struct_tag_memmap *memory_map =
-        (struct stivale2_struct_tag_memmap *)mem;
-
+  struct stivale2_struct_tag_framebuffer *framebuffer_info =
+    (struct stivale2_struct_tag_framebuffer *)
+      stivale2_get_tag(bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+  struct stivale2_struct_tag_memmap *memory_map =
+    (struct stivale2_struct_tag_memmap *)
+      stivale2_get_tag(bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+  if (framebuffer_info && memory_map) {
     init_fb((void *)framebuffer_info->framebuffer_addr,
             framebuffer_info->framebuffer_width,
             framebuffer_info->framebuffer_height);
@@ -40,7 +37,6 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
     init_idt();
 
     pmm_init(memory_map->memmap, memory_map->entries);
-
   } else {
     return 1;
   }

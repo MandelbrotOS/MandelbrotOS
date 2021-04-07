@@ -5,7 +5,9 @@
 
 # OS Specific file
 .DS_Store
+bochs.log
 
+# Build files
 *.o
 *ao
 *.aso
@@ -15,9 +17,12 @@
 *.map
 *.hdd
 
+# Binary bootloader files
 resources/limine.sys 
 
+# Other folders
 cross/
+build/
 echfs/
 limine/
 build/

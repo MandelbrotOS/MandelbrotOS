@@ -39,19 +39,19 @@ fb_mtrr:
 gdt:
   .null: dq 0
   .code:
-      dw 0         ; Limit low
-      dw 0         ; Base low
-      db 0         ; Base middle
-      db 10011010b ; Access byte
-      db 00100000b ; Flags and limit high
-      db 0         ; Base high
+    dw 0         ; Limit low
+    dw 0         ; Base low
+    db 0         ; Base middle
+    db 10011010b ; Access byte
+    db 00100000b ; Flags and limit high
+    db 0         ; Base high
   .data:
-      dw 0         ; Limit low
-      dw 0         ; Base low
-      db 0         ; Base middle
-      db 10010010b ; Access byte
-      db 0         ; Flags and limit high
-      db 0         ; Base high
+    dw 0         ; Limit low
+    dw 0         ; Base low
+    db 0         ; Base middle
+    db 10010010b ; Access byte
+    db 0         ; Flags and limit high
+    db 0         ; Base high
 .end:
 
 gdt_register:
@@ -64,14 +64,14 @@ extern kernel_main
 _start:
   lgdt [gdt_register]
 
-mov rax, rsp
+  mov rax, rsp
 
-push 0x10
-push rax
-pushf
-push 0x08
-push .reload_segments
-iretq
+  push 0x10
+  push rax
+  pushf
+  push 0x08
+  push .reload_segments
+  iretq
 
 .reload_segments:
   mov ax, 0x10
