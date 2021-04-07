@@ -18,7 +18,7 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 - `qemu`
 - `nasm`
 - `xorriso`
-- `mtools`
+- `mtools`  
 On Debian based distros, replace `base-devel` with `build-essential`.
 
 # Running
