@@ -2,10 +2,12 @@
 #include <stdint.h>
 
 // Initialize the framebuffer (VESA or GOP)
-void init_fb(void *framebuffer_, uint32_t fb_width, uint32_t fb_height) {
+int init_fb(void *framebuffer_, uint32_t fb_width, uint32_t fb_height) {
   framebuffer = framebuffer_;
   framebuffer_width = fb_width;
   framebuffer_height = fb_height;
+
+  return 0;
 }
 
 // Put a pixel at x y location

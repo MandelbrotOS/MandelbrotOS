@@ -4,8 +4,6 @@
 #include <stddef.h>
 #include <string.h>
 
-#define PAGE_SIZE 4096 // 4KB
-
 // Bit functions. Provided by AtieP
 #define ALIGN_UP(__number) (((__number) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 #define ALIGN_DOWN(__number) ((__number) & ~(PAGE_SIZE - 1))
@@ -54,8 +52,16 @@ void *pmalloc(uint32_t pages) {
   return NULL;
 }
 
+void *pcalloc(uint64_t pages) {
+  uint64_t *p = (uint64_t *)pmalloc(pages);
+
+  for (uint64_t i = 0; i < (pages * PAGE_SIZE); i++)
+    p[i] = 0;
+  return (void *)p;
+}
+
 // Init physical memory management
-void pmm_init(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
+int pmm_init(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
   uintptr_t top;
 
   for (int i = 0; (size_t)i < memory_entries; i++) {
@@ -95,4 +101,6 @@ void pmm_init(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
     else
       free_pages((void *)memory_map[i].base, memory_map[i].length / PAGE_SIZE);
   }
+
+  return 0;
 }

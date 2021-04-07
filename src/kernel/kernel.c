@@ -6,6 +6,7 @@
 #include <kernel/isr.h>
 #include <kernel/text.h>
 #include <mm/pmm.h>
+#include <mm/vmm.h>
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -19,11 +20,11 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_tag *mem;
 
   struct stivale2_struct_tag_framebuffer *framebuffer_info =
-    (struct stivale2_struct_tag_framebuffer *)
-      stivale2_get_tag(bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+      (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
   struct stivale2_struct_tag_memmap *memory_map =
-    (struct stivale2_struct_tag_memmap *)
-      stivale2_get_tag(bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+      (struct stivale2_struct_tag_memmap *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
   if (framebuffer_info && memory_map) {
     init_fb((void *)framebuffer_info->framebuffer_addr,
             framebuffer_info->framebuffer_width,
@@ -37,6 +38,8 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
     init_idt();
 
     pmm_init(memory_map->memmap, memory_map->entries);
+
+    vmm_init();
   } else {
     return 1;
   }

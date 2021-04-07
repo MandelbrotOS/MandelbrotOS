@@ -1,14 +1,14 @@
 #include <kernel/idt.h>
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
 
 static idt_entry_t idt[256];
 static idt_ptr_t idtp;
 
 void set_entry(idt_entry_t *entry, void (*func)()) {
-  entry->base_low = (uint16_t) (uint64_t) func;
-  entry->base_mid = (uint16_t) ((uint64_t) func >> 16);
-  entry->base_high = (uint32_t) ((uint64_t) func >> 32);
+  entry->base_low = (uint16_t)(uint64_t)func;
+  entry->base_mid = (uint16_t)((uint64_t)func >> 16);
+  entry->base_high = (uint32_t)((uint64_t)func >> 32);
   entry->sel = 8;
   entry->flags = idt_a_present | idt_a_ring_0 | idt_a_type_interrupt;
 }
@@ -30,7 +30,8 @@ IDT_HANDLER(breakpoint, {
   if (testing_interrupts) {
     test_succeded = true;
     return;
-  } else printf("breakpoint!\r\n");
+  } else
+    printf("breakpoint!\r\n");
 })
 STUB_IDT_HANDLER(double_fault)
 
@@ -41,14 +42,14 @@ int init_idt() {
   set_entry(&idt[idt_v_double_fault], double_fault_asm_idt_handler);
 
   idtp.limit = sizeof(idt) - 1;
-  idtp.base = (uint64_t) &idt;
+  idtp.base = (uint64_t)&idt;
 
-  __asm__ volatile("lidt %0; sti" :: "m"(idtp));
+  __asm__ volatile("lidt %0; sti" ::"m"(idtp));
   testing_interrupts = true;
   test_succeded = false;
   asm volatile("int3");
   testing_interrupts = false;
-  if (! test_succeded) {
+  if (!test_succeded) {
     printf("failed to enable interrupts\r\n");
     asm volatile("cli; hlt");
   }
