@@ -27,7 +27,7 @@ CFLAGS := \
 LDFLAGS := \
 	-static \
 	-no-pie \
-	-Tlinker.ld \
+	-Tresources/linker.ld \
 	-nostdlib
 
 CFILES := $(shell find src/ -name '*.c')
