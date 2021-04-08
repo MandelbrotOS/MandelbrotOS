@@ -5,6 +5,7 @@
 #include <kernel/idt.h>
 #include <kernel/isr.h>
 #include <kernel/text.h>
+#include <mm/heap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <printf.h>
@@ -37,9 +38,12 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
 
     init_idt();
 
-    pmm_init(memory_map->memmap, memory_map->entries);
+    init_pmm(memory_map->memmap, memory_map->entries);
 
-    vmm_init();
+    init_vmm();
+
+    init_heap(pmalloc(32), 32 * PAGE_SIZE); //REVIEW: Not sure how big the heap should be but right now I have given it 128Kb of memory.
+
   } else {
     return 1;
   }

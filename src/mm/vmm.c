@@ -65,16 +65,16 @@ void vmm_unmap_page(uint64_t *pagemap, uintptr_t physical_address,
   pml1[level1] = 0;
 }
 
-int vmm_init() {
+int init_vmm() {
   kernel_map = pcalloc(1);
-  
+
   if (kernel_map == NULL)
     return 1;
   for (uintptr_t i = 0; i < KERNEL_MAP_ADRESS; i += PAGE_SIZE) {
     vmm_map_page(kernel_map, i, i + MEM_OFFSET, 0x03);
   }
-  
+
   vmm_switch_pagemap((uint64_t)&kernel_map);
-  
+
   return 0;
 }

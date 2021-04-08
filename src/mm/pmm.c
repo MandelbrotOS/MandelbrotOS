@@ -61,7 +61,7 @@ void *pcalloc(uint64_t pages) {
 }
 
 // Init physical memory management
-int pmm_init(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
+int init_pmm(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
   uintptr_t top;
 
   for (int i = 0; (size_t)i < memory_entries; i++) {
