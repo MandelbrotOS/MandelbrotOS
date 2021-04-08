@@ -43,7 +43,7 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
     init_vmm();
 
     init_heap(pmalloc(32), 32 * PAGE_SIZE); //REVIEW: Not sure how big the heap should be but right now I have given it 128Kb of memory.
-
+  
   } else {
     return 1;
   }

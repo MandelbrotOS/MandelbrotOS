@@ -29,8 +29,21 @@ Run `make` to compile the OS and run it in `qemu` (needs `qemu-system-x86_64`) o
 By default the OS does nothing as we don't have a userland but stuff can be added to the kernel for testing purposes. There will often be remaining test code that is left over.
 
 # Commiting
-We code using GCC so any clang standards that may affect GCC will be ignored.
-We also format our code in clang format so make sure to clang format the code before commiting.
+We code using GCC so any clang standards that may affect GCC will be ignored.  
+We also format our code in clang format so make sure to clang format the code before commiting.  
+We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding. 
+Name variables in snake case (`uint64_t name_of_var`) 
+Give types \_t's (`typedef long int name_of_type_t`)  
+Constants must be in all caps (`#define SOME_CONSTANT 0x1000`)  
+All header files must have an ifndef with double underscores in them like this:  
+```c
+#ifndef __SOME_FILE_NAME_H__
+#define __SOME_FILE_NAME_H__
+
+// Code
+
+#endif
+```
 
 # Using code
 This is an open source project. Reuse code. Just follow the license terms and we are good. :)

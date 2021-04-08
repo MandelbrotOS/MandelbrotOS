@@ -36,7 +36,7 @@ IDT_HANDLER(breakpoint, {
 STUB_IDT_HANDLER(double_fault)
 
 int init_idt() {
-  asm volatile("cli");
+  __asm__ volatile("cli");
 
   set_entry(&idt[idt_v_breakpoint], breakpoint_asm_idt_handler);
   set_entry(&idt[idt_v_double_fault], double_fault_asm_idt_handler);
@@ -47,11 +47,11 @@ int init_idt() {
   __asm__ volatile("lidt %0; sti" ::"m"(idtp));
   testing_interrupts = true;
   test_succeded = false;
-  asm volatile("int3");
+  __asm__ volatile("int3");
   testing_interrupts = false;
   if (!test_succeded) {
     printf("failed to enable interrupts\r\n");
-    asm volatile("cli; hlt");
+    __asm__ volatile("cli; hlt");
   }
 
   return 0;

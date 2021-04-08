@@ -99,7 +99,7 @@ int init_idt();
 #define STUB_IDT_HANDLER(NAME)                                                 \
   IDT_HANDLER(NAME, {                                                          \
     printf("\r\n\r\na " #NAME " exception happened!\r\n");                     \
-    asm volatile("cli; hlt");                                                  \
+    __asm__ volatile("cli; hlt");                                                  \
   })
 
 #endif // !__IDT_H__

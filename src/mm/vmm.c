@@ -26,7 +26,7 @@ uint64_t *get_next_level(uint64_t *current_level, size_t entry) {
 }
 
 void vmm_switch_pagemap(uint64_t pagemap) {
-  asm volatile("mov %0, %%cr3" ::"r"(pagemap));
+  __asm__ volatile("mov %0, %%cr3" ::"r"(pagemap));
 }
 
 void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,

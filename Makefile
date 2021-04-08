@@ -23,6 +23,7 @@ CFLAGS := \
 	-Wall \
 	-Wextra \
 	-lm \
+	-std=gnu99 \
 
 LDFLAGS := \
 	-static \
