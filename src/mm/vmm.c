@@ -47,8 +47,7 @@ void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
   pml1[level1] = physical_address | flags;
 }
 
-void vmm_unmap_page(uint64_t *pagemap, uintptr_t physical_address,
-                    uint64_t virtual_address) {
+void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address) {
   uintptr_t *pml4, *pml3, *pml2, *pml1;
   uintptr_t level4, level3, level2, level1;
 

@@ -56,7 +56,7 @@ typedef struct idt_ptr {
   uint64_t base;
 } __attribute__((packed)) idt_ptr_t;
 
-void set_entry(idt_entry_t *entry, void (*func)());
+void idt_set_entry(idt_entry_t *entry, void (*func)());
 int init_idt();
 
 #define IDT_HANDLER(NAME, CODE)                                                \
@@ -99,7 +99,7 @@ int init_idt();
 #define STUB_IDT_HANDLER(NAME)                                                 \
   IDT_HANDLER(NAME, {                                                          \
     printf("\r\n\r\na " #NAME " exception happened!\r\n");                     \
-    __asm__ volatile("cli; hlt");                                                  \
+    __asm__ volatile("cli; hlt");                                              \
   })
 
 #endif // !__IDT_H__

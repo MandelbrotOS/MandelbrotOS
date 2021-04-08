@@ -3,7 +3,6 @@
 #include <font.h>
 #include <kernel/fb.h>
 #include <kernel/idt.h>
-#include <kernel/isr.h>
 #include <kernel/text.h>
 #include <mm/heap.h>
 #include <mm/pmm.h>
@@ -15,16 +14,12 @@
 #include <string.h>
 
 // Kernel entry
-int kernel_main(struct stivale2_struct *bootloader_info) {
-  // First get the framebuffer
-  struct stivale2_tag *tag;
-  struct stivale2_tag *mem;
-
-  struct stivale2_struct_tag_framebuffer *framebuffer_info =
-      (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
+int kernel_main(struct stivale2_struct_t *bootloader_info) {
+  struct stivale2_struct_tag_framebuffer_t *framebuffer_info =
+      (struct stivale2_struct_tag_framebuffer_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
-  struct stivale2_struct_tag_memmap *memory_map =
-      (struct stivale2_struct_tag_memmap *)stivale2_get_tag(
+  struct stivale2_struct_tag_memmap_t *memory_map =
+      (struct stivale2_struct_tag_memmap_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
   if (framebuffer_info && memory_map) {
     init_fb((void *)framebuffer_info->framebuffer_addr,
@@ -42,8 +37,10 @@ int kernel_main(struct stivale2_struct *bootloader_info) {
 
     init_vmm();
 
-    init_heap(pmalloc(32), 32 * PAGE_SIZE); //REVIEW: Not sure how big the heap should be but right now I have given it 128Kb of memory.
-  
+    init_heap(pmalloc(32),
+              32 * PAGE_SIZE); // REVIEW: Not sure how big the heap should be
+                               // but right now I have given it 128Kb of memory.
+
   } else {
     return 1;
   }

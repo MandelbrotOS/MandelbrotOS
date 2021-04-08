@@ -12,7 +12,7 @@
 #define DLIST_REMOVE_FROM(h, d, l)                                             \
   {                                                                            \
     typeof(**h) **h_ = h, *d_ = d;                                             \
-    dlist *head = &(*h_)->l;                                                   \
+    dlist_t *head = &(*h_)->l;                                                 \
     dlist_remove_from(&head, &d_->l);                                          \
     if (head == NULL) {                                                        \
       *h_ = NULL;                                                              \
@@ -24,7 +24,7 @@
 #define DLIST_PUSH(h, v, l)                                                    \
   {                                                                            \
     typeof(*v) **h_ = h, *v_ = v;                                              \
-    dlist *head = &(*h_)->l;                                                   \
+    dlist_t *head = &(*h_)->l;                                                 \
     if (*h_ == NULL)                                                           \
       head = NULL;                                                             \
     dlist_push(&head, &v_->l);                                                 \
@@ -34,8 +34,8 @@
 #define DLIST_POP(h, l)                                                        \
   ({                                                                           \
     typeof(**h) **h_ = h;                                                      \
-    dlist *head = &(*h_)->l;                                                   \
-    dlist *res = dlist_pop(&head);                                             \
+    dlist_t *head = &(*h_)->l;                                                 \
+    dlist_t *res = dlist_pop(&head);                                           \
     if (head == NULL) {                                                        \
       *h_ = NULL;                                                              \
     } else {                                                                   \
@@ -47,7 +47,7 @@
 #define DLIST_ITERATOR_BEGIN(h, l, it)                                         \
   {                                                                            \
     typeof(*h) *h_ = h;                                                        \
-    dlist *last_##it = h_->l.prev, *iter_##it = &h_->l, *next_##it;            \
+    dlist_t *last_##it = h_->l.prev, *iter_##it = &h_->l, *next_##it;          \
     do {                                                                       \
       if (iter_##it == last_##it) {                                            \
         next_##it = NULL;                                                      \
@@ -64,28 +64,28 @@
 
 #define DLIST_ITERATOR_REMOVE_FROM(h, it, l) DLIST_REMOVE_FROM(h, iter_##it, l)
 
-typedef struct dlist dlist;
+typedef struct dlist_t dlist_t;
 
-struct dlist {
-  dlist *next;
-  dlist *prev;
+struct dlist_t {
+  dlist_t *next;
+  dlist_t *prev;
 };
 
-typedef struct chunk chunk;
-struct chunk {
-  dlist all;
+typedef struct chunk_t chunk_t;
+struct chunk_t {
+  dlist_t all;
   int used;
   union {
     char data[0];
-    dlist free;
+    dlist_t free;
   };
 };
 
 enum {
   NUM_SIZES = 32,
   ALIGN = 4,
-  MIN_SIZE = sizeof(dlist),
-  HEADER_SIZE = OFFSETOF(chunk, data),
+  MIN_SIZE = sizeof(dlist_t),
+  HEADER_SIZE = OFFSETOF(chunk_t, data),
 };
 
 int init_heap(void *mem, size_t size);

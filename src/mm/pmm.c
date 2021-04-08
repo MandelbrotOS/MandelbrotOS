@@ -40,7 +40,7 @@ void reserve_pages(void *adr, uint32_t page_count) {
 
 void *pmalloc(uint32_t pages) {
   for (uint32_t i = 0; i < bitmap_size * 8; i++) {
-    for (int j = 0; j < pages; j++) {
+    for (uint32_t j = 0; j < pages; j++) {
       if (BIT_TEST(i))
         break;
       else if (!BIT_TEST(i) && j == pages - 1) {
@@ -61,11 +61,11 @@ void *pcalloc(uint64_t pages) {
 }
 
 // Init physical memory management
-int init_pmm(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
+int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
   uintptr_t top;
 
   for (int i = 0; (size_t)i < memory_entries; i++) {
-    struct stivale2_mmap_entry entry = memory_map[i];
+    struct stivale2_mmap_entry_t entry = memory_map[i];
 
     if (entry.type != STIVALE2_MMAP_USABLE &&
         entry.type != STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE &&
@@ -81,7 +81,7 @@ int init_pmm(struct stivale2_mmap_entry *memory_map, size_t memory_entries) {
   bitmap_size = ALIGN_UP(highest_page) / 8;
 
   for (int i = 0; (size_t)i < memory_entries; i++) {
-    struct stivale2_mmap_entry entry = memory_map[i];
+    struct stivale2_mmap_entry_t entry = memory_map[i];
 
     if (entry.type != STIVALE2_MMAP_USABLE)
       continue;

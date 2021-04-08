@@ -5,7 +5,7 @@
 static idt_entry_t idt[256];
 static idt_ptr_t idtp;
 
-void set_entry(idt_entry_t *entry, void (*func)()) {
+void idt_set_entry(idt_entry_t *entry, void (*func)()) {
   entry->base_low = (uint16_t)(uint64_t)func;
   entry->base_mid = (uint16_t)((uint64_t)func >> 16);
   entry->base_high = (uint32_t)((uint64_t)func >> 32);
@@ -38,8 +38,8 @@ STUB_IDT_HANDLER(double_fault)
 int init_idt() {
   __asm__ volatile("cli");
 
-  set_entry(&idt[idt_v_breakpoint], breakpoint_asm_idt_handler);
-  set_entry(&idt[idt_v_double_fault], double_fault_asm_idt_handler);
+  idt_set_entry(&idt[idt_v_breakpoint], breakpoint_asm_idt_handler);
+  idt_set_entry(&idt[idt_v_double_fault], double_fault_asm_idt_handler);
 
   idtp.limit = sizeof(idt) - 1;
   idtp.base = (uint64_t)&idt;
@@ -50,8 +50,7 @@ int init_idt() {
   __asm__ volatile("int3");
   testing_interrupts = false;
   if (!test_succeded) {
-    printf("failed to enable interrupts\r\n");
-    __asm__ volatile("cli; hlt");
+    return 1;
   }
 
   return 0;

@@ -31,11 +31,13 @@ By default the OS does nothing as we don't have a userland but stuff can be adde
 # Commiting
 We code using GCC so any clang standards that may affect GCC will be ignored.  
 We also format our code in clang format so make sure to clang format the code before commiting.  
-We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding. 
-Name variables in snake case (`uint64_t name_of_var`) 
-Give types \_t's (`typedef long int name_of_type_t`)  
-Constants must be in all caps (`#define SOME_CONSTANT 0x1000`)  
-All header files must have an ifndef with double underscores in them like this:  
+We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding.  
+Name variables in snake case (`uint64_t name_of_var`)  
+Give types \_t's (`typedef long int name_of_type_t`). Make sure this is in snake case too!  
+Constants must be in screaming snake case (All capitals snake case) (`#define SOME_CONSTANT 0x1000`)  
+Macros follow the same laws as constants. (`#define MAX(a, b) ({int \_a = (a), \_b = (b); \_a > \_b ? \_a : \_b; })`)
+All comments are allowed but I would prefer if you used `//` instead of '/**/'
+All header files must have an ifndef  with the file name in screaming snake case with double underscores on each side of them like this:   
 ```c
 #ifndef __SOME_FILE_NAME_H__
 #define __SOME_FILE_NAME_H__

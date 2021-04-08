@@ -1,5 +1,5 @@
 #include <drivers/ata.h>
-#include <kernel/hw.h>
+#include <hw.h>
 
 void ata_wait_bsy(ata_device_t *device) {
   while (inb(device->base_port + ATA_PORT_STATUS) & ATA_STATUS_BSY)
