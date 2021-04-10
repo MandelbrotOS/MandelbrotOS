@@ -3,34 +3,32 @@
 
 #include <stdint.h>
 
-extern uint32_t RED;
-extern uint32_t DARK_RED;
-extern uint32_t GREEN;
-extern uint32_t DARK_GREEN;
-extern uint32_t YELLOW;
-extern uint32_t DARK_YELLOW;
-extern uint32_t BLUE;
-extern uint32_t DARK_BLUE;
-extern uint32_t MAGENTA;
-extern uint32_t DARK_MAGENTA;
-extern uint32_t CYAN;
-extern uint32_t DARK_CYAN;
-extern uint32_t WHITE;
-extern uint32_t BLACK;
-extern uint32_t GRAY;
-extern uint32_t DARK_GRAY;
-extern uint32_t BG;
-extern uint32_t FG;
+static uint32_t RED;
+static uint32_t DARK_RED;
+static uint32_t GREEN;
+static uint32_t DARK_GREEN;
+static uint32_t YELLOW;
+static uint32_t DARK_YELLOW;
+static uint32_t BLUE;
+static uint32_t DARK_BLUE;
+static uint32_t MAGENTA;
+static uint32_t DARK_MAGENTA;
+static uint32_t CYAN;
+static uint32_t DARK_CYAN;
+static uint32_t WHITE;
+static uint32_t BLACK;
+static uint32_t GRAY;
+static uint32_t DARK_GRAY;
+static uint32_t BG;
+static uint32_t FG;
 
-extern uint32_t fg_color;
-extern uint32_t bg_color;
+uint32_t fg_color;
+uint32_t bg_color;
 
-extern uint8_t *font;
-extern uint16_t font_width;
-extern uint16_t font_height;
-extern int x_pos_pixel;
-extern int y_pos_pixel;
-extern int border;
+uint8_t *font;
+int x_pos_pixel;
+int y_pos_pixel;
+int border;
 
 int init_text(int border_);
 int init_color(int red, int dred, int green, int dgreen, int yellow,
