@@ -57,3 +57,5 @@ make all-target-libgcc -j5
 make install-gcc -j5
 make install-target-libgcc -j5
 cd ..
+
+cp -r cross/ ../
