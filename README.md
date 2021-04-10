@@ -36,7 +36,7 @@ Name variables in snake case (`uint64_t name_of_var`)
 Give types \_t's (`typedef long int name_of_type_t`). Make sure this is in snake case too!  
 Constants must be in screaming snake case (All capitals snake case) (`#define SOME_CONSTANT 0x1000`)    
 Macros follow the same laws as constants. (`#define MAX(a, b) ({int \_a = (a), \_b = (b); \_a > \_b ? \_a : \_b; })`)  
-All comments are allowed but I would prefer if you used `//` instead of '/\*\*/'  
+All comments are allowed but I would prefer if you used `//` instead of `/\*\*/`  
 All header files must have an ifndef  with the file name in screaming snake case with double underscores on each side of them like this:  
 ```c
 #ifndef __SOME_FILE_NAME_H__
