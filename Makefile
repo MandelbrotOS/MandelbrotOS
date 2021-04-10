@@ -6,9 +6,9 @@ AS = nasm
 LIBGCC = cross/lib/gcc/x86_64-elf/9.2.0/libgcc.a
 
 ifeq ($(KVM), 1)
-	QEMU = qemu-system-x86_64 -hda $(OS) -enable-kvm
+	QEMU = qemu-system-x86_64 -hda $(OS) -enable-kvm -smp 2
 else
-	QEMU = qemu-system-x86_64 -hda $(OS)
+	QEMU = qemu-system-x86_64 -hda $(OS) -smp 2
 endif
 
 OS = mandelbrotos.hdd

@@ -1,8 +1,12 @@
 #include <boot/stivale2.h>
 #include <drivers/ata.h>
+#include <drivers/pit.h>
 #include <font.h>
+#include <hw.h>
 #include <kernel/fb.h>
 #include <kernel/idt.h>
+#include <kernel/irq.h>
+#include <kernel/isr.h>
 #include <kernel/text.h>
 #include <mm/heap.h>
 #include <mm/pmm.h>
@@ -18,9 +22,15 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
   struct stivale2_struct_tag_framebuffer_t *framebuffer_info =
       (struct stivale2_struct_tag_framebuffer_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+
   struct stivale2_struct_tag_memmap_t *memory_map =
       (struct stivale2_struct_tag_memmap_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+
+  struct stivale2_struct_tag_smp_t *smp_info =
+      (struct stivale2_struct_tag_smp_t *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
+
   if (framebuffer_info && memory_map) {
     init_fb((void *)framebuffer_info->framebuffer_addr,
             framebuffer_info->framebuffer_width,
@@ -33,14 +43,21 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
     init_idt();
 
+    init_isr();
+
+    init_irq();
+
+    __asm__ volatile("sti");
+
+    init_pit();
+
     init_pmm(memory_map->memmap, memory_map->entries);
 
     init_vmm();
 
     init_heap(pmalloc(32),
-              32 * PAGE_SIZE); // REVIEW: Not sure how big the heap should be
-                               // but right now I have given it 128Kb of memory.
-
+              32 * PAGE_SIZE);
+  
   } else {
     return 1;
   }
