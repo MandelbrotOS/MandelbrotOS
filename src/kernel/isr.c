@@ -1,6 +1,7 @@
 #include <kernel/idt.h>
 #include <kernel/isr.h>
 
+// ASM handlers
 extern void isr_0();
 extern void isr_1();
 extern void isr_2();
@@ -34,6 +35,44 @@ extern void isr_29();
 extern void isr_30();
 extern void isr_31();
 
+// Exception messages
+char *exception_messages[] = {
+    "Division By Zero",
+    "Debug",
+    "Non Maskable Interrupt",
+    "Breakpoint",
+    "Into Detected Overflow",
+    "Out of Bounds",
+    "Invalid Opcode",
+    "Device not Available",
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Bad TSS",
+    "Segment Not Present",
+    "Stack Fault Exception",
+    "General Protection Fault",
+    "Page Fault",
+    "[RESERVED]",
+    "Floating Point Exception",
+    "Alignment Check",
+    "Machine Check",
+    "SIMD Floating Point Exception",
+    "Virtualization Exception",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "[RESERVED]",
+    "Security Exception",
+};
+
+// Initializes ISR's
 int init_isr() {
   idt_set_entry(&idt[0], isr_0);
   idt_set_entry(&idt[1], isr_1);
@@ -71,42 +110,7 @@ int init_isr() {
   return 0;
 }
 
-char *exception_messages[] = {
-    "Division By Zero",
-    "Debug",
-    "Non Maskable Interrupt",
-    "Breakpoint",
-    "Into Detected Overflow",
-    "Out of Bounds",
-    "Invalid Opcode",
-    "Device not Available",
-    "Double Fault",
-    "Coprocessor Segment Overrun",
-    "Bad TSS",
-    "Segment Not Present",
-    "Stack Fault Exception",
-    "General Protection Fault",
-    "Page Fault",
-    "[RESERVED]",
-    "Floating Point Exception",
-    "Alignment Check",
-    "Machine Check",
-    "SIMD Floating Point Exception",
-    "Virtualization Exception",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "Security Exception",
-};
-
+// Run whenever a fult is detected
 void fault_handler(int ex_no) {
   printf("\r\n%s: FAULT!\r\n", exception_messages[ex_no]);
   while (1)

@@ -3,29 +3,28 @@
 
 #include <stdint.h>
 
-static uint32_t RED;
-static uint32_t DARK_RED;
-static uint32_t GREEN;
-static uint32_t DARK_GREEN;
-static uint32_t YELLOW;
-static uint32_t DARK_YELLOW;
-static uint32_t BLUE;
-static uint32_t DARK_BLUE;
-static uint32_t MAGENTA;
-static uint32_t DARK_MAGENTA;
-static uint32_t CYAN;
-static uint32_t DARK_CYAN;
-static uint32_t WHITE;
-static uint32_t BLACK;
-static uint32_t GRAY;
-static uint32_t DARK_GRAY;
-static uint32_t BG;
-static uint32_t FG;
+uint32_t RED;
+uint32_t DARK_RED;
+uint32_t GREEN;
+uint32_t DARK_GREEN;
+uint32_t YELLOW;
+uint32_t DARK_YELLOW;
+uint32_t BLUE;
+uint32_t DARK_BLUE;
+uint32_t MAGENTA;
+uint32_t DARK_MAGENTA;
+uint32_t CYAN;
+uint32_t DARK_CYAN;
+uint32_t WHITE;
+uint32_t BLACK;
+uint32_t GRAY;
+uint32_t DARK_GRAY;
+uint32_t BG;
+uint32_t FG;
 
 uint32_t fg_color;
 uint32_t bg_color;
 
-uint8_t *font;
 int x_pos_pixel;
 int y_pos_pixel;
 int border;

@@ -1,31 +1,31 @@
-section .bss
+section .bss                                                                   ; Define stack of primary CPU
 stack:
-  resb 4096
+  resb 4096                                                                    ; 4Kb
 .top:
 
 section .stivale2hdr
 stivale2_header:
   .entry_point: dq 0                                                           ; Default entry
-  .stack: dq stack.top
-  .flags: dq 0
-  .tags: dq fb_tag
+  .stack: dq stack.top                                                         ; Location of stack
+  .flags: dq 0                                                                 ; No flags
+  .tags: dq fb_tag                                                             ; Add fb_tag as a tag
 
 section .data
 
 fb_tag:                                                                        ; Request a framebuffer (VBE in BIOS, GOP in UEFI)
   .id: dq 0x3ecc1bc43d0f7971
-  .next: dq fb_mtrr
+  .next: dq fb_mtrr                                                            ; Add fb_mtrr as a tag
   .fb_width: dw 0                                                              ; Best size
   .fb_height: dw 0                                                             ; Best size
   .fb_bpp: dw 32                                                               ; Do not support less than 32 bpp
 
 fb_mtrr:                                                                       ; Enable MTRR write-combining for the framebuffer to speed up writes into the framebuffer
   .id: dq 0x4c7bb07731282e00
-  .next: dq smp_tag
+  .next: dq smp_tag                                                            ; Add smp_tag as a tag
 
-smp_tag:
+smp_tag:                                                                       ; Enable symetric multiprocessing
   .id: dq 0x1ab015085f3273df
-  .flags dq 1
+  .flags dq 1                                                                  ; X2APIC
   .next dq 0
 
 set_sse:                                                                       ; Taken from OSDEV adjusted for 64 (Changed eax register to rax)
@@ -38,11 +38,11 @@ set_sse:                                                                       ;
   mov cr4, rax
   ret
 
-halt:
+halt:                                                                          ; Forever halt the system
   hlt
   jmp halt
 
-gdt:
+gdt:                                                                           ; Set up GDT structure
   .null: dq 0
   .code:
     dw 0                                                                       ; Limit low
@@ -60,7 +60,7 @@ gdt:
     db 0                                                                       ; Base high
 .end:
 
-gdt_register:
+gdt_register:                                                                  ; Set up GDT
   .limit: dw gdt.end - gdt - 1
   .base: dq gdt
 

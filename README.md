@@ -32,6 +32,7 @@ By default the OS does nothing as we don't have a userland but stuff can be adde
 We code using GCC so any clang standards that may affect GCC will be ignored.   
 We also format our code in clang format so make sure to clang format the code before commiting.  
 We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding.  
+When returning an error code from a function: make sure that returning 0 is success code. All other return codes are errors/failures and can be used to show what went wrong
 Name variables in snake case (`uint64_t name_of_var`)  
 Give types \_t's (`typedef long int name_of_type_t`). Make sure this is in snake case too!  
 Constants must be in screaming snake case (All capitals snake case) (`#define SOME_CONSTANT 0x1000`)    

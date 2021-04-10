@@ -48,6 +48,7 @@ bool ata_pio_present(ata_device_t *device, bool slave) {
   return status != 0;
 }
 
+// Read x sectors from device
 int ata_pio_read_lba(ata_device_t *device, uint16_t *data, uint64_t lba,
                      uint64_t sectors) {
   uint16_t *target = (uint16_t *)(data);
@@ -85,6 +86,7 @@ int ata_pio_read_lba(ata_device_t *device, uint16_t *data, uint64_t lba,
   return 0;
 }
 
+// Write data to device
 int ata_pio_write_lba(ata_device_t *device, void *data, uint64_t lba,
                       uint64_t sectors) {
   uint16_t *words = (uint16_t *)(data);

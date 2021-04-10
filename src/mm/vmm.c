@@ -3,14 +3,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Where the kernel must be mapped to
 #define KERNEL_MAP_ADRESS 0x100000000
+// Memory offset
 #define MEM_OFFSET 0xffff800000000000
 
 // The majority of this is reworked from limine's VMM code. Of course edited for
 // the MandelbrotOS and other little fixes added
 
+// Kernel map
 uint64_t *kernel_map = NULL;
 
+// Get next level of map
 uint64_t *get_next_level(uint64_t *current_level, size_t entry) {
   uint64_t *ret;
 
@@ -25,10 +29,12 @@ uint64_t *get_next_level(uint64_t *current_level, size_t entry) {
   return ret;
 }
 
+// Switch current pagemap
 void vmm_switch_pagemap(uint64_t pagemap) {
   __asm__ volatile("mov %0, %%cr3" ::"r"(pagemap));
 }
 
+// Map virtual page to physical adress
 void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
                   uint64_t virtual_address, uintptr_t flags) {
   uintptr_t *pml4, *pml3, *pml2, *pml1;
@@ -47,6 +53,7 @@ void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
   pml1[level1] = physical_address | flags;
 }
 
+// Unmap virtual adress
 void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address) {
   uintptr_t *pml4, *pml3, *pml2, *pml1;
   uintptr_t level4, level3, level2, level1;
@@ -64,6 +71,7 @@ void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address) {
   pml1[level1] = 0;
 }
 
+// Initialize VMM
 int init_vmm() {
   kernel_map = pcalloc(1);
 

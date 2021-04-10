@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
+// Returns the echfs table of a device
 echfs_t echfs_get_fs(device_t device) {
   echfs_table_t table;
   device.read(device.device, 0, (uint64_t)(&table), sizeof(echfs_table_t));
@@ -19,6 +20,7 @@ echfs_t echfs_get_fs(device_t device) {
   return fs;
 }
 
+// Loads block to buffer
 uint64_t echfs_load_block(device_t device, echfs_t fs, uint8_t *buffer,
                           uint64_t block) {
   uint64_t next_block;
@@ -32,6 +34,7 @@ uint64_t echfs_load_block(device_t device, echfs_t fs, uint8_t *buffer,
   return next_block;
 }
 
+// Looks for name in dir
 echfs_entry_t echfs_find(device_t device, echfs_t fs, uint64_t dir,
                          const char *name) {
   echfs_entry_t entry;
@@ -51,10 +54,11 @@ echfs_entry_t echfs_find(device_t device, echfs_t fs, uint64_t dir,
   return entry;
 }
 
+// Read file from fs into buffer
 int echfs_read(device_t device, echfs_t fs, echfs_entry_t file,
                uint8_t *buffer) {
   if (!file.type || !(file.perms & ECHFS_READ_MASK))
-    return 0;
+    return 1;
 
   uint64_t block = file.blk_id;
 
@@ -63,9 +67,10 @@ int echfs_read(device_t device, echfs_t fs, echfs_entry_t file,
     buffer += fs.block_size;
   }
 
-  return 1;
+  return 0;
 }
 
+// Returns size of entry
 uint64_t echfs_get_size(device_t device, echfs_t fs, echfs_entry_t file) {
   return file.size;
 }

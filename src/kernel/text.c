@@ -3,37 +3,6 @@
 #include <kernel/text.h>
 #include <stdint.h>
 
-// Definitions for all the colors of the kernel
-uint32_t RED;
-uint32_t DARK_RED;
-uint32_t GREEN;
-uint32_t DARK_GREEN;
-uint32_t YELLOW;
-uint32_t DARK_YELLOW;
-uint32_t BLUE;
-uint32_t DARK_BLUE;
-uint32_t MAGENTA;
-uint32_t DARK_MAGENTA;
-uint32_t CYAN;
-uint32_t DARK_CYAN;
-uint32_t WHITE;
-uint32_t BLACK;
-uint32_t GRAY;
-uint32_t DARK_GRAY;
-uint32_t BG;
-uint32_t FG;
-
-// Foreground and background colors
-uint32_t fg_color;
-uint32_t bg_color;
-
-// Where to draw the current character
-int x_pos_pixel;
-int y_pos_pixel;
-
-// How far the text should be spaced off the wall
-int border;
-
 // Set colors for kernel
 int init_color(int red, int dred, int green, int dgreen, int yellow,
                int dyellow, int blue, int dblue, int magenta, int dmagenta,

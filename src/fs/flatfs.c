@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
+// Returns flatfs header on device
 flatfs_t flatfs_get_fs(device_t device) {
   flatfs_t fs;
   device.read(device.device, (void *)512 - sizeof(flatfs_t), (uint64_t)(&fs),
@@ -11,6 +12,7 @@ flatfs_t flatfs_get_fs(device_t device) {
   return fs;
 }
 
+// Loads header from specified pointer 
 flatfs_header_t flatfs_get_header(device_t device, uint64_t header_ptr) {
   flatfs_header_t header;
   if (!device.read(device.device, (void *)(header_ptr << 9),
@@ -20,12 +22,14 @@ flatfs_header_t flatfs_get_header(device_t device, uint64_t header_ptr) {
   return header;
 }
 
+// Saves header to specified point
 int flatfs_set_header(device_t device, uint64_t header_ptr,
                       flatfs_header_t header) {
   return device.write(device.device, (void *)(header_ptr << 9),
                       (uint64_t)(&header), sizeof(flatfs_header_t));
 }
 
+// Look for name in dir on fs
 uint64_t flatfs_find(device_t device, uint64_t dir, const char *name) {
   flatfs_header_t dir_header = flatfs_get_header(device, dir);
   if (dir_header.type == FLAT_TYPE_NULL)
@@ -59,6 +63,7 @@ uint64_t flatfs_find(device_t device, uint64_t dir, const char *name) {
   return 0;
 }
 
+// Delete entry of name in dir on fs
 int flatfs_delete(device_t device, uint64_t dir, const char *name) {
   flatfs_header_t dir_header = flatfs_get_header(device, dir);
   if (dir_header.type == FLAT_TYPE_NULL)
@@ -96,6 +101,7 @@ int flatfs_delete(device_t device, uint64_t dir, const char *name) {
   return 0;
 }
 
+// Reads file from fs to buffer
 int flatfs_read(device_t device, uint64_t header_ptr, uint8_t *buffer) {
   flatfs_header_t header;
 
@@ -118,6 +124,7 @@ int flatfs_read(device_t device, uint64_t header_ptr, uint8_t *buffer) {
   return 1;
 }
 
+// Returns size of file at header
 uint64_t flatfs_get_size(device_t device, uint64_t header_ptr) {
   // This one is pretty easy :)
   flatfs_header_t header = flatfs_get_header(device, header_ptr);
@@ -126,3 +133,4 @@ uint64_t flatfs_get_size(device_t device, uint64_t header_ptr) {
 
   return header.data.size;
 }
+

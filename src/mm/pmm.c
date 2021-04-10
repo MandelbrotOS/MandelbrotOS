@@ -12,32 +12,40 @@
 #define BIT_CLEAR(__bit) (bitmap[(__bit) / 8] &= ~(1 << ((__bit) % 8)))
 #define BIT_TEST(__bit) ((bitmap[(__bit) / 8] >> ((__bit) % 8)) & 1)
 
+// Size of bitmap
 size_t bitmap_size;
+// Highest page
 static uintptr_t highest_page = 0;
+// The bitmap itself
 uint8_t *bitmap;
 
+// Free page at adress
 void free_page(void *adr) {
   uint32_t index = (uint32_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_CLEAR(index);
 }
 
+// Reserve page at adress
 void reserve_page(void *adr) {
   uint32_t index = (uint32_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_SET(index);
 }
 
+// Free x amount of pages at adress
 void free_pages(void *adr, uint32_t page_count) {
   for (uint32_t i = 0; i < page_count; i++) {
     free_page((void *)(adr + (i * PAGE_SIZE)));
   }
 }
 
+// Reserve x amount of pages at adress
 void reserve_pages(void *adr, uint32_t page_count) {
   for (uint32_t i = 0; i < page_count; i++) {
     reserve_page((void *)(adr + (i * PAGE_SIZE)));
   }
 }
 
+// Allocate x amount of pages
 void *pmalloc(uint32_t pages) {
   for (uint32_t i = 0; i < bitmap_size * 8; i++) {
     for (uint32_t j = 0; j < pages; j++) {
@@ -52,6 +60,7 @@ void *pmalloc(uint32_t pages) {
   return NULL;
 }
 
+// Allocate x amount of pages. Filled with 0's
 void *pcalloc(uint64_t pages) {
   uint64_t *p = (uint64_t *)pmalloc(pages);
 
@@ -104,3 +113,4 @@ int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
 
   return 0;
 }
+

@@ -52,35 +52,16 @@ struct flatfs_header_t {
   uint64_t next_ptr;
 } __attribute__((packed));
 
-// Returns the flat_fs header on that device, for use on all the other functions
 flatfs_t flatfs_get_fs(device_t device);
-
-// Loads the header from the specified pointer HEADER_PTR from FS
 flatfs_header_t flatfs_get_header(device_t device, uint64_t header_ptr);
-
-// Saves HEADER to the specified pointer HEADER_PTR on FS, returns 1 if success
 int flatfs_set_header(device_t device, uint64_t header_ptr,
                       flatfs_header_t header);
-
-// Merges block with header at HEADER_PTR with consecutive block, and returns 1
-// if success
 int flatfs_merge(device_t device, uint64_t header_ptr);
-
 int flatfs_free(device_t device, uint64_t header_ptr);
-
 uint64_t flatfs_alloc(device_t device, uint64_t block_cnt);
-
-// Looks for NAME on directory DIR on FS, returns header pointer, or 0 if failed
 uint64_t flatfs_find(device_t device, uint64_t dir, const char *name);
-
-// Looks for NAME on directory DIR on FS, deletes entry and returns 1 if success
 int flatfs_delete(device_t device, uint64_t dir, const char *name);
-
-// Reads file at HEADER from FS to BUFFER, returns 1 if success
 int flatfs_read(device_t device, uint64_t header_ptr, uint8_t *buffer);
-
-// Returns size of file at HEADER(you can also use the flatfs_header_t struct),
-// or 0 if error
 uint64_t flatfs_get_size(device_t device, uint64_t header_ptr);
 
 #endif // !__FLATFS_H__

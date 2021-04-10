@@ -117,6 +117,7 @@ static void push_free(chunk_t *chunk) {
 
 // INIT, FREE AND MALLOC
 
+// Initialize heap
 int init_heap(void *mem, size_t size) {
   if (mem == NULL)
     return 1;
@@ -142,6 +143,7 @@ int init_heap(void *mem, size_t size) {
   return 0;
 }
 
+// Allocate x amount of bytes
 void *kmalloc(size_t size) {
   size = (size + ALIGN - 1) & (~(ALIGN - 1));
 
@@ -181,6 +183,7 @@ void *kmalloc(size_t size) {
   return chunk1->data;
 }
 
+// Free pointer
 void kfree(void *mem) {
   chunk_t *chunk1 = (chunk_t *)((char *)mem - HEADER_SIZE);
   chunk_t *next = CONTAINER(chunk_t, all, chunk1->all.next);
