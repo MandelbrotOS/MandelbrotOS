@@ -1,4 +1,5 @@
 #include <drivers/ata.h>
+#include <mm/heap.h>
 #include <hw.h>
 
 void ata_wait_bsy(ata_device_t *device) {
@@ -128,7 +129,7 @@ int ata_pio_write_lba(ata_device_t *device, void *data, uint64_t lba,
 int ata_pio_read(void *device, void *data, uint64_t offset, uint64_t size) {
   // TODO: Read size/512, return size bytes ignoring the rest
 
-  return 1; // Success
+  return 0; // Success
 }
 
 // Never use this function directly, use device_t.write instead.
@@ -136,18 +137,26 @@ int ata_pio_write(void *device, void *data, uint64_t offset, uint64_t size) {
   // TODO: Write size/512 sectors with size bytes leaving the
   // rest intact
 
-  return 1; // Success
+  return 0; // Success
 }
 
-void ata_pio_device_init(ata_device_t *device, uint16_t base_port,
-                         uint16_t base_control_port) {
-  // FIXME: The afformentioned bottom code is not working.
-  // The struct does not have the required params. Can segfaultdev please
-  // look into this?
-  // device->read = ata_pio_read;
-  // device->write = ata_pio_write;
+// Never use this function directly, use device_t.get_size instead.
+uint64_t ata_pio_get_size(void *device) {
+  // TODO: Get drive size
 
-  // TODO: device->get_size = ...;
+  return 0; // What a big drive...
+}
 
-  // TODO: Allocating enough bytes for ata_device_t on device
+int ata_pio_device_init(device_t *device, uint16_t base_port,
+                        uint16_t base_control_port) {
+  device->read = ata_pio_read;
+  device->write = ata_pio_write;
+  device->get_size = ata_pio_get_size;
+
+  ata_device_t *ata_device = device->device = kmalloc(sizeof(ata_device_t));
+
+  ata_device->base_port = base_port;
+  ata_device->base_control_port = base_control_port;
+
+  return 0; // Success
 }

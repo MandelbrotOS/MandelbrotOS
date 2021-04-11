@@ -32,7 +32,7 @@ typedef struct idt_ptr {
 idt_entry_t idt[256];
 idt_ptr_t idtp;
 
-void idt_set_entry(idt_entry_t *entry, void (*func)());
+void idt_set_entry(idt_entry_t *entry, int user_space, void (*func)(void));
 int init_idt();
 
 #endif // !__IDT_H__

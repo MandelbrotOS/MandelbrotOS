@@ -166,3 +166,18 @@ float atof(const char *s) {
   }
   return rez * fact;
 }
+
+uint64_t str_to_u64(const char *str) {
+  uint64_t val = 0;
+
+  for (int i = 0; i < strlen(str); i++) {
+    if (i >= 8) break; // Limit to 8 characters
+
+    uint8_t c = str[i];
+    if (c <= 0x20) c = 0x00; // Also include spaces
+
+    val |= (c << (i << 3));
+  }
+
+  return val;
+}

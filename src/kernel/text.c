@@ -129,7 +129,6 @@ void putchar(char string) {
 
 // Put string (With escapes implemented)
 void puts(const char *string) {
-  while (*string != 0) {
-    putchar(*string++);
-  }
+  while (*string) putchar(*string++);
+  putchar('\r'); putchar('\n');
 }
