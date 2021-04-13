@@ -8,19 +8,19 @@
 typedef struct ata_device_t ata_device_t;
 
 struct ata_device_t {
-    uint16_t base_port;
-    uint16_t base_control_port;
+  uint16_t base_port;
+  uint16_t base_control_port;
 };
 
-bool ata_pio_present(ata_device_t* device, bool slave);
+bool ata_pio_present(ata_device_t *device, bool slave);
 
-int ata_pio_read_lba(
-    ata_device_t* device, uint16_t* data, uint64_t lba, uint64_t sectors);
-int ata_pio_write_lba(
-    ata_device_t* device, void* data, uint64_t lba, uint64_t sectors);
+int ata_pio_read_lba(ata_device_t *device, uint16_t *data, uint64_t lba,
+                     uint64_t sectors);
+int ata_pio_write_lba(ata_device_t *device, void *data, uint64_t lba,
+                      uint64_t sectors);
 
-int ata_pio_device_init(
-    device_t* device, uint16_t base_port, uint16_t base_control_port);
+int ata_pio_device_init(device_t *device, uint16_t base_port,
+                        uint16_t base_control_port);
 
 #define ATA_PRIMARY_PORT 0x1F0
 #define ATA_SECONDARY_PORT 0x170

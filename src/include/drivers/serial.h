@@ -4,6 +4,6 @@
 #include <kernel/device.h>
 #include <stdint.h>
 
-int serial_device_init(device_t* device, uint16_t port);
+int serial_device_init(device_t *device, uint16_t port);
 
 #endif // !__SERIAL_H__

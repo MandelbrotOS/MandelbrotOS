@@ -18,54 +18,54 @@ typedef struct echfs_entry_t echfs_entry_t;
 typedef struct echfs_t echfs_t;
 
 struct echfs_table_t {
-    uint8_t jump_code[4];
-    char signature[8];
+  uint8_t jump_code[4];
+  char signature[8];
 
-    uint64_t block_cnt;
-    uint64_t dir_block_cnt;
-    uint64_t block_size;
+  uint64_t block_cnt;
+  uint64_t dir_block_cnt;
+  uint64_t block_size;
 
-    uint32_t reserved;
-    uint64_t uuid[2];
+  uint32_t reserved;
+  uint64_t uuid[2];
 } __attribute__((packed));
 
 struct echfs_entry_t {
-    uint64_t parent_id;
-    uint8_t type;
+  uint64_t parent_id;
+  uint8_t type;
 
-    // NULL-terminated
-    char name[201];
+  // NULL-terminated
+  char name[201];
 
-    uint64_t atime, mtime;
+  uint64_t atime, mtime;
 
-    uint16_t perms;
-    uint16_t own_id, grp_id;
+  uint16_t perms;
+  uint16_t own_id, grp_id;
 
-    uint64_t ctime;
+  uint64_t ctime;
 
-    uint64_t blk_id;
-    uint64_t size;
+  uint64_t blk_id;
+  uint64_t size;
 } __attribute__((packed));
 
 struct echfs_t {
-    // Directly taken from table
-    uint64_t block_cnt;
-    uint64_t dir_block_cnt;
-    uint64_t block_size;
+  // Directly taken from table
+  uint64_t block_cnt;
+  uint64_t dir_block_cnt;
+  uint64_t block_size;
 
-    // Calculated
-    uint64_t alloc_offset;
-    uint64_t dir_offset;
-    uint64_t dir_cnt;
+  // Calculated
+  uint64_t alloc_offset;
+  uint64_t dir_offset;
+  uint64_t dir_cnt;
 };
 
 echfs_t echfs_get_fs(device_t device);
-uint64_t echfs_load_block(
-    device_t device, echfs_t fs, uint8_t* buffer, uint64_t block);
-echfs_entry_t echfs_find(
-    device_t device, echfs_t fs, uint64_t dir, const char* name);
-int echfs_read(
-    device_t device, echfs_t fs, echfs_entry_t file, uint8_t* buffer);
+uint64_t echfs_load_block(device_t device, echfs_t fs, uint8_t *buffer,
+                          uint64_t block);
+echfs_entry_t echfs_find(device_t device, echfs_t fs, uint64_t dir,
+                         const char *name);
+int echfs_read(device_t device, echfs_t fs, echfs_entry_t file,
+               uint8_t *buffer);
 uint64_t echfs_get_size(device_t device, echfs_t fs, echfs_entry_t file);
 
 #endif // !__FS_ECHFS_H__
