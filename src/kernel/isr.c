@@ -37,82 +37,84 @@ extern void isr_31();
 
 // Exception messages
 char *exception_messages[] = {
-    "Division By Zero",
-    "Debug",
-    "Non Maskable Interrupt",
-    "Breakpoint",
-    "Into Detected Overflow",
-    "Out of Bounds",
-    "Invalid Opcode",
-    "Device not Available",
-    "Double Fault",
-    "Coprocessor Segment Overrun",
-    "Bad TSS",
-    "Segment Not Present",
-    "Stack Fault Exception",
-    "General Protection Fault",
-    "Page Fault",
-    "[RESERVED]",
-    "Floating Point Exception",
-    "Alignment Check",
-    "Machine Check",
-    "SIMD Floating Point Exception",
-    "Virtualization Exception",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "Security Exception",
+  "Division By Zero",
+  "Debug",
+  "Non Maskable Interrupt",
+  "Breakpoint",
+  "Into Detected Overflow",
+  "Out of Bounds",
+  "Invalid Opcode",
+  "Device not Available",
+  "Double Fault",
+  "Coprocessor Segment Overrun",
+  "Bad TSS",
+  "Segment Not Present",
+  "Stack Fault Exception",
+  "General Protection Fault",
+  "Page Fault",
+  "[RESERVED]",
+  "Floating Point Exception",
+  "Alignment Check",
+  "Machine Check",
+  "SIMD Floating Point Exception",
+  "Virtualization Exception",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "Security Exception",
 };
 
 // Initializes ISR's
-int init_isr() {
-  idt_set_entry(&idt[0], isr_0);
-  idt_set_entry(&idt[1], isr_1);
-  idt_set_entry(&idt[2], isr_2);
-  idt_set_entry(&idt[3], isr_3);
-  idt_set_entry(&idt[4], isr_4);
-  idt_set_entry(&idt[5], isr_5);
-  idt_set_entry(&idt[6], isr_6);
-  idt_set_entry(&idt[7], isr_7);
-  idt_set_entry(&idt[8], isr_8);
-  idt_set_entry(&idt[9], isr_9);
-  idt_set_entry(&idt[10], isr_10);
-  idt_set_entry(&idt[11], isr_11);
-  idt_set_entry(&idt[12], isr_12);
-  idt_set_entry(&idt[13], isr_13);
-  idt_set_entry(&idt[14], isr_14);
-  idt_set_entry(&idt[15], isr_15);
-  idt_set_entry(&idt[16], isr_16);
-  idt_set_entry(&idt[17], isr_17);
-  idt_set_entry(&idt[18], isr_18);
-  idt_set_entry(&idt[19], isr_19);
-  idt_set_entry(&idt[20], isr_20);
-  idt_set_entry(&idt[21], isr_21);
-  idt_set_entry(&idt[22], isr_22);
-  idt_set_entry(&idt[23], isr_23);
-  idt_set_entry(&idt[24], isr_24);
-  idt_set_entry(&idt[25], isr_25);
-  idt_set_entry(&idt[26], isr_26);
-  idt_set_entry(&idt[27], isr_27);
-  idt_set_entry(&idt[28], isr_28);
-  idt_set_entry(&idt[29], isr_29);
-  idt_set_entry(&idt[30], isr_30);
-  idt_set_entry(&idt[31], isr_31);
+int init_isr()
+{
+  idt_set_entry(&idt[0], 0, isr_0);
+  idt_set_entry(&idt[1], 0, isr_1);
+  idt_set_entry(&idt[2], 0, isr_2);
+  idt_set_entry(&idt[3], 0, isr_3);
+  idt_set_entry(&idt[4], 0, isr_4);
+  idt_set_entry(&idt[5], 0, isr_5);
+  idt_set_entry(&idt[6], 0, isr_6);
+  idt_set_entry(&idt[7], 0, isr_7);
+  idt_set_entry(&idt[8], 0, isr_8);
+  idt_set_entry(&idt[9], 0, isr_9);
+  idt_set_entry(&idt[10], 0, isr_10);
+  idt_set_entry(&idt[11], 0, isr_11);
+  idt_set_entry(&idt[12], 0, isr_12);
+  idt_set_entry(&idt[13], 0, isr_13);
+  idt_set_entry(&idt[14], 0, isr_14);
+  idt_set_entry(&idt[15], 0, isr_15);
+  idt_set_entry(&idt[16], 0, isr_16);
+  idt_set_entry(&idt[17], 0, isr_17);
+  idt_set_entry(&idt[18], 0, isr_18);
+  idt_set_entry(&idt[19], 0, isr_19);
+  idt_set_entry(&idt[20], 0, isr_20);
+  idt_set_entry(&idt[21], 0, isr_21);
+  idt_set_entry(&idt[22], 0, isr_22);
+  idt_set_entry(&idt[23], 0, isr_23);
+  idt_set_entry(&idt[24], 0, isr_24);
+  idt_set_entry(&idt[25], 0, isr_25);
+  idt_set_entry(&idt[26], 0, isr_26);
+  idt_set_entry(&idt[27], 0, isr_27);
+  idt_set_entry(&idt[28], 0, isr_28);
+  idt_set_entry(&idt[29], 0, isr_29);
+  idt_set_entry(&idt[30], 0, isr_30);
+  idt_set_entry(&idt[31], 0, isr_31);
 
   return 0;
 }
 
 // Run whenever a fult is detected
-void fault_handler(int ex_no) {
+void fault_handler(int ex_no)
+{
   printf("\r\n%s: FAULT!\r\n", exception_messages[ex_no]);
-  while (1)
+  for (;;)
     ;
 }

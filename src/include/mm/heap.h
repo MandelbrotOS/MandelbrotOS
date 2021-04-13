@@ -4,6 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// 1 MiB (:
+#define HEAP_SIZE (0x100000)
+
 #define CONTAINER(C, l, v) ((C *)(((char *)v) - (intptr_t) & (((C *)0)->l)))
 #define OFFSETOF(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
 

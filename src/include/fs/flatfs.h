@@ -54,8 +54,8 @@ struct flatfs_header_t {
 
 flatfs_t flatfs_get_fs(device_t device);
 flatfs_header_t flatfs_get_header(device_t device, uint64_t header_ptr);
-int flatfs_set_header(device_t device, uint64_t header_ptr,
-                      flatfs_header_t header);
+int flatfs_set_header(
+    device_t device, uint64_t header_ptr, flatfs_header_t header);
 int flatfs_merge(device_t device, uint64_t header_ptr);
 int flatfs_free(device_t device, uint64_t header_ptr);
 uint64_t flatfs_alloc(device_t device, uint64_t block_cnt);

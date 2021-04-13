@@ -216,8 +216,8 @@ struct stivale2_struct_vmap_t {
 } __attribute__((__packed__));
 
 /* Start of own code */
-struct stivale2_tag_t *
-stivale2_get_tag(struct stivale2_struct_t *bootloader_info, uint64_t tag_id);
+struct stivale2_tag_t *stivale2_get_tag(
+    struct stivale2_struct_t *bootloader_info, uint64_t tag_id);
 /* End of own code */
 
 #endif

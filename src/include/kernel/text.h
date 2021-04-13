@@ -31,11 +31,10 @@ int border;
 
 int init_text(int border_);
 int init_color(int red, int dred, int green, int dgreen, int yellow,
-               int dyellow, int blue, int dblue, int magenta, int dmagenta,
-               int cyan, int dcyan, int white, int black, int gray, int dgray,
-               int bg, int fg);
+    int dyellow, int blue, int dblue, int magenta, int dmagenta, int cyan,
+    int dcyan, int white, int black, int gray, int dgray, int bg, int fg);
 void putc(char ch, int x, int y, uint32_t foreground_color,
-          uint32_t background_color);
+    uint32_t background_color);
 void putchar(char string);
 void puts(const char *string);
 void cls();

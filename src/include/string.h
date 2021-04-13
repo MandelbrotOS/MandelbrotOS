@@ -19,4 +19,6 @@ int isdigit(int c);
 int wspaceamount(char *a);
 void memcpy(void *dest, void *src, size_t n);
 
+uint64_t str_to_u64(const char *str);
+
 #endif // !__STRING_H__

@@ -5,9 +5,9 @@
 
 // Set colors for kernel
 int init_color(int red, int dred, int green, int dgreen, int yellow,
-               int dyellow, int blue, int dblue, int magenta, int dmagenta,
-               int cyan, int dcyan, int white, int black, int gray, int dgray,
-               int bg, int fg) {
+    int dyellow, int blue, int dblue, int magenta, int dmagenta, int cyan,
+    int dcyan, int white, int black, int gray, int dgray, int bg, int fg)
+{
   RED = red;
   DARK_RED = dred;
   GREEN = green;
@@ -31,7 +31,8 @@ int init_color(int red, int dred, int green, int dgreen, int yellow,
 }
 
 // Initilize text printing
-int init_text(int border_) {
+int init_text(int border_)
+{
   fg_color = FG;
   bg_color = BG;
 
@@ -46,7 +47,8 @@ int init_text(int border_) {
 }
 
 // Clear screen
-void cls() {
+void cls()
+{
   x_pos_pixel = border;
   y_pos_pixel = border;
   for (int i = 0; (uint32_t)i < framebuffer_width * framebuffer_height; i++) {
@@ -57,7 +59,8 @@ void cls() {
 // FIXME: Fix this bad code
 
 // Remove character and move 1 space back
-void backspace() {
+void backspace()
+{
   if (x_pos_pixel >= GLYPH_WIDTH + 1) {
     putc(' ', x_pos_pixel, y_pos_pixel, bg_color, bg_color);
     x_pos_pixel -= GLYPH_WIDTH + 1;
@@ -72,19 +75,21 @@ void backspace() {
 }
 
 // Scroll screen up the length of one character
-void scroll_screen_up() {
+void scroll_screen_up()
+{
   for (uint32_t i = 1; i <= framebuffer_width * framebuffer_height; i++) {
     framebuffer[i] = framebuffer[i + (framebuffer_width * (GLYPH_WIDTH + 1))];
   }
   drawrect(0, 0, framebuffer_width, border, bg_color);
-  drawrect(
-      0, (int)framebuffer_height - (border + (GLYPH_HEIGHT + 1) + (border - 1)),
+  drawrect(0,
+      (int)framebuffer_height - (border + (GLYPH_HEIGHT + 1) + (border - 1)),
       framebuffer_width, framebuffer_height, bg_color);
 }
 
 // Put 1 char at x y position (No escape sequeneces)
-void putc(char ch, int x, int y, uint32_t foreground_color,
-          uint32_t background_color) {
+void putc(
+    char ch, int x, int y, uint32_t foreground_color, uint32_t background_color)
+{
   uint8_t *bitmap = (uint8_t *)char_font[ch % 128];
   for (int lx = 0; lx < GLYPH_WIDTH; lx++) {
     for (int ly = 0; ly < GLYPH_HEIGHT; ly++) {
@@ -98,14 +103,15 @@ void putc(char ch, int x, int y, uint32_t foreground_color,
 }
 
 // Put a character automatically at place (With escapes)
-void putchar(char string) {
+void putchar(char string)
+{
   if ((uint32_t)x_pos_pixel > framebuffer_width - border) {
     x_pos_pixel = border;
     y_pos_pixel += GLYPH_HEIGHT + 1;
   }
 
-  if ((uint32_t)y_pos_pixel >
-      framebuffer_height - border - (GLYPH_HEIGHT + 1)) {
+  if ((uint32_t)y_pos_pixel
+      > framebuffer_height - border - (GLYPH_HEIGHT + 1)) {
     y_pos_pixel -= (GLYPH_HEIGHT + 1);
     scroll_screen_up();
   }
@@ -128,8 +134,10 @@ void putchar(char string) {
 }
 
 // Put string (With escapes implemented)
-void puts(const char *string) {
-  while (*string != 0) {
+void puts(const char *string)
+{
+  while (*string)
     putchar(*string++);
-  }
+  putchar('\r');
+  putchar('\n');
 }
