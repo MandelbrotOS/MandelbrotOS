@@ -3,7 +3,7 @@
 #include <kernel/irq.h>
 
 // Table showing whether or not to run handler function
-void *irq_routines[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+void *irq_routines[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // ASM handlers
 extern void irq_0();
@@ -24,7 +24,8 @@ extern void irq_14();
 extern void irq_15();
 
 // Remap IRQ
-void irq_remap(void) {
+void irq_remap(void)
+{
   outb(0x20, 0x11);
   outb(0xA0, 0x11);
   outb(0x21, 0x20);
@@ -38,7 +39,8 @@ void irq_remap(void) {
 }
 
 // Initialize IRQ's
-int init_irq() {
+int init_irq()
+{
   irq_remap();
 
   idt_set_entry(&idt[32 + 0], irq_0);
@@ -62,7 +64,8 @@ int init_irq() {
 }
 
 // Allow interrupt to run handler
-void irq_install_handler(int irq, void(*handler)) {
+void irq_install_handler(int irq, void(*handler))
+{
   irq_routines[irq] = handler;
 }
 
@@ -70,7 +73,8 @@ void irq_install_handler(int irq, void(*handler)) {
 void irq_uninstall_handler(int irq) { irq_routines[irq] = 0; }
 
 // Base handler: ASM comes here and then it runs the unique handlers
-void irq_handler(int irq_no) {
+void irq_handler(int irq_no)
+{
   void (*handler)();
   handler = irq_routines[irq_no];
 

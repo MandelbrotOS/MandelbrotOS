@@ -5,7 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
-void *memset(void *b, int c, int len) {
+void *memset(void *b, int c, int len)
+{
   unsigned char *p = b;
   while (len > 0) {
     *p = c;
@@ -15,7 +16,8 @@ void *memset(void *b, int c, int len) {
   return (b);
 }
 
-void memcpy(void *dest, void *src, size_t n) {
+void memcpy(void *dest, void *src, size_t n)
+{
   // Typecast src and dest addresses to (char *)
   char *csrc = (char *)src;
   char *cdest = (char *)dest;
@@ -25,7 +27,8 @@ void memcpy(void *dest, void *src, size_t n) {
     cdest[i] = csrc[i];
 }
 
-unsigned int strlen(const char *s) {
+unsigned int strlen(const char *s)
+{
   unsigned int count = 0;
   while (*s != '\0') {
     count++;
@@ -34,7 +37,8 @@ unsigned int strlen(const char *s) {
   return count;
 }
 
-char *strcat(char *s1, const char *s2) {
+char *strcat(char *s1, const char *s2)
+{
   // Pointer should not null pointer
   if ((s1 == NULL) && (s2 == NULL))
     return NULL;
@@ -54,7 +58,8 @@ char *strcat(char *s1, const char *s2) {
   return s1;
 }
 
-char *strcpy(char *destination, const char *source) {
+char *strcpy(char *destination, const char *source)
+{
   if (destination == NULL)
     return NULL;
 
@@ -71,7 +76,8 @@ char *strcpy(char *destination, const char *source) {
   return ptr;
 }
 
-int atoi(char *str) {
+int atoi(char *str)
+{
   int res = 0;
 
   for (int i = 0; str[i] != '\0'; ++i) {
@@ -81,7 +87,8 @@ int atoi(char *str) {
   return res;
 }
 
-char *itoa(int value, char *str, int base) {
+char *itoa(int value, char *str, int base)
+{
   char *rc;
   char *ptr;
   char *low;
@@ -116,7 +123,8 @@ char *itoa(int value, char *str, int base) {
   return rc;
 }
 
-int strcmp(const char *input, const char *check) {
+int strcmp(const char *input, const char *check)
+{
   for (int i = 0; input[i] && check[i]; i++) {
     if (input[i] != check[i])
       return 0;
@@ -126,7 +134,8 @@ int strcmp(const char *input, const char *check) {
 }
 
 // Custom function. Count amount of whitespace in a string
-int wspaceamount(char *a) {
+int wspaceamount(char *a)
+{
   int i = 0, count = 0;
 
   while (a[i] != '\0') {
@@ -139,14 +148,16 @@ int wspaceamount(char *a) {
   return count;
 }
 
-int isdigit(int c) {
+int isdigit(int c)
+{
   if (c >= '0' && c <= '9')
     return c;
   else
     return 0;
 }
 
-float atof(const char *s) {
+float atof(const char *s)
+{
   float rez = 0, fact = 1;
   if (*s == '-') {
     s++;

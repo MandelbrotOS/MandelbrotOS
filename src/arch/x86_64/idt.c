@@ -6,7 +6,8 @@
 #include <string.h>
 
 // Set an interrupt to run a function
-void idt_set_entry(idt_entry_t *entry, void (*func)()) {
+void idt_set_entry(idt_entry_t *entry, void (*func)())
+{
   entry->base_low = (uint16_t)(uint64_t)func;
   entry->base_mid = (uint16_t)((uint64_t)func >> 16);
   entry->base_high = (uint32_t)((uint64_t)func >> 32);
@@ -15,7 +16,8 @@ void idt_set_entry(idt_entry_t *entry, void (*func)()) {
 }
 
 // Initialize IDT
-int init_idt() {
+int init_idt()
+{
   __asm__ volatile("cli");
 
   idtp.limit = sizeof(idt) - 1;
