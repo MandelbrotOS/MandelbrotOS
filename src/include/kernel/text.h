@@ -36,7 +36,7 @@ int init_color(int red, int dred, int green, int dgreen, int yellow,
 void putc(char ch, int x, int y, uint32_t foreground_color,
     uint32_t background_color);
 void putchar(char string);
-void puts(const char *string);
+void puts(const char* string);
 void cls();
 
 #endif // !__TEXT_H__

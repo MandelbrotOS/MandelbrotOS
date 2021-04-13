@@ -29,27 +29,27 @@ typedef struct flatfs_data_t flatfs_data_t;
 typedef struct flatfs_header_t flatfs_header_t;
 
 struct flatfs_t {
-  uint64_t root_ptr;
-  uint64_t img_size;
+    uint64_t root_ptr;
+    uint64_t img_size;
 
-  uint16_t flat_sig;
-  uint16_t boot_sig;
+    uint16_t flat_sig;
+    uint16_t boot_sig;
 } __attribute__((packed));
 
 struct flatfs_data_t {
-  char name[460];
+    char name[460];
 
-  uint64_t size;
-  uint64_t atime, mtime, ctime;
-  uint16_t attr;
+    uint64_t size;
+    uint64_t atime, mtime, ctime;
+    uint16_t attr;
 } __attribute__((packed));
 
 struct flatfs_header_t {
-  uint16_t type;
-  flatfs_data_t data;
+    uint16_t type;
+    flatfs_data_t data;
 
-  uint64_t block_cnt;
-  uint64_t next_ptr;
+    uint64_t block_cnt;
+    uint64_t next_ptr;
 } __attribute__((packed));
 
 flatfs_t flatfs_get_fs(device_t device);
@@ -59,9 +59,9 @@ int flatfs_set_header(
 int flatfs_merge(device_t device, uint64_t header_ptr);
 int flatfs_free(device_t device, uint64_t header_ptr);
 uint64_t flatfs_alloc(device_t device, uint64_t block_cnt);
-uint64_t flatfs_find(device_t device, uint64_t dir, const char *name);
-int flatfs_delete(device_t device, uint64_t dir, const char *name);
-int flatfs_read(device_t device, uint64_t header_ptr, uint8_t *buffer);
+uint64_t flatfs_find(device_t device, uint64_t dir, const char* name);
+int flatfs_delete(device_t device, uint64_t dir, const char* name);
+int flatfs_read(device_t device, uint64_t header_ptr, uint8_t* buffer);
 uint64_t flatfs_get_size(device_t device, uint64_t header_ptr);
 
 #endif // !__FLATFS_H__

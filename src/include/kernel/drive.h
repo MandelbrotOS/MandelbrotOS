@@ -7,7 +7,7 @@
 typedef struct drive_t drive_t;
 
 struct drive_t {
-  device_t device;
+    device_t* device;
 };
 
 #endif // !__DRIVE_H__
