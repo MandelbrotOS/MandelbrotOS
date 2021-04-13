@@ -1,0 +1,8 @@
+Language: Cpp
+BasedOnStyle: WebKit
+
+TabWidth: 2
+IndentWidth: 2
+UseTab: Never
+PointerAlignment: Right
+ColumnLimit: 80

@@ -21,8 +21,8 @@ struct device_t {
 
 extern device_t device_list[MAX_DEVICES];
 
-void      device_init(void);
+void device_init(void);
 device_t *device_add(const char *name);
-void      device_remove(device_t *device);
+void device_remove(device_t *device);
 
 #endif // !__DEVICE_H__

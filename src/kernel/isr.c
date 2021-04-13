@@ -37,53 +37,54 @@ extern void isr_31();
 
 // Exception messages
 char *exception_messages[] = {
-    "Division By Zero",
-    "Debug",
-    "Non Maskable Interrupt",
-    "Breakpoint",
-    "Into Detected Overflow",
-    "Out of Bounds",
-    "Invalid Opcode",
-    "Device not Available",
-    "Double Fault",
-    "Coprocessor Segment Overrun",
-    "Bad TSS",
-    "Segment Not Present",
-    "Stack Fault Exception",
-    "General Protection Fault",
-    "Page Fault",
-    "[RESERVED]",
-    "Floating Point Exception",
-    "Alignment Check",
-    "Machine Check",
-    "SIMD Floating Point Exception",
-    "Virtualization Exception",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "[RESERVED]",
-    "Security Exception",
+  "Division By Zero",
+  "Debug",
+  "Non Maskable Interrupt",
+  "Breakpoint",
+  "Into Detected Overflow",
+  "Out of Bounds",
+  "Invalid Opcode",
+  "Device not Available",
+  "Double Fault",
+  "Coprocessor Segment Overrun",
+  "Bad TSS",
+  "Segment Not Present",
+  "Stack Fault Exception",
+  "General Protection Fault",
+  "Page Fault",
+  "[RESERVED]",
+  "Floating Point Exception",
+  "Alignment Check",
+  "Machine Check",
+  "SIMD Floating Point Exception",
+  "Virtualization Exception",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "[RESERVED]",
+  "Security Exception",
 };
 
 // Initializes ISR's
-int init_isr() {
-  idt_set_entry(&idt[ 0], 0, isr_0);
-  idt_set_entry(&idt[ 1], 0, isr_1);
-  idt_set_entry(&idt[ 2], 0, isr_2);
-  idt_set_entry(&idt[ 3], 0, isr_3);
-  idt_set_entry(&idt[ 4], 0, isr_4);
-  idt_set_entry(&idt[ 5], 0, isr_5);
-  idt_set_entry(&idt[ 6], 0, isr_6);
-  idt_set_entry(&idt[ 7], 0, isr_7);
-  idt_set_entry(&idt[ 8], 0, isr_8);
-  idt_set_entry(&idt[ 9], 0, isr_9);
+int init_isr()
+{
+  idt_set_entry(&idt[0], 0, isr_0);
+  idt_set_entry(&idt[1], 0, isr_1);
+  idt_set_entry(&idt[2], 0, isr_2);
+  idt_set_entry(&idt[3], 0, isr_3);
+  idt_set_entry(&idt[4], 0, isr_4);
+  idt_set_entry(&idt[5], 0, isr_5);
+  idt_set_entry(&idt[6], 0, isr_6);
+  idt_set_entry(&idt[7], 0, isr_7);
+  idt_set_entry(&idt[8], 0, isr_8);
+  idt_set_entry(&idt[9], 0, isr_9);
   idt_set_entry(&idt[10], 0, isr_10);
   idt_set_entry(&idt[11], 0, isr_11);
   idt_set_entry(&idt[12], 0, isr_12);
@@ -111,7 +112,9 @@ int init_isr() {
 }
 
 // Run whenever a fult is detected
-void fault_handler(int ex_no) {
+void fault_handler(int ex_no)
+{
   printf("\r\n%s: FAULT!\r\n", exception_messages[ex_no]);
-  for (;;);
+  for (;;)
+    ;
 }

@@ -60,12 +60,12 @@ struct echfs_t {
 };
 
 echfs_t echfs_get_fs(device_t device);
-uint64_t echfs_load_block(device_t device, echfs_t fs, uint8_t *buffer,
-                          uint64_t block);
-echfs_entry_t echfs_find(device_t device, echfs_t fs, uint64_t dir,
-                         const char *name);
-int echfs_read(device_t device, echfs_t fs, echfs_entry_t file,
-               uint8_t *buffer);
+uint64_t echfs_load_block(
+    device_t device, echfs_t fs, uint8_t *buffer, uint64_t block);
+echfs_entry_t echfs_find(
+    device_t device, echfs_t fs, uint64_t dir, const char *name);
+int echfs_read(
+    device_t device, echfs_t fs, echfs_entry_t file, uint8_t *buffer);
 uint64_t echfs_get_size(device_t device, echfs_t fs, echfs_entry_t file);
 
 #endif // !__FS_ECHFS_H__

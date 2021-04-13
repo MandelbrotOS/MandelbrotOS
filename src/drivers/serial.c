@@ -1,17 +1,18 @@
 #include <drivers/serial.h>
+#include <hw.h>
 #include <kernel/device.h>
 #include <mm/heap.h>
 #include <stdint.h>
-#include <hw.h>
-
 
 // Never use this function directly, use device_t.write instead.
-int serial_write(void *device, void *data, uint64_t offset, uint64_t size) {
+int serial_write(void *device, void *data, uint64_t offset, uint64_t size)
+{
   uint16_t port = *((uint16_t *)(device));
   uint8_t *bytes = (uint8_t *)(data);
 
   while (size--) {
-    while (!(inb(port + 5) & 0x20));
+    while (!(inb(port + 5) & 0x20))
+      ;
     outb(port, *bytes++);
   }
 
@@ -19,12 +20,14 @@ int serial_write(void *device, void *data, uint64_t offset, uint64_t size) {
 }
 
 // Never use this function directly, use device_t.read instead.
-int serial_read(void *device, void *data, uint64_t offset, uint64_t size) {
+int serial_read(void *device, void *data, uint64_t offset, uint64_t size)
+{
   uint16_t port = *((uint16_t *)(device));
   uint8_t *bytes = (uint8_t *)(data);
 
   while (size--) {
-    while (!(inb(port + 5) & 0x01));
+    while (!(inb(port + 5) & 0x01))
+      ;
     *bytes++ = inb(port);
   }
 
@@ -32,11 +35,13 @@ int serial_read(void *device, void *data, uint64_t offset, uint64_t size) {
 }
 
 // Never use this function directly, use device_t.get_size instead.
-uint64_t serial_get_size(void *device) {
+uint64_t serial_get_size(void *device)
+{
   return 0; // Serial ports are huge...
 }
 
-int serial_device_init(device_t *device, uint16_t port) {
+int serial_device_init(device_t *device, uint16_t port)
+{
   outb(port + 1, 0x00); // Disable interrupts
   outb(port + 3, 0x80);
   outb(port + 0, 0x01); // Set baud rate to 115200
@@ -48,7 +53,8 @@ int serial_device_init(device_t *device, uint16_t port) {
   outb(port + 0, 0xAE); // ^^^
 
   // Test if the serial port works
-  if(inb(port) != 0xAE) return 1; // Fail
+  if (inb(port) != 0xAE)
+    return 1; // Fail
 
   // Guys, we did it. Now set normal mode
   outb(port + 4, 0x0F);
@@ -65,4 +71,3 @@ int serial_device_init(device_t *device, uint16_t port) {
   // And finally, return!
   return 0; // Success
 }
-

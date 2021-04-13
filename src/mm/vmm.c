@@ -15,7 +15,8 @@
 uint64_t *kernel_map = NULL;
 
 // Get next level of map
-uint64_t *get_next_level(uint64_t *current_level, size_t entry) {
+uint64_t *get_next_level(uint64_t *current_level, size_t entry)
+{
   uint64_t *ret;
 
   if (current_level[entry] & 0x1) {
@@ -30,13 +31,15 @@ uint64_t *get_next_level(uint64_t *current_level, size_t entry) {
 }
 
 // Switch current pagemap
-void vmm_switch_pagemap(uint64_t pagemap) {
+void vmm_switch_pagemap(uint64_t pagemap)
+{
   __asm__ volatile("mov %0, %%cr3" ::"r"(pagemap));
 }
 
 // Map virtual page to physical adress
 void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
-                  uint64_t virtual_address, uintptr_t flags) {
+    uint64_t virtual_address, uintptr_t flags)
+{
   uintptr_t *pml4, *pml3, *pml2, *pml1;
   uintptr_t level4, level3, level2, level1;
 
@@ -54,7 +57,8 @@ void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
 }
 
 // Unmap virtual adress
-void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address) {
+void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address)
+{
   uintptr_t *pml4, *pml3, *pml2, *pml1;
   uintptr_t level4, level3, level2, level1;
 
@@ -72,7 +76,8 @@ void vmm_unmap_page(uint64_t *pagemap, uint64_t virtual_address) {
 }
 
 // Initialize VMM
-int init_vmm() {
+int init_vmm()
+{
   kernel_map = pcalloc(1);
 
   if (kernel_map == NULL)
