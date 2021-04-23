@@ -3,9 +3,15 @@
 #include <kernel/irq.h>
 #include <printf.h>
 #include <stdint.h>
+#include <tasking/tasking.h>
 
 // Amount of milliseconds the system has been running for
-volatile uint64_t timer_ticks;
+
+uint64_t timer_ticks = 0;
+
+void timer_handler() {
+  timer_ticks++;
+}
 
 // Set timer interrupt rate in hertz
 void timer_phase(int hz) {
@@ -14,9 +20,6 @@ void timer_phase(int hz) {
   outb(0x40, divisor & 0xFF);
   outb(0x40, divisor >> 8);
 }
-
-// Increment the timer after every interrupt
-void timer_handler() { timer_ticks++; }
 
 // Sleep for X milliseconds
 void sleep(uint64_t milliseconds) {
@@ -32,5 +35,6 @@ void sleep(uint64_t milliseconds) {
 // Initialize PIT
 void init_pit() {
   timer_phase(1000);
+  /* irq_install_handler(0, switch_process); */
   irq_install_handler(0, timer_handler);
 }

@@ -18,6 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <tasking/tasking.h>
 
 // Kernel entry
 int kernel_main(struct stivale2_struct_t *bootloader_info) {
@@ -53,9 +54,9 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_syscall();
 
-  __asm__ volatile("sti");
-
   init_pit();
+
+  __asm__ volatile("sti");
 
   init_pmm(memory_map->memmap, memory_map->entries);
 
@@ -63,18 +64,21 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
 
-  device_t *serial_out = device_add("tty0");
+  /* printf("Cores = %u\r\n", (unsigned int)smp_info->cpu_count); */
 
-  if (serial_device_init(serial_out, 0x03F8)) {
-    device_remove(serial_out);
-    return 1;
-  }
+  init_tasking(smp_info);
+  /* device_t *serial_out = device_add("tty0"); */
 
-  const char *hello_world = "Hello, world from tty0!\n";
-  serial_out->write(serial_out->device, (void *)hello_world, 0,
-                    strlen(hello_world));
+  /* if (serial_device_init(serial_out, 0x03F8)) { */
+  /* device_remove(serial_out); */
+  /* return 1; */
+  /* } */
 
-  // Call the "nop" syscall, with the name encoded in RAX
-  __asm__ volatile("movq $7368558, %%rax; int $48" ::: "rax");
+  /* const char *hello_world = "Hello, world from tty0!\n"; */
+  /* serial_out->write(serial_out->device, (void *)hello_world, 0, */
+  /* strlen(hello_world)); */
+
+  /* // Call the "nop" syscall, with the name encoded in RAX */
+  /* __asm__ volatile("movq $7368558, %%rax; int $48" ::: "rax"); */
   return 0;
 }
