@@ -5,12 +5,17 @@
 #include <boot/stivale2.h>
 #include <mm/pmm.h>
 
-extern int set_regs(int old_stack, int pointer, int cr3, int new_stack);
+extern void set_regs(uint64_t* pointer, uint64_t* stack);
 extern void ppopa();
 extern void ppusha();
 
-void t1(){
-  printf("Hello I am thread 1\r\n");
+void kidle(){
+  while (1); 
+}
+
+void t2(){
+  while (1)
+    printf("Hello I am thread 2\r\n");
 }
 
 thread_t* current_thread;
@@ -38,29 +43,38 @@ thread_t* create_thread(uint64_t* function_ptr, char* name){
 }
 
 void destroy_thread(thread_t* thread){
-  kfree(thread->frame.registers.rsp);
+  kfree((void *)thread->frame.registers.rsp);
   kfree(thread);
 }
 
 void add_thread(thread_t* to_add){
+  __asm__ volatile("cli");
   to_add->next = current_thread->next;
   to_add->next->prev = to_add;
   to_add->prev = current_thread;
   current_thread->next = to_add;
+  __asm__ volatile("sti");
 }
 
 void schedule(){
-
+  __asm__ volatile("cli");
+  /* ppusha(); */
+  current_thread = current_thread->next;
+  set_regs(current_thread->rip, current_thread->frame.gp_registers);
+  /* ppopa(); */
+  __asm__ volatile("sti");
 }
 
 int init_tasking(struct stivale2_struct_tag_smp_t *smp_info){
-  current_thread = create_thread((uint64_t *)&t1, "Thread1");
+  current_thread = create_thread((uint64_t *)&kidle, "Thread1");
   current_thread->next = current_thread;
   current_thread->prev = current_thread;
 
-  ppusha();
-  set_regs((int*)0xded, (int)current_thread->rip, current_thread->cr3, current_thread->frame.gp_registers);
-  ppopa();
+  /* add_thread(create_thread((uint64_t*)&t2, "Thread 2"));  */
+
+  /* schedule(); */
+
+  printf("Problems have occured!\r\n");
 
   return 0;
 }

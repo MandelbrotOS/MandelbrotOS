@@ -11,6 +11,10 @@ uint64_t timer_ticks = 0;
 
 void timer_handler() {
   timer_ticks++;
+  if ((timer_ticks % 1000) == 0){
+    printf("%u", timer_ticks);
+    schedule();
+  }
 }
 
 // Set timer interrupt rate in hertz

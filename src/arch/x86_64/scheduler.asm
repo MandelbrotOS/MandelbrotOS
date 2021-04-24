@@ -39,9 +39,8 @@ ppopa:
   pop rbx
   pop rax
   ret
-
+  
 set_regs:
-  mov cr3, rdx
-  mov rsp, rcx
-  jmp rsi
+  mov rsp, rsi
+  call rdi
   ret
