@@ -87,7 +87,7 @@ int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
       highest_page = top;
   }
 
-  bitmap_size = ALIGN_UP(highest_page) / 8;
+  bitmap_size = ALIGN_DOWN(highest_page) / PAGE_SIZE / 8;
 
   for (int i = 0; (size_t)i < memory_entries; i++) {
     struct stivale2_mmap_entry_t entry = memory_map[i];
