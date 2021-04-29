@@ -1,11 +1,8 @@
-global get_cs
-global get_flags
 global schedule
 
 extern c_handler
 
 %macro pushaq 0
-  push rsp
   push rax
   push rbx
   push rcx
@@ -39,28 +36,13 @@ extern c_handler
   pop rcx
   pop rbx
   pop rax
-  pop rsp
 %endmacro
 
-get_flags:
-  pushfq
-  pop rax
-  ret
-
 schedule:
-  mov al, 0x20
-  out 0x20, al
-
-  cli
   pushaq
-
+  mov rdi, rsp
   call c_handler
-  
   mov rsp, rax
-
   popaq
-  sti
-  
-  ret
-  ; iretq
+  iretq
 

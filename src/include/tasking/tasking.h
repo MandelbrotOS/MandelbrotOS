@@ -12,13 +12,15 @@ typedef struct thread {
   uint64_t pid;
   uint64_t priority;
 
-  uint64_t *stack;
+  uintptr_t stack;
 
   struct thread *next;
   struct thread *prev;
 } thread_t;
 
+thread_t *current_thread;
+
 int init_tasking(struct stivale2_struct_tag_smp_t *smp_info);
-extern void schedule();
+extern void schedule(uintptr_t stack);
 
 #endif
