@@ -54,9 +54,9 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_syscall();
 
+  printf("PIT coming!\r\n");
   init_pit();
-
-  __asm__ volatile("sti");
+  printf("Done with PIT!\r\n");
 
   init_pmm(memory_map->memmap, memory_map->entries);
 
@@ -66,7 +66,12 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   /* printf("Cores = %u\r\n", (unsigned int)smp_info->cpu_count); */
 
+  printf("Coming up on tasking!\r\n");
   init_tasking(smp_info);
+  printf("Done with tasking!\r\n");
+  
+  __asm__ volatile("sti");
+  printf("Enabled interrupts!\r\n");
   /* device_t *serial_out = device_add("tty0"); */
 
   /* if (serial_device_init(serial_out, 0x03F8)) { */

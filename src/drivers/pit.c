@@ -8,11 +8,10 @@
 // Amount of milliseconds the system has been running for
 
 uint64_t timer_ticks = 0;
-
 void timer_handler() {
+  outb(0x20, 0x20);
   timer_ticks++;
-  if ((timer_ticks % 1000) == 0){
-    printf("%u", timer_ticks);
+  if ((timer_ticks % 1000) == 0) {
     schedule();
   }
 }
@@ -37,8 +36,8 @@ void sleep(uint64_t milliseconds) {
 }
 
 // Initialize PIT
-void init_pit() {
+int init_pit() {
   timer_phase(1000);
-  /* irq_install_handler(0, switch_process); */
   irq_install_handler(0, timer_handler);
+  return 0;
 }

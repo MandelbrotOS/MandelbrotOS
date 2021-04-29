@@ -1,8 +1,11 @@
-global ppusha
-global ppopa
-global set_regs
+global get_cs
+global get_flags
+global schedule
 
-ppusha:
+extern c_handler
+
+%macro pushaq 0
+  push rsp
   push rax
   push rbx
   push rcx
@@ -10,7 +13,6 @@ ppusha:
   push rbp
   push rsi
   push rdi
-  push rsp
   push r8
   push r9
   push r10
@@ -19,9 +21,9 @@ ppusha:
   push r13
   push r14
   push r15
-  ret
+%endmacro
 
-ppopa:
+%macro popaq 0
   pop r15
   pop r14
   pop r13
@@ -30,7 +32,6 @@ ppopa:
   pop r10
   pop r9
   pop r8
-  pop rsp
   pop rdi
   pop rsi
   pop rbp
@@ -38,9 +39,28 @@ ppopa:
   pop rcx
   pop rbx
   pop rax
+  pop rsp
+%endmacro
+
+get_flags:
+  pushfq
+  pop rax
   ret
+
+schedule:
+  mov al, 0x20
+  out 0x20, al
+
+  cli
+  pushaq
+
+  call c_handler
   
-set_regs:
-  mov rsp, rsi
-  call rdi
+  mov rsp, rax
+
+  popaq
+  sti
+  
   ret
+  ; iretq
+

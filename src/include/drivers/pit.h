@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-void init_pit();
+int init_pit();
 void sleep(uint64_t milliseconds);
+void timer_handler();
 
 #endif

@@ -1,6 +1,9 @@
+#include <drivers/pit.h>
 #include <hw.h>
 #include <kernel/idt.h>
 #include <kernel/irq.h>
+
+extern void schedule();
 
 // Table showing whether or not to run handler function
 void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -41,6 +44,7 @@ void irq_remap(void) {
 int init_irq() {
   irq_remap();
 
+  /* idt_set_entry(&idt[32 + 0], 0, schedule); */
   idt_set_entry(&idt[32 + 0], 0, irq_0);
   idt_set_entry(&idt[32 + 1], 0, irq_1);
   idt_set_entry(&idt[32 + 2], 0, irq_2);
