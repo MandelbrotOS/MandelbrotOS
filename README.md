@@ -13,13 +13,13 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 - A filesystem is being developed. ATA is somewhat functional but still needs testing.
 - We have our own fork of limine which can boot from the flatfs.
 
-# Build Requirements (Arch/Manjaro package names)
-- `base-devel`
-- `qemu`
-- `nasm`
-- `xorriso`
-- `mtools`  
-On Debian based distros, replace `base-devel` with `build-essential`.
+# Building 
+
+### Arch/Manjaro
+- `sudo pacman -S base-devel qemu nasm xorriso mtools wget'`
+
+### Debian/Ubuntu
+- `sudo apt-get build-essential install qemu nasm xorriso wget`
 
 # Running
 You'll need to have a cross-compiler and all the tools, build them using `cd scripts && ./build-tools.sh`.
