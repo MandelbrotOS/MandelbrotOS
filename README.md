@@ -19,7 +19,7 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 - `sudo pacman -S base-devel qemu nasm xorriso mtools wget'`
 
 ### Debian/Ubuntu
-- `sudo apt-get build-essential install qemu nasm xorriso wget`
+- `sudo apt-get install build-essential install qemu nasm xorriso wget`
 
 # Running
 You'll need to have a cross-compiler and all the tools, build them using `cd scripts && ./build-tools.sh`.
