@@ -12,7 +12,8 @@ typedef struct thread {
   uint64_t pid;
   uint64_t priority;
 
-  uintptr_t stack;
+  uintptr_t rsp;
+  uintptr_t stack_top;
 
   struct thread *next;
   struct thread *prev;

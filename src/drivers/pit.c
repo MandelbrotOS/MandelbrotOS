@@ -12,7 +12,7 @@ void timer_handler() {
   outb(0x20, 0x20);
   timer_ticks++;
   if ((timer_ticks % 1000) == 0) {
-    schedule(current_thread->stack);
+    schedule(current_thread->rsp);
   }
 }
 

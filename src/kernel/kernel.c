@@ -69,7 +69,7 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
   printf("Coming up on tasking!\r\n");
   init_tasking(smp_info);
   printf("Done with tasking!\r\n");
-  
+
   __asm__ volatile("sti");
   printf("Enabled interrupts!\r\n");
   /* device_t *serial_out = device_add("tty0"); */

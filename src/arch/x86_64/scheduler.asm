@@ -44,5 +44,5 @@ schedule:
   call c_handler
   mov rsp, rax
   popaq
-  iretq
+  ret
 

@@ -5,6 +5,8 @@
 #include <string.h>
 #include <tasking/tasking.h>
 
+uint64_t lpid = 0;
+
 void kidle() {
   while (1)
     printf("Hello I am thread 1\r\n");
@@ -25,33 +27,31 @@ thread_t *create_thread(uint64_t *function_ptr, char *name) {
   if (!new_thread)
     return NULL;
 
-  new_thread->stack = (uintptr_t)kmalloc(THREAD_STACK_SIZE);
-  
-  if (!new_thread->stack) {
+  new_thread->rsp = (uintptr_t)kmalloc(THREAD_STACK_SIZE);
+  if (!new_thread->rsp) {
     kfree(new_thread);
     return NULL;
   }
 
-  memset((void*)new_thread->stack - THREAD_STACK_SIZE, 0, THREAD_STACK_SIZE);
+  memset((void*)new_thread->rsp - THREAD_STACK_SIZE, 0, THREAD_STACK_SIZE);
+  new_thread->rsp -= sizeof(uint64_t);
+  *((uint64_t *)(new_thread->rsp)) = THREAD_FLAGS;
+  new_thread->rsp -= sizeof(uint64_t);
+  *((uint64_t *)(new_thread->rsp)) = USERSPACE_CODE_SEGMENT;
+  new_thread->rsp -= sizeof(uint64_t);
+  *((uint64_t *)(new_thread->rsp)) = function_ptr;
+  new_thread->rsp -= sizeof(uint64_t) * REGISTER_COUNT;
 
-  new_thread->stack -= sizeof(uint64_t);
-  *((uint64_t *)(new_thread->stack)) = THREAD_FLAGS;
-  new_thread->stack -= sizeof(uint64_t);
-  *((uint64_t *)(new_thread->stack)) = USERSPACE_CODE_SEGMENT;
-  new_thread->stack -= sizeof(uint64_t);
-  *((uint64_t *)(new_thread->stack)) = function_ptr;
-  new_thread->stack -= sizeof(uint64_t);
-  *((uint64_t *)(new_thread->stack)) = new_thread->stack;
-
-  new_thread->stack -= sizeof(uint64_t) * REGISTER_COUNT;
-  
   new_thread->name = name;
+  new_thread->pid = lpid++;
+
+  printf("The current thread rip = %jx\r\n", function_ptr);
 
   return new_thread;
 }
 
 void destroy_thread(thread_t *thread) {
-  kfree((void *)thread->stack);
+  kfree((void *)thread->rsp);
   kfree(thread);
 }
 
@@ -67,7 +67,8 @@ void add_thread(thread_t *to_add) {
 uintptr_t c_handler() {
   current_thread = current_thread->next;
   printf("Set the current thread\r\n");
-  return current_thread->stack;
+  printf("stack = %jx\r\n", current_thread->rsp);
+  return current_thread->rsp;
 }
 
 int init_tasking(struct stivale2_struct_tag_smp_t *smp_info) {
@@ -75,7 +76,7 @@ int init_tasking(struct stivale2_struct_tag_smp_t *smp_info) {
   current_thread->next = current_thread;
   current_thread->prev = current_thread;
 
-  add_thread(create_thread((uint64_t*)&t2, "Thread2"));
+  add_thread(create_thread((uint64_t *)&t2, "Thread2"));
 
   printf("Problems have occured!\r\n");
 
