@@ -27,3 +27,4 @@ build/
 echfs/
 limine/
 build/
+src/acpi/lai/*
