@@ -1,6 +1,7 @@
 #ifndef __ACPI__
 #define __ACPI__
 
+#include <stddef.h>
 #include <boot/stivale2.h>
 
 struct acpi_rsdp {
@@ -39,7 +40,22 @@ struct acpi_xsdt {
   uint64_t entries[];
 } __attribute__((__packed__));
 
+struct acpi_mcfg_entry {
+  uint64_t base;
+  uint16_t segment_number;
+  uint8_t start_pci_bus;
+  uint8_t end_pci_bus;
+  uint32_t reserved;
+} __attribute__((__packed__));
+
+struct acpi_mcfg {
+  struct acpi_sdt header;
+  uint64_t reserved;
+  struct acpi_mcfg_entry entries[];
+} __attribute__((__packed__));
+
 void init_acpi(struct stivale2_struct_tag_rsdp_t *rsdp);
-void *acpi_get_table(const char *signature);
+void *acpi_get_table(const char *signature, size_t index); // index == -1: any
+void *acpi_mcfg_get_seg_addr(uint16_t segment);
 
 #endif // !__ACPI__
