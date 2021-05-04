@@ -24,6 +24,8 @@ CFLAGS := \
 	-Wextra \
 	-lm \
 	-std=gnu99 \
+	-Isrc/acpi/lai/include \
+	-Isrc
 
 LDFLAGS := \
 	-static \
