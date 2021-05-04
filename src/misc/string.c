@@ -183,3 +183,15 @@ uint64_t str_to_u64(const char *str) {
 
   return val;
 }
+
+int strncmp(const char *s1, const char *s2, size_t n) {
+  n--;
+  while (*s1 && (*s1 == *s2)) {
+      s1++;
+      s2++;
+      if (!--n) {
+          break;
+      }
+  }
+  return (int) (*(const unsigned char *) s1 - *(const unsigned char *) s2);
+}

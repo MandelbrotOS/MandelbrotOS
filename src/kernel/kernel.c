@@ -1,3 +1,4 @@
+#include <acpi/acpi.h>
 #include <boot/stivale2.h>
 #include <drivers/ata.h>
 #include <drivers/pit.h>
@@ -33,6 +34,10 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
       (struct stivale2_struct_tag_smp_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
 
+  struct stivale2_struct_tag_rsdp_t *rsdp_info =
+      (struct stivale2_struct_tag_rsdp_t *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_RSDP_ID);
+
   if (!(framebuffer_info && memory_map))
     return 1;
 
@@ -62,6 +67,8 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
   init_vmm();
 
   init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
+
+  init_acpi(rsdp_info);
 
   device_t *serial_out = device_add("tty0");
 
