@@ -27,6 +27,7 @@ void init_acpi(struct stivale2_struct_tag_rsdp_t *rsdp) {
     printf("acpi: error: mcfg table not found. if using qemu, did you set the -machine q35 flag?\nHalting.");
     asm volatile("1:\n\tcli\n\thlt\n\tjmp 1b");
   }
+  lai_init((int) rsdp_->revision);
 }
 
 void *acpi_get_table(const char *signature, size_t index) {
