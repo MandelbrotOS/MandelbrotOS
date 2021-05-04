@@ -5,8 +5,30 @@
 #include <stdint.h>
 #include <string.h>
 
-void *memset(void *b, int c, int len) {
+inline void *memset(void *b, int c, size_t len) {
   unsigned char *p = b;
+
+  // Fast memset. We do not use this trick on very
+  // small stuff because it is not worth it :')
+  if(len > sizeof(uintptr_t) * 4) {
+    size_t flen = len / sizeof(uintptr_t);
+    len %= sizeof(uintptr_t);
+
+    // Compose a "big" integer to copy as-is
+    uintptr_t fast_c = 0;
+    for (size_t i = 0; i < sizeof(uintptr_t); i++) {
+      fast_c |= c & 0xff;
+      fast_c <<= 8;
+    }
+
+    uintptr_t * fp = (uintptr_t *)p;
+    while (flen > 0) {
+      *fp = fast_c;
+      fp++;
+      flen--;
+    }
+  }
+
   while (len > 0) {
     *p = c;
     p++;
@@ -15,17 +37,32 @@ void *memset(void *b, int c, int len) {
   return (b);
 }
 
-void memcpy(void *dest, void *src, size_t n) {
+inline void memcpy(void *dest, void *src, size_t n) {
   // Typecast src and dest addresses to (char *)
   char *csrc = (char *)src;
   char *cdest = (char *)dest;
 
-  // Copy contents of src[] to dest[]
-  for (int i = 0; i < (int)n; i++)
-    cdest[i] = csrc[i];
+  // We use a very fast copy-paste onto the dest to speed things up
+  uintptr_t * fast_src = (uintptr_t *)src;
+  uintptr_t * fast_dest = (uintptr_t *)dest;
+
+  size_t i = n / sizeof(uintptr_t);
+  while (i != 0) {
+    *fast_dest = *fast_src;
+    fast_dest++;
+    fast_src++;
+  }
+
+  // Remainder is copied as-bytes
+  size_t j = n % sizeof(uintptr_t);
+  while (j != 0) {
+    *cdest = *csrc;
+    cdest++;
+    csrc++;
+  }
 }
 
-unsigned int strlen(const char *s) {
+inline unsigned int strlen(const char *s) {
   unsigned int count = 0;
   while (*s != '\0') {
     count++;
@@ -34,7 +71,7 @@ unsigned int strlen(const char *s) {
   return count;
 }
 
-char *strcat(char *s1, const char *s2) {
+inline char *strcat(char *s1, const char *s2) {
   // Pointer should not null pointer
   if ((s1 == NULL) && (s2 == NULL))
     return NULL;
@@ -54,7 +91,7 @@ char *strcat(char *s1, const char *s2) {
   return s1;
 }
 
-char *strcpy(char *destination, const char *source) {
+inline char *strcpy(char *destination, const char *source) {
   if (destination == NULL)
     return NULL;
 
@@ -71,7 +108,7 @@ char *strcpy(char *destination, const char *source) {
   return ptr;
 }
 
-int atoi(char *str) {
+inline int atoi(char *str) {
   int res = 0;
 
   for (int i = 0; str[i] != '\0'; ++i) {
@@ -81,7 +118,7 @@ int atoi(char *str) {
   return res;
 }
 
-char *itoa(int value, char *str, int base) {
+char *itoa(int value, char *str, size_t base) {
   char *rc;
   char *ptr;
   char *low;
@@ -116,17 +153,16 @@ char *itoa(int value, char *str, int base) {
   return rc;
 }
 
-int strcmp(const char *input, const char *check) {
+inline int strcmp(const char *input, const char *check) {
   for (int i = 0; input[i] && check[i]; i++) {
     if (input[i] != check[i])
       return 0;
   }
-
   return 1;
 }
 
 // Custom function. Count amount of whitespace in a string
-int wspaceamount(char *a) {
+inline int wspaceamount(char *a) {
   int i = 0, count = 0;
 
   while (a[i] != '\0') {
@@ -139,7 +175,7 @@ int wspaceamount(char *a) {
   return count;
 }
 
-int isdigit(int c) {
+inline int isdigit(int c) {
   if (c >= '0' && c <= '9')
     return c;
   else
@@ -169,8 +205,9 @@ float atof(const char *s) {
 
 uint64_t str_to_u64(const char *str) {
   uint64_t val = 0;
+  size_t i, j;
 
-  for (int i = 0; i < strlen(str); i++) {
+  for (i = 0, j = strlen(str); i < j; i++) {
     if (i >= 8)
       break; // Limit to 8 characters
 

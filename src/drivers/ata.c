@@ -157,6 +157,5 @@ int ata_pio_device_init(device_t *device, uint16_t base_port,
 
   ata_device->base_port = base_port;
   ata_device->base_control_port = base_control_port;
-
   return 0; // Success
 }
