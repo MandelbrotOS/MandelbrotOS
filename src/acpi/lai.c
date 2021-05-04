@@ -24,7 +24,8 @@ void laihost_log(int level, const char *msg) {
 }
 
 void laihost_panic(const char *msg) {
-    
+  printf("lai: panic: %s\nHalting.", msg);
+  asm volatile("1:\n\tcli\n\thlt\n\tjmp 1b");
 }
 
 void *laihost_malloc(size_t size) {
