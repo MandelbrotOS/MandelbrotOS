@@ -31,20 +31,21 @@ void *laihost_malloc(size_t size) {
   return kmalloc(size);
 }
 
-void *laihost_realloc(void *old, size_t size) {
-  void *new = kmalloc(size);
-  memcpy(new, old, size);
+void *laihost_realloc(void *old, size_t newsize, size_t oldsize) {
+  void *new = kmalloc(newsize);
+  memcpy(new, old, oldsize);
   kfree(old);
   return new;
 }
 
-void laihost_free(void *base) {
+void laihost_free(void *base, size_t size) {
+  (void) size;
   kfree(base);
 }
 
-void *laihost_map(void *base, size_t size) {
+void *laihost_map(size_t base, size_t size) {
   (void) size;
-  return (void *) ((uintptr_t) base + 0xffff800000000000);
+  return (void *) (base + 0xffff800000000000);
 }
 
 void laihost_unmap(void *pointer, size_t count) {
@@ -52,7 +53,7 @@ void laihost_unmap(void *pointer, size_t count) {
   (void) count;
 }
 
-void *laihost_scan(char *sig, size_t index) {
+void *laihost_scan(const char *sig, size_t index) {
   return acpi_get_table(sig, index);
 }
 

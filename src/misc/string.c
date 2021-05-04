@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
-void *memset(void *b, int c, int len) {
+void *memset(void *b, int c, size_t len) {
   unsigned char *p = b;
   while (len > 0) {
     *p = c;
@@ -15,7 +15,8 @@ void *memset(void *b, int c, int len) {
   return (b);
 }
 
-void memcpy(void *dest, void *src, size_t n) {
+void *memcpy(void *dest, const void *src, size_t n) {
+  void *dest_ = dest;
   // Typecast src and dest addresses to (char *)
   char *csrc = (char *)src;
   char *cdest = (char *)dest;
@@ -23,6 +24,7 @@ void memcpy(void *dest, void *src, size_t n) {
   // Copy contents of src[] to dest[]
   for (int i = 0; i < (int)n; i++)
     cdest[i] = csrc[i];
+  return dest_;
 }
 
 unsigned int strlen(const char *s) {
