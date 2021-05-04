@@ -1,8 +1,9 @@
 KVM = 0
 
-LD = ld
-CC = gcc
+LD = cross/bin/x86_64-elf-ld
+CC = cross/bin/x86_64-elf-gcc
 AS = nasm
+LIBGCC = cross/lib/gcc/x86_64-elf/9.2.0/libgcc.a
 
 ifeq ($(KVM), 1)
 	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -enable-kvm -smp 2
@@ -16,14 +17,13 @@ KERNEL = mandelbrotos.elf
 ASFLAGS = -f elf64
 
 CFLAGS := \
+	-mcmodel=kernel \
 	-ffreestanding \
 	-Isrc/include \
 	-Wall \
 	-Wextra \
-	-Wshadow \
 	-lm \
 	-std=gnu99 \
-	-m64
 
 LDFLAGS := \
 	-static \
