@@ -16,14 +16,38 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 # Build Requirements
 
 ### Arch/Manjaro
-- `sudo pacman -S base-devel qemu nasm xorriso mtools wget'`
+- `sudo pacman -S base-devel qemu nasm xorriso mtools wget`
 
 ### Debian/Ubuntu
-- `sudo apt-get install build-essential qemu nasm xorriso wget`
+- `sudo apt-get install build-essential qemu nasm xorriso wget mtools uuid-dev parted`
 
-# Running
-You'll need to have a cross-compiler and all the tools, build them using `cd scripts && ./build-tools.sh`.
-Run `make` to compile the OS and run it in `qemu` (needs `qemu-system-x86_64`) or just `RUN=1 make` to compile it
+# Building the Toolchain
+Mandelbrot depends on some tools, like `limine-install`, `echfs-utils` and the GNU Toolchain. To build these, make sure you're in the root of the repository, and run
+
+```
+$ ./scripts/build-tools.sh
+```
+
+This will take a while. After it's done, you can head over to [Building and Running](#building-and-running).
+
+# Building and Running
+To build the OS itself, make sure you have [built the toolchain](#building-the-toolchain). After that, you can
+
+```
+$ make
+```
+
+to build. If you want to run, you can either do
+
+```
+$ make qemu
+```
+
+or have the `RUN` environment variable set to 1, like so
+
+```
+$ RUN=1 make
+```
 
 # Using
 By default the OS does nothing as we don't have a userland but stuff can be added to the kernel for testing purposes. There will often be remaining test code that is left over.
@@ -31,7 +55,7 @@ By default the OS does nothing as we don't have a userland but stuff can be adde
 # Commiting
 We code using GCC so any clang standards that may affect GCC will be ignored.   
 We also format our code in clang format so make sure to clang format the code before commiting.  
-We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding.  
+We code in gnu99 standards. So this is C99 with GNU extensions. It is automatically set in the makefile. Just beware of that when coding.
 When returning an error code from a function: make sure that returning 0 is success code. All other return codes are errors/failures and can be used to show what went wrong
 Name variables in snake case (`uint64_t name_of_var`)  
 Give types \_t's (`typedef long int name_of_type_t`). Make sure this is in snake case too!  
