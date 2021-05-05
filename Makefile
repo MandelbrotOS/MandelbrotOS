@@ -31,6 +31,7 @@ LDFLAGS := \
 	-static \
 	-no-pie \
 	-Tresources/linker.ld \
+	-Lcross/lib/gcc/x86_64-elf/9.2.0/\
 	-lgcc \
 	-nostdlib
 
