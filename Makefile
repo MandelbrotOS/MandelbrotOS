@@ -19,7 +19,7 @@ CFLAGS := \
 	-mcmodel=kernel \
 	-ffreestanding \
 	-fno-pie \
-	-O3 \
+	-O2 \
 	-s \
 	-Isrc/include \
 	-Wall \
