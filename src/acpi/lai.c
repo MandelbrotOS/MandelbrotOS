@@ -2,7 +2,7 @@
 #include <printf.h>
 #include <string.h>
 #include <acpi/acpi.h>
-#include <drivers/pci.h>
+#include <drivers/pcie.h>
 #include <mm/heap.h>
 #include <mm/vmm.h>
 
@@ -23,9 +23,15 @@ void laihost_log(int level, const char *msg) {
   }
 }
 
-void laihost_panic(const char *msg) {
+__attribute__((__noreturn__)) void laihost_panic(const char *msg) {
   printf("lai: panic: %s\nHalting.", msg);
-  asm volatile("1:\n\tcli\n\thlt\n\tjmp 1b");
+    __asm__ __volatile__(
+    "1:\n\t"
+    "cli\n\t"
+    "hlt\n\t"
+    "jmp 1b"
+  );
+  __builtin_unreachable();
 }
 
 void *laihost_malloc(size_t size) {
@@ -83,42 +89,31 @@ uint32_t laihost_ind(uint16_t port) {
 }
 
 void laihost_pci_writeb(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset, uint8_t val) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  *((volatile uint8_t *) segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset) = val;
+  pcie_writeb(seg, bus, slot, fun, offset, val);
 }
 
 void laihost_pci_writew(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset, uint16_t val) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  *((volatile uint16_t *) (segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset)) = val;
+  pcie_writew(seg, bus, slot, fun, offset, val);
 }
 
 void laihost_pci_writed(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset, uint32_t val) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  *((volatile uint32_t *) (segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset)) = val;
+  pcie_writed(seg, bus, slot, fun, offset, val);
 }
 
 uint8_t laihost_pci_readb(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  return *((volatile uint8_t *) segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset);
+  return pcie_readb(seg, bus, slot, fun, offset);
 }
 
 uint16_t laihost_pci_readw(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  return *((volatile uint16_t *) segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset);
+  return pcie_readw(seg, bus, slot, fun, offset);
 }
 
 uint32_t laihost_pci_readd(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun, uint16_t offset) {
-  uintptr_t segment_base = (uintptr_t) acpi_mcfg_get_seg_addr(seg);
-  return *((volatile uint32_t *) segment_base + (((bus * 256) + (slot * 8) + fun) * 4096) + offset);
+  return pcie_readd(seg, bus, slot, fun, offset);
 }
 
 void laihost_sleep(uint64_t ms) {
   for (size_t i = 0; i < ms * 1000; i++) {
     inb(0x80);
   }
-}
-
-void laihost_handle_amldebug(lai_variable_t *var) {
-  (void) var;
-  return;
 }

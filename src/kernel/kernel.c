@@ -1,6 +1,7 @@
 #include <acpi/acpi.h>
 #include <boot/stivale2.h>
 #include <drivers/ata.h>
+#include <drivers/pcie.h>
 #include <drivers/pit.h>
 #include <drivers/serial.h>
 #include <font.h>
@@ -69,6 +70,8 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
   init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
 
   init_acpi(rsdp_info);
+
+  init_pcie();
 
   device_t *serial_out = device_add("tty0");
 
