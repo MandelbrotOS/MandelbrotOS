@@ -1,9 +1,8 @@
 KVM = 0
 
-LD = cross/bin/x86_64-elf-ld
-CC = cross/bin/x86_64-elf-gcc
+LD = ld
+CC = gcc
 AS = nasm
-LIBGCC = cross/lib/gcc/x86_64-elf/9.2.0/libgcc.a
 
 ifeq ($(KVM), 1)
 	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -enable-kvm -smp 2
@@ -19,6 +18,9 @@ ASFLAGS = -f elf64
 CFLAGS := \
 	-mcmodel=kernel \
 	-ffreestanding \
+	-fno-pie \
+	-O3 \
+	-s \
 	-Isrc/include \
 	-Wall \
 	-Wextra \
@@ -29,6 +31,7 @@ LDFLAGS := \
 	-static \
 	-no-pie \
 	-Tresources/linker.ld \
+	-lgcc \
 	-nostdlib
 
 CFILES := $(shell find src/ -name '*.c')
@@ -61,7 +64,7 @@ $(OS): $(KERNEL)
 	@ echo "[LIMINE] Install"
 	@ limine-install $@
 
-$(KERNEL): $(OFILES) $(LIBGCC)
+$(KERNEL): $(OFILES)
 	@ echo "[LD] $^"
 	@ $(LD) $(LDFLAGS) $^ -o $@
 
