@@ -16,7 +16,7 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 # Build Requirements
 
 ### Arch/Manjaro
-- `sudo pacman -S base-devel qemu nasm xorriso mtools wget'`
+- `sudo pacman -S base-devel qemu nasm xorriso mtools wget`
 
 ### Debian/Ubuntu
 - `sudo apt-get install build-essential qemu nasm xorriso wget`
