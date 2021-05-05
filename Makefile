@@ -1,7 +1,7 @@
 KVM = 0
 
-LD = ld
-CC = gcc
+LD = cross/bin/x86_64-elf-ld
+CC = cross/bin/x86_64-elf-gcc
 AS = nasm
 
 ifeq ($(KVM), 1)
