@@ -9,9 +9,9 @@ ECHFS_UTILS=echfs/echfs-utils
 LIMINE_INSTALL=limine/bin/limine-install
 
 ifeq ($(KVM), 1)
-	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -enable-kvm -smp 2
+	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -enable-kvm -smp 2 -machine q35
 else
-	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -smp 2
+	QEMU = qemu-system-x86_64 -hda $(OS) -serial stdio -smp 2 -machine q35
 endif
 
 OS = mandelbrotos.hdd

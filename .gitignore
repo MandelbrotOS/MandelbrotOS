@@ -20,6 +20,9 @@ bochs.log
 *.map
 *.hdd
 
+# Not our stuff
+src/acpi/lai/
+
 # Binary bootloader files
 resources/limine.sys 
 

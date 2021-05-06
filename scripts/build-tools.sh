@@ -17,4 +17,7 @@ exitfail
 ./scripts/build-limine-install.sh
 exitfail
 
+./scripts/get-lai.sh
+exitfail
+
 rm -rf cross/build

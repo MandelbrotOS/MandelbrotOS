@@ -10,7 +10,7 @@ void *memset(void *b, int c, size_t len);
 unsigned int strlen(const char *s);
 char *strcat(char *s1, const char *s2);
 char *strcpy(char *destination, const char *source);
-char *itoa(int value, char *str, size_t base);
+char *itoa(int value, char *str, int base);
 int atoi(char *str);
 int strcmp(const char *input, const char *check);
 char tolower(char ch);
