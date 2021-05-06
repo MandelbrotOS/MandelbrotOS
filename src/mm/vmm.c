@@ -63,10 +63,6 @@ void vmm_unmap_page(uint64_t *pagemap, uintptr_t virtual_address) {
 // Initialize VMM
 int init_vmm() {
   kernel_map = (uint64_t *) pcalloc(1);
-  if (!kernel_map) {
-    printf("bruh\n\r");
-    for (;;) {}
-  }
 
   for (uintptr_t i = 0; i < 0x80000000; i += PAGE_SIZE) {
     vmm_map_page(kernel_map, i, i + KERNEL_MEM_OFFSET, 0b11);
