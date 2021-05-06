@@ -65,7 +65,7 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_vmm();
 
-  init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE) + PHYS_MEM_OFFSET, HEAP_SIZE);
+  init_heap();
 
   init_acpi(rsdp_info);
 

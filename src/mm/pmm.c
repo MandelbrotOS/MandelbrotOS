@@ -19,26 +19,26 @@ static uintptr_t highest_page = 0;
 static uint8_t *bitmap;
 
 // Free page at adress
-void free_page(void *adr) {
+static void free_page(void *adr) {
   size_t index = (size_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_CLEAR(index);
 }
 
 // Reserve page at adress
-void reserve_page(void *adr) {
+static void reserve_page(void *adr) {
   size_t index = (size_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_SET(index);
 }
 
 // Free x amount of pages at adress
-void free_pages(void *adr, size_t page_count) {
+static void free_pages(void *adr, size_t page_count) {
   for (size_t i = 0; i < page_count; i++) {
     free_page((void *)(adr + (i * PAGE_SIZE)));
   }
 }
 
 // Reserve x amount of pages at adress
-void reserve_pages(void *adr, size_t page_count) {
+static void reserve_pages(void *adr, size_t page_count) {
   for (size_t i = 0; i < page_count; i++) {
     reserve_page((void *)(adr + (i * PAGE_SIZE)));
   }
@@ -74,6 +74,11 @@ void *pcalloc(size_t pages) {
   return (void *)p;
 }
 
+// Free pages
+void *pfree(void *base, size_t pages) {
+  free_pages(base, pages);
+}
+
 // Init physical memory management
 int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
   uintptr_t top;
@@ -103,7 +108,7 @@ int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
       continue;
 
     if (entry->length >= bitmap_size) {
-      bitmap = (uint8_t *)entry->base + PHYS_MEM_OFFSET;
+      bitmap = (uint8_t *) (entry->base + PHYS_MEM_OFFSET);
       entry->base += bitmap_size;
       entry->length -= bitmap_size;
       break;

@@ -25,7 +25,8 @@ void lai_init(int revision) {
 // Plugs for LAI
 void laihost_log(int level, const char *msg) {
   if (level == LAI_DEBUG_LOG) {
-    printf("\nlai: debug: %s\r\n", msg);
+    return;
+    // printf("\nlai: debug: %s\r\n", msg);
   } else if (level == LAI_WARN_LOG) {
     printf("\nlai: warn: %s\r\n", msg);
   } else {
@@ -44,10 +45,20 @@ void *laihost_malloc(size_t size) {
 }
 
 void *laihost_realloc(void *old, size_t newsize, size_t oldsize) {
-  void *new = kmalloc(newsize);
-  memcpy(new, old, oldsize);
-  kfree(old);
-  return new;
+  if (!oldsize) {
+    return kmalloc(newsize);
+  }
+  if (!newsize) {
+    kfree(old);
+    return NULL;
+  }
+  void *ret = kmalloc(newsize);
+  if (!ret) {
+    printf("laihost: panic: could not alloc for realloc\r\n");
+    HALT();
+  }
+  memcpy(ret, old, oldsize);
+  return ret;
 }
 
 void laihost_free(void *base, size_t size) {
