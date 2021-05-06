@@ -58,6 +58,7 @@ void *laihost_realloc(void *old, size_t newsize, size_t oldsize) {
     HALT();
   }
   memcpy(ret, old, oldsize);
+  kfree(old);
   return ret;
 }
 
