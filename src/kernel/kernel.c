@@ -59,8 +59,6 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_syscall();
 
-  __asm__ volatile("sti");
-
   init_pit();
 
   init_pmm(memory_map->memmap, memory_map->entries);
@@ -69,9 +67,13 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
 
-  init_acpi(rsdp_info);
+  __asm__ volatile("sti");
 
   init_pcie();
+
+  init_acpi(rsdp_info);
+
+  printf("yes\r\n");
 
   device_t *serial_out = device_add("tty0");
 

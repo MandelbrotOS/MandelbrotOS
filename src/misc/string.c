@@ -6,13 +6,11 @@
 #include <string.h>
 
 void *memset(void *b, int c, size_t len) {
-  unsigned char *p = b;
-  while (len > 0) {
-    *p = c;
-    p++;
-    len--;
+  uint8_t *b_uint8 = (uint8_t *) b;
+  for (size_t i = 0; i < len; i++) {
+    b_uint8[i] = (uint8_t) c;
   }
-  return (b);
+  return b;
 }
 
 void *memcpy(void *dest, const void *src, size_t n) {

@@ -1,3 +1,4 @@
+#include <halt.h>
 #include <kernel/idt.h>
 #include <kernel/isr.h>
 
@@ -113,6 +114,5 @@ int init_isr() {
 // Run whenever a fult is detected
 void fault_handler(int ex_no) {
   printf("\r\n%s: FAULT!\r\n", exception_messages[ex_no]);
-  for (;;)
-    ;
+  HALT();
 }

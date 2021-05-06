@@ -29,7 +29,7 @@ static void *pcie_get_device_addr(uint16_t segment, uint8_t bus, uint8_t slot, u
 void init_pcie() {
   mcfg = acpi_get_table("MCFG", -1);
   if (!mcfg) {
-    printf("pcie: panic: MCFG table not found. If using QEMU, did you use the -machine q35 flag? Halting.");
+    printf("pcie: panic: MCFG table not found.\r\nIf using QEMU, did you use the -machine q35 flag?\r\nHalting.");
     HALT();
   }
 }

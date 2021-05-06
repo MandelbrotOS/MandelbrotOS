@@ -3,28 +3,37 @@
 #include <string.h>
 #include <acpi/acpi.h>
 #include <drivers/pcie.h>
+#include <kernel/irq.h>
 #include <mm/heap.h>
 #include <mm/vmm.h>
 
 #include <lai/core.h>
 #include <lai/host.h>
+#include <lai/helpers/sci.h>
 
 void lai_init(int revision) {
+  // get the fadt, its header contains the acpi revision
+  struct acpi_fadt *fadt = (struct acpi_fadt *) acpi_get_table("FACP", -1);
+  lai_create_namespace();
   lai_set_acpi_revision(revision);
+  // now install a SCI handler
+  irq_install_handler((int) fadt->sci_int, acpi_sci_handler);
+  lai_enable_acpi(0); // 0 if using the PIC, 1: using the APIC
 }
 
+// Plugs for LAI
 void laihost_log(int level, const char *msg) {
   if (level == LAI_DEBUG_LOG) {
-    printf("\nlai: debug: %s\n", msg);
+    printf("\nlai: debug: %s\r\n", msg);
   } else if (level == LAI_WARN_LOG) {
-    printf("\nlai: warn: %s\n", msg);
+    printf("\nlai: warn: %s\r\n", msg);
   } else {
-    printf("\nlai: ?: %s\n", msg);
+    printf("\nlai: ?: %s\r\n", msg);
   }
 }
 
 __attribute__((__noreturn__)) void laihost_panic(const char *msg) {
-  printf("lai: panic: %s\nHalting.", msg);
+  printf("lai: panic: %s\r\nHalting.", msg);
     __asm__ __volatile__(
     "1:\n\t"
     "cli\n\t"
@@ -50,7 +59,7 @@ void laihost_free(void *base, size_t size) {
   kfree(base);
 }
 
-void *laihost_map(size_t base, size_t size) {
+void *laihost_map(uintptr_t base, size_t size) {
   (void) size;
   return (void *) (base + 0xffff800000000000);
 }
