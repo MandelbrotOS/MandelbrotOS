@@ -32,9 +32,14 @@ int serial_read(void *device, void *data, uint64_t offset, uint64_t size) {
   return 0; // Success
 }
 
+int serial_lseek(void *device, long int whence, long int offset) {
+  // Serials are not seek-able
+  return 0;
+}
+
 // Never use this function directly, use device_t.get_size instead.
 uint64_t serial_get_size(void *device) {
-  return 0; // Serial ports are huge...
+  return 1; // Serial ports are huge...
 }
 
 int serial_device_init(device_t *device, uint16_t port) {

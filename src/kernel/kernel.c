@@ -64,7 +64,6 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
   init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
 
   device_t *serial_out = device_add("tty0");
-
   if (serial_device_init(serial_out, 0x03F8)) {
     device_remove(serial_out);
     return 1;
