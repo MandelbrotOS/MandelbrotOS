@@ -1,5 +1,7 @@
+#include <acpi/acpi.h>
 #include <boot/stivale2.h>
 #include <drivers/ata.h>
+#include <drivers/pcie.h>
 #include <drivers/pit.h>
 #include <drivers/serial.h>
 #include <font.h>
@@ -33,10 +35,14 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
       (struct stivale2_struct_tag_smp_t *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
 
+  struct stivale2_struct_tag_rsdp_t *rsdp_info =
+      (struct stivale2_struct_tag_rsdp_t *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_RSDP_ID);
+
   if (!(framebuffer_info && memory_map))
     return 1;
 
-  init_fb((void *)framebuffer_info->framebuffer_addr,
+  init_fb((void *)framebuffer_info->framebuffer_addr + PHYS_MEM_OFFSET,
           framebuffer_info->framebuffer_width,
           framebuffer_info->framebuffer_height);
   init_color(0xff0000, 0x990000, 0x00ff00, 0x009900, 0xffff00, 0x999900,
@@ -45,15 +51,13 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_text(5);
 
-  init_idt();
-
   init_isr();
 
   init_irq();
 
-  init_syscall();
+  init_idt();
 
-  __asm__ volatile("sti");
+  init_syscall();
 
   init_pit();
 
@@ -61,7 +65,17 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   init_vmm();
 
-  init_heap(pmalloc((HEAP_SIZE + PAGE_SIZE - 1) / PAGE_SIZE), HEAP_SIZE);
+  init_heap();
+
+  init_acpi(rsdp_info);
+
+  init_pcie();
+
+  lai_init(rsdp_revision);
+
+  printf("\n\rLAI initialized successfully!\r\n");
+
+  __asm__ __volatile__("sti");
 
   device_t *serial_out = device_add("tty0");
   if (serial_device_init(serial_out, 0x03F8)) {

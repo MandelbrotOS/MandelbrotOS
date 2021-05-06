@@ -220,3 +220,29 @@ uint64_t str_to_u64(const char *str) {
 
   return val;
 }
+
+int memcmp(const void *s1, const void *s2, size_t n) {
+  const uint8_t *s1_ = (const uint8_t *) s1;
+  const uint8_t *s2_ = (const uint8_t *) s2;
+  n--;
+  while (*s1_ && (*s1_ == *s2_)) {
+      s1_++;
+      s2_++;
+      if (!--n) {
+          break;
+      }
+  }
+  return (int) (*(const unsigned char *) s1_ - *(const unsigned char *) s2_);
+}
+
+int strncmp(const char *s1, const char *s2, size_t n) {
+  n--;
+  while (*s1 && (*s1 == *s2)) {
+      s1++;
+      s2++;
+      if (!--n) {
+          break;
+      }
+  }
+  return (int) (*(const unsigned char *) s1 - *(const unsigned char *) s2);
+}

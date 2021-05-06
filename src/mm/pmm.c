@@ -3,6 +3,7 @@
 #include <printf.h>
 #include <stddef.h>
 #include <string.h>
+#include <mm/vmm.h>
 
 // Bit functions. Provided by AtieP
 #define ALIGN_UP(__number) (((__number) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
@@ -12,46 +13,44 @@
 #define BIT_CLEAR(__bit) (bitmap[(__bit) / 8] &= ~(1 << ((__bit) % 8)))
 #define BIT_TEST(__bit) ((bitmap[(__bit) / 8] >> ((__bit) % 8)) & 1)
 
-// Size of bitmap
-size_t bitmap_size;
 // Highest page
 static uintptr_t highest_page = 0;
 // The bitmap itself
-uint8_t *bitmap;
+static uint8_t *bitmap;
 
 // Free page at adress
-void free_page(void *adr) {
-  uint32_t index = (uint32_t)(uintptr_t)adr / PAGE_SIZE;
+static void free_page(void *adr) {
+  size_t index = (size_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_CLEAR(index);
 }
 
 // Reserve page at adress
-void reserve_page(void *adr) {
-  uint32_t index = (uint32_t)(uintptr_t)adr / PAGE_SIZE;
+static void reserve_page(void *adr) {
+  size_t index = (size_t)(uintptr_t)adr / PAGE_SIZE;
   BIT_SET(index);
 }
 
 // Free x amount of pages at adress
-void free_pages(void *adr, uint32_t page_count) {
-  for (uint32_t i = 0; i < page_count; i++) {
+static void free_pages(void *adr, size_t page_count) {
+  for (size_t i = 0; i < page_count; i++) {
     free_page((void *)(adr + (i * PAGE_SIZE)));
   }
 }
 
 // Reserve x amount of pages at adress
-void reserve_pages(void *adr, uint32_t page_count) {
-  for (uint32_t i = 0; i < page_count; i++) {
+static void reserve_pages(void *adr, size_t page_count) {
+  for (size_t i = 0; i < page_count; i++) {
     reserve_page((void *)(adr + (i * PAGE_SIZE)));
   }
 }
 
 // Allocate x amount of pages
-void *pmalloc(uint32_t pages) {
-  for (uint32_t i = 0; i < bitmap_size * 8; i++) {
-    for (uint32_t j = 0; j < pages; j++) {
+void *pmalloc(size_t pages) {
+  for (size_t i = 0; i < highest_page / PAGE_SIZE; i++) {
+    for (size_t j = 0; j < pages; j++) {
       if (BIT_TEST(i))
         break;
-      else if (!BIT_TEST(i) && j == pages - 1) {
+      else if (j == pages - 1) {
         reserve_pages((void *)(uintptr_t)(i * PAGE_SIZE), pages);
         return (void *)(uintptr_t)(i * PAGE_SIZE);
       }
@@ -61,52 +60,66 @@ void *pmalloc(uint32_t pages) {
 }
 
 // Allocate x amount of pages. Filled with 0's
-void *pcalloc(uint64_t pages) {
-  uint64_t *p = (uint64_t *)pmalloc(pages);
+void *pcalloc(size_t pages) {
+  if (!pages) {
+    return NULL;
+  }
 
-  for (uint64_t i = 0; i < (pages * PAGE_SIZE); i++)
-    p[i] = 0;
+  uint8_t *p = (uint8_t *)pmalloc(pages);
+  if (!p) {
+    return NULL;
+  }
+
+  memset(p, 0, pages * PAGE_SIZE);
   return (void *)p;
+}
+
+// Free pages
+void pfree(void *base, size_t pages) {
+  free_pages(base, pages);
 }
 
 // Init physical memory management
 int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
   uintptr_t top;
 
-  for (int i = 0; (size_t)i < memory_entries; i++) {
-    struct stivale2_mmap_entry_t entry = memory_map[i];
+  printf("Memory map before bitmap allocation:\n\r");
+  for (size_t i = 0; i < memory_entries; i++) {
+    struct stivale2_mmap_entry_t *entry = &memory_map[i];
+    printf("Base: %p Length: %p Type: %d\n\r", entry->base, entry->length, entry->type);
 
-    if (entry.type != STIVALE2_MMAP_USABLE &&
-        entry.type != STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE &&
-        entry.type != STIVALE2_MMAP_KERNEL_AND_MODULES)
+    if (entry->type != STIVALE2_MMAP_USABLE &&
+        entry->type != STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE &&
+        entry->type != STIVALE2_MMAP_KERNEL_AND_MODULES)
       continue;
 
-    top = entry.base + entry.length;
+    top = entry->base + entry->length;
 
     if (top > highest_page)
       highest_page = top;
   }
 
-  bitmap_size = ALIGN_DOWN(highest_page) / PAGE_SIZE / 8;
+  size_t bitmap_size = ALIGN_UP(ALIGN_DOWN(highest_page) / PAGE_SIZE / 8);
 
-  for (int i = 0; (size_t)i < memory_entries; i++) {
-    struct stivale2_mmap_entry_t entry = memory_map[i];
+  for (size_t i = 0; i < memory_entries; i++) {
+    struct stivale2_mmap_entry_t *entry = &memory_map[i];
 
-    if (entry.type != STIVALE2_MMAP_USABLE)
+    if (entry->type != STIVALE2_MMAP_USABLE)
       continue;
 
-    if (entry.length >= bitmap_size) {
-      bitmap = (uint8_t *)entry.base;
-      entry.base += bitmap_size;
-      entry.length -= bitmap_size;
+    if (entry->length >= bitmap_size) {
+      bitmap = (uint8_t *) (entry->base + PHYS_MEM_OFFSET);
+      entry->base += bitmap_size;
+      entry->length -= bitmap_size;
       break;
     }
   }
 
-  for (int i = 0; (size_t)i < memory_entries; i++) {
+  memset(bitmap, 0xff, bitmap_size);
+
+  for (size_t i = 0; i < memory_entries; i++) {
     if (memory_map[i].type != STIVALE2_MMAP_USABLE)
-      reserve_pages((void *)memory_map[i].base,
-                    memory_map[i].length / PAGE_SIZE);
+      continue;
     else
       free_pages((void *)memory_map[i].base, memory_map[i].length / PAGE_SIZE);
   }
