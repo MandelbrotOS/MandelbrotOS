@@ -75,7 +75,7 @@ int kernel_main(struct stivale2_struct_t *bootloader_info) {
 
   printf("\n\rLAI initialized successfully!\r\n");
 
-  for (;;) {}
+  __asm__ __volatile__("sti");
 
   device_t *serial_out = device_add("tty0");
 

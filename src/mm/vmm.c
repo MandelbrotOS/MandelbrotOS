@@ -72,6 +72,11 @@ int init_vmm() {
     vmm_map_page(kernel_map, i, i + PHYS_MEM_OFFSET, 0b11);
   }
 
+  // LAI workaround
+  for (uintptr_t i = 0; i < 0x1000; i += PAGE_SIZE) {
+    vmm_map_page(kernel_map, i, i, 0b11);
+  }
+
   vmm_switch_pagemap((uint64_t) kernel_map);
 
   return 0;
