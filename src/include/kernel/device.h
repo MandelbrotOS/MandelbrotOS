@@ -16,6 +16,7 @@ struct device_t {
 
   int (*read)(void *device, void *data, uint64_t offset, uint64_t size);
   int (*write)(void *device, void *data, uint64_t offset, uint64_t size);
+  int (*lseek)(void *device, long int whence, long int offset);
   uint64_t (*get_size)(void *device);
 };
 

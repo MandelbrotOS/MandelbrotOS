@@ -2,6 +2,8 @@
 .vscode/
 .idea/
 .ccls
+compile_commands.json
+.cache/
 
 # OS Specific file
 .DS_Store

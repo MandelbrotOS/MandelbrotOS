@@ -3,6 +3,7 @@ KVM = 0
 LD = cross/bin/x86_64-elf-ld
 CC = cross/bin/x86_64-elf-gcc
 AS = nasm
+
 LIBGCC = cross/lib/gcc/x86_64-elf/9.2.0/libgcc.a
 ECHFS_UTILS=echfs/echfs-utils
 LIMINE_INSTALL=limine/bin/limine-install
@@ -21,6 +22,9 @@ ASFLAGS = -f elf64
 CFLAGS := \
 	-mcmodel=kernel \
 	-ffreestanding \
+	-fno-pie \
+	-O2 \
+	-s \
 	-Isrc/include \
 	-Wall \
 	-Wextra \
@@ -31,6 +35,8 @@ LDFLAGS := \
 	-static \
 	-no-pie \
 	-Tresources/linker.ld \
+	-Lcross/lib/gcc/x86_64-elf/9.2.0/\
+	-lgcc \
 	-nostdlib
 
 CFILES := $(shell find src/ -name '*.c')
@@ -63,7 +69,7 @@ $(OS): $(KERNEL)
 	@ echo "[LIMINE] Install"
 	@ $(LIMINE_INSTALL) $@
 
-$(KERNEL): $(OFILES) $(LIBGCC)
+$(KERNEL): $(OFILES)
 	@ echo "[LD] $^"
 	@ $(LD) $(LDFLAGS) $^ -o $@
 
