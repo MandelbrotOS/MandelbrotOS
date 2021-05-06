@@ -9,6 +9,6 @@
 int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries);
 void *pmalloc(size_t pages);
 void *pcalloc(size_t pages);
-void *pfree(void *base, size_t pages);
+void pfree(void *base, size_t pages);
 
 #endif // !__PMM_H__

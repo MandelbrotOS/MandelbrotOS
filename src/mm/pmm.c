@@ -62,7 +62,7 @@ void *pmalloc(size_t pages) {
 // Allocate x amount of pages. Filled with 0's
 void *pcalloc(size_t pages) {
   if (!pages) {
-    return;
+    return NULL;
   }
 
   uint8_t *p = (uint8_t *)pmalloc(pages);
@@ -75,7 +75,7 @@ void *pcalloc(size_t pages) {
 }
 
 // Free pages
-void *pfree(void *base, size_t pages) {
+void pfree(void *base, size_t pages) {
   free_pages(base, pages);
 }
 
