@@ -106,6 +106,8 @@ struct acpi_fadt {
   // addresses
 } __attribute__((__packed__));
 
+extern uint8_t rsdp_revision;
+
 void init_acpi(struct stivale2_struct_tag_rsdp_t *rsdp);
 void *acpi_get_table(const char *signature, size_t index); // index == -1: any
 void acpi_sci_handler();

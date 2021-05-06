@@ -1,3 +1,4 @@
+#include <halt.h>
 #include <hw.h>
 #include <printf.h>
 #include <string.h>
@@ -12,10 +13,10 @@
 #include <lai/helpers/sci.h>
 
 void lai_init(int revision) {
-  // get the fadt, its header contains the acpi revision
-  struct acpi_fadt *fadt = (struct acpi_fadt *) acpi_get_table("FACP", -1);
-  lai_create_namespace();
+  // get the fadt, it contains SCI info
+  struct acpi_fadt *fadt = (struct acpi_fadt *) acpi_get_table("FACP", 0);
   lai_set_acpi_revision(revision);
+  lai_create_namespace();
   // now install a SCI handler
   irq_install_handler((int) fadt->sci_int, acpi_sci_handler);
   lai_enable_acpi(0); // 0 if using the PIC, 1: using the APIC
@@ -34,12 +35,7 @@ void laihost_log(int level, const char *msg) {
 
 __attribute__((__noreturn__)) void laihost_panic(const char *msg) {
   printf("lai: panic: %s\r\nHalting.", msg);
-    __asm__ __volatile__(
-    "1:\n\t"
-    "cli\n\t"
-    "hlt\n\t"
-    "jmp 1b"
-  );
+  HALT();
   __builtin_unreachable();
 }
 
@@ -61,7 +57,7 @@ void laihost_free(void *base, size_t size) {
 
 void *laihost_map(uintptr_t base, size_t size) {
   (void) size;
-  return (void *) (base + 0xffff800000000000);
+  return (void *) (base + PHYS_MEM_OFFSET);
 }
 
 void laihost_unmap(void *pointer, size_t count) {

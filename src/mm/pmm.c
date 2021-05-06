@@ -3,6 +3,7 @@
 #include <printf.h>
 #include <stddef.h>
 #include <string.h>
+#include <mm/vmm.h>
 
 // Bit functions. Provided by AtieP
 #define ALIGN_UP(__number) (((__number) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
@@ -102,7 +103,7 @@ int init_pmm(struct stivale2_mmap_entry_t *memory_map, size_t memory_entries) {
       continue;
 
     if (entry->length >= bitmap_size) {
-      bitmap = (uint8_t *)entry->base;
+      bitmap = (uint8_t *)entry->base + PHYS_MEM_OFFSET;
       entry->base += bitmap_size;
       entry->length -= bitmap_size;
       break;

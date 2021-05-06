@@ -3,6 +3,7 @@
 #include <halt.h>
 #include <printf.h>
 #include <acpi/acpi.h>
+#include <mm/vmm.h>
 
 static struct acpi_mcfg *mcfg;
 
@@ -19,7 +20,7 @@ static void *pcie_get_device_addr(uint16_t segment, uint8_t bus, uint8_t slot, u
         mcfg->entries[i].base
         + (((bus - mcfg->entries[i].start_pci_bus) << 20) | (slot << 15) | (function << 12))
         + offset
-        + 0xffff800000000000
+        + PHYS_MEM_OFFSET
       );
     }
   }
@@ -27,7 +28,7 @@ static void *pcie_get_device_addr(uint16_t segment, uint8_t bus, uint8_t slot, u
 }
 
 void init_pcie() {
-  mcfg = acpi_get_table("MCFG", -1);
+  mcfg = acpi_get_table("MCFG", 0);
   if (!mcfg) {
     printf("pcie: panic: MCFG table not found.\r\nIf using QEMU, did you use the -machine q35 flag?\r\nHalting.");
     HALT();
