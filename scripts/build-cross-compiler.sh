@@ -24,38 +24,37 @@ EOF
     chmod +x "$PREFIX/bin/make"
 fi
 
-mkdir -p build
-cd build
+mkdir -p "$PREFIX/build"
+pushd "$PREFIX/build"
+    if [ ! -f binutils-$BINUTILSVERSION.tar.gz ]; then
+        wget https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILSVERSION.tar.gz
+    fi
+    if [ ! -f gcc-$GCCVERSION.tar.gz ]; then
+        wget https://ftp.gnu.org/gnu/gcc/gcc-$GCCVERSION/gcc-$GCCVERSION.tar.gz
+    fi
 
-if [ ! -f binutils-$BINUTILSVERSION.tar.gz ]; then
-    wget https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILSVERSION.tar.gz
-fi
-if [ ! -f gcc-$GCCVERSION.tar.gz ]; then
-    wget https://ftp.gnu.org/gnu/gcc/gcc-$GCCVERSION/gcc-$GCCVERSION.tar.gz
-fi
+    tar -xf binutils-$BINUTILSVERSION.tar.gz
+    tar -xf gcc-$GCCVERSION.tar.gz
 
-tar -xf binutils-$BINUTILSVERSION.tar.gz
-tar -xf gcc-$GCCVERSION.tar.gz
+    rm -rf build-gcc build-binutils
 
-rm -rf build-gcc build-binutils
+    mkdir build-binutils
+    pushd build-binutils
+        ../binutils-$BINUTILSVERSION/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
+        make -j5
+        make install -j5
+    popd
 
-mkdir build-binutils
-cd build-binutils
-../binutils-$BINUTILSVERSION/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
-make -j5
-make install -j5
-cd ..
+    pushd gcc-$GCCVERSION
+        ./contrib/download_prerequisites
+    popd
 
-cd gcc-$GCCVERSION
-contrib/download_prerequisites
-cd ..
-mkdir build-gcc
-cd build-gcc
-../gcc-$GCCVERSION/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c --without-headers
-make all-gcc -j5
-make all-target-libgcc -j5
-make install-gcc -j5
-make install-target-libgcc -j5
-cd ..
-
-cp -r cross/ ../
+    mkdir build-gcc
+    pushd build-gcc
+        ../gcc-$GCCVERSION/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c --without-headers
+        make all-gcc -j5
+        make all-target-libgcc -j5
+        make install-gcc -j5
+        make install-target-libgcc -j5
+    popd
+popd

@@ -26,6 +26,3 @@ resources/limine.sys
 # Other folders
 cross/
 build/
-echfs/
-limine/
-build/
