@@ -25,7 +25,7 @@ CFLAGS := \
 	-lm \
 	-std=gnu99 \
 	-Isrc/acpi/lai/include \
-	-Isrc
+	-Isrc/include
 
 LDFLAGS := \
 	-static \
