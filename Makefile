@@ -31,6 +31,7 @@ CFLAGS := \
 	-lm \
 	-std=gnu99 \
 	-Isrc/acpi/lai/include \
+	-fcommon \
 	-Isrc/include
 
 LDFLAGS := \
