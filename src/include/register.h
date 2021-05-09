@@ -31,6 +31,11 @@ typedef struct
 
 } registers_t;
 
+typedef enum {
+    SYSTEM_STATE_DEAD,
+    SYSTEM_STATE_ALIVE,
+} system_state_t;
+
 void getregisters(bool is_system_dead);
 
 #endif /* __REGISTER_H__ */
