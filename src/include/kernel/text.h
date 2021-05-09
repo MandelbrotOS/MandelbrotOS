@@ -34,6 +34,7 @@ int init_color(int red, int dred, int green, int dgreen, int yellow,
                int dyellow, int blue, int dblue, int magenta, int dmagenta,
                int cyan, int dcyan, int white, int black, int gray, int dgray,
                int bg, int fg);
+void set_color(int bg, int fg);
 void putc(char ch, int x, int y, uint32_t foreground_color,
           uint32_t background_color);
 void putchar(char string);
