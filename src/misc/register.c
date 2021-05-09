@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <halt.h>
 
-void getregisters(bool is_system_dead)
+void getregisters(system_state_t is_system_dead)
 {
 	registers_t regs;
    	// I spent 3 hours trying to find a better method and failed
