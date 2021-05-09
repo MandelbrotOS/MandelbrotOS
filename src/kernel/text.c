@@ -30,6 +30,12 @@ int init_color(int red, int dred, int green, int dgreen, int yellow,
   return 0;
 }
 
+void set_color(int bg, int fg)
+{
+  BG = bg;
+  FG = fg;
+}
+
 // Initilize text printing
 int init_text(int border_) {
   fg_color = FG;
