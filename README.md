@@ -15,6 +15,8 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 
 # Build Requirements
 
+First, **make sure you cloned the repository recursively**. Otherwise you're not gonna have a good time.
+
 ### Arch/Manjaro
 - `sudo pacman -S base-devel qemu nasm xorriso mtools wget`
 
