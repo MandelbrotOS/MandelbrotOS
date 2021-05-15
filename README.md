@@ -15,7 +15,17 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 
 # Build Requirements
 
-First, **make sure you cloned the repository recursively**. Otherwise you're not gonna have a good time.
+First, **make sure you cloned the repository recursively**. Otherwise you're not gonna have a good time. To do this, use this command when cloning:
+
+```
+$ git clone --recursive https://github.com/MandelbrotOS/MandelbrotOS.git
+```
+
+If you already cloned non-recursively, you don't need to clone again. Do this instead:
+
+```
+$ git submodule update --init --recursive
+```
 
 ### Arch/Manjaro
 - `sudo pacman -S base-devel qemu nasm xorriso mtools wget`
