@@ -1,0 +1,15 @@
+# Folders
+limine/
+echfs/
+cross/
+
+# Build files
+*.o
+*.hdd
+*.elf
+
+# Resources
+rseources/BOOTX64.EFI
+rseources/echfs-utils
+rseources/limine-install
+rseources/limine.sys
