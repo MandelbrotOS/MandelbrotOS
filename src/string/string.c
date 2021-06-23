@@ -1,6 +1,6 @@
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <stddef.h>
 
 int isdigit(char c) {
   if ((c >= '0') && (c <= '9'))
@@ -34,13 +34,11 @@ void memset(void *s, int c, unsigned int len) {
     *p++ = (uint8_t)c;
 }
 
-size_t strlen(const char *s)
-{
-    size_t count = 0;
-    while(*s!='\0')
-    {
-        count++;
-        s++;
-    }
-    return count;
+size_t strlen(const char *s) {
+  size_t count = 0;
+  while (*s != '\0') {
+    count++;
+    s++;
+  }
+  return count;
 }

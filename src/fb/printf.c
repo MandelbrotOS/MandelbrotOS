@@ -1,12 +1,14 @@
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <stddef.h>
 
 #include <fb/fb.h>
-#include <string.h>
 #include <printf.h>
+#include <string.h>
+
+// Not my implementation. Taken from https://wiki.osdev.org/User:A22347/Printf
 
 char *__int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded,
                 bool spaceSignIfNeeded, int paddingNo, bool justify,

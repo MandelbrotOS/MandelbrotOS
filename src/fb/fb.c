@@ -78,6 +78,4 @@ void putc(char c, uint32_t fgc, uint32_t bgc) {
   }
 }
 
-void putchar(char c) {
-  putc(c, curr_fg_col, curr_bg_col);
-}
+void putchar(char c) { putc(c, curr_fg_col, curr_bg_col); }
