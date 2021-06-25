@@ -23,6 +23,7 @@ CFLAGS := \
 	-mgeneral-regs-only \
 	-mno-red-zone \
 	-pipe \
+	-fno-PIC -fno-pic -no-pie \
 	-Wno-implicit-fallthrough
 
 LDFLAGS := \

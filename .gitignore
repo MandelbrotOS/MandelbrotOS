@@ -8,6 +8,9 @@ cross/
 *.hdd
 *.elf
 
+# Editor specific files
+compile_flags.txt
+
 # Resources
 resources/BOOTX64.EFI
 resources/echfs-utils
