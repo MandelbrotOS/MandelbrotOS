@@ -1,4 +1,5 @@
 #include <drivers/kbd.h>
+#include <kernel/irq.h>
 
 uint8_t kbd_ctrl_read_status() {
 	return inb(KBD_CTRL_STATS_REG);
@@ -20,24 +21,30 @@ void kbd_enc_send_cmd(uint8_t cmd) {
 	outb(KBD_ENC_CMD_REG, cmd);
 }
 
-char *getline(char* string, int len) {
-  uint8_t i = 0;
-  char temp = 0;
-  memset(string, 0, len);
-  
-  while(i < len && temp != 0x0D) {
-    temp = getchar();
-    if((temp >= 0 && temp < 128) && temp != 0x0D) {
-      if (temp >= 22 && temp <= 127) {
-        printf("%c", temp);
-        string[i] = temp;
-        i ++;
-      }
-    } 
-  }
-  string[i] = 0x0A;
+void kbd_handler() {
+	kbd_ctrl_read_status();
+}
 
-  return string;
+int init_kbd (int irq) {
+	irq_install_handler(1, kbd_handler);
+	return 0;
+}
+
+void getline(char string[], int len) {
+	//int len = sizeof(string)/sizeof(string[0]);
+	uint8_t i = 0;
+	char temp = 0;
+
+	while(i < len && temp != 0x0D) {
+		temp = getchar();
+		if ((temp >= 0 && temp < 128) && temp != 0x0D) {
+			if (temp >= 22 && temp <= 127) {
+				printf("%c", temp);
+				string[i] = temp;
+				i ++;
+			}
+		}
+	}
 }
 
 char getchar() {

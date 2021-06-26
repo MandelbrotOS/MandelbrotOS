@@ -1,27 +1,20 @@
+#ifndef __KBD_H__
+#define __KBD_H__
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-
-// OUTB FUNCTION TAKEN FROM HERE: 
-// https://wiki.osdev.org/Inline_Assembly/Examples#I.2FO_access
-static inline void outb(uint16_t port, uint8_t val) {
-    asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
-}
-
-static inline uint8_t inb(uint16_t port) {
-    uint8_t ret;
-    asm volatile ( "inb %1, %0"
-                   : "=a"(ret)
-                   : "Nd"(port) );
-    return ret;
-}
+#include <printf.h>
+#include <asm.h>
 
 uint8_t kbd_ctrl_read_status(void);
 void kbrd_ctrl_send_cmd(uint8_t cmd);
 uint8_t kbd_enc_read_buf();
 void kbd_enc_send_cmd(uint8_t cmd);
 char getchar();
-char *getline(char* string, int len);
+void getline(char string[], int len);
+void kbd_handler();
+int init_kbd();
 
 enum KBD_ENCODER_IO {
 	KBD_ENC_INPUT_BUF = 0x60,
@@ -319,7 +312,7 @@ static int _kkybrd_scancode_std [] = {
 	KEY_KP_NUMLOCK,	//0x45
 	KEY_SCROLLLOCK,	//0x46
 	KEY_HOME,		//0x47
-	KEY_UP,		//0x48	//keypad up arrow
+	KEY_UP,		    //0x48	//keypad up arrow
 	KEY_PAGEUP,		//0x49
 	KEY_KP_2,		//0x50	//keypad down arrow
 	KEY_KP_3,		//0x51	//keypad page down
@@ -331,3 +324,5 @@ static int _kkybrd_scancode_std [] = {
 	KEY_F11,		//0x57
 	KEY_F12			//0x58
 };
+
+#endif

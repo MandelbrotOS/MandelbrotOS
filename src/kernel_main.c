@@ -35,13 +35,14 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
 
   init_fb(framebuffer_info);
   init_pit();
-
+  init_kbd();
   printf("Hello, world!\r\n");
 
   int cmd = 0;
   while (1) {
+    char echo[100] = "";
     printf("$ ");
-    char *echo = getline(echo, 50);
+    getline(echo, 100);
     printf("\r");
     printf("You typed: %s\n", echo);
     printf("\r");
