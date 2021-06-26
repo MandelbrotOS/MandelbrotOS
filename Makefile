@@ -1,7 +1,7 @@
 ARCH = x86_64
 
-LD = cross/bin/$(ARCH)-elf-ld
-CC = cross/bin/$(ARCH)-elf-gcc
+LD = ld
+CC = gcc
 AS = nasm
 
 QEMU = qemu-system-$(ARCH) -hda $(OS) -serial stdio -smp 2
@@ -24,7 +24,8 @@ CFLAGS := \
 	-mno-red-zone \
 	-pipe \
 	-fno-PIC -fno-pic -no-pie \
-	-Wno-implicit-fallthrough
+	-fno-stack-protector \
+	-Wno-implicit-fallthrough 
 
 LDFLAGS := \
 	-static \

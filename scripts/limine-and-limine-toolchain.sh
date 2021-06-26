@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 cd ../limine
+make toolchain
 make
 mv bin/limine-install ../resources
 mv bin/limine.sys ../resources

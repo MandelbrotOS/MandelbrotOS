@@ -22,31 +22,24 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 - `sudo apt-get install build-essential qemu nasm xorriso wget mtools uuid-dev parted`
 
 # Building the Toolchain
-Mandelbrot depends on some tools, like `limine-install`, `echfs-utils` and the GNU Toolchain. To build these, make sure you're in the root of the repository, and run
-
+Mandelbrot depends on some tools, like `limine-install`, `echfs-utils` and the GNU Toolchain.  
+If you are on an x86\_64 system run  
 ```
-$ ./scripts/build-tools.sh
+cd scripts
+./build-tools.sh
+```  
+If you are not run
 ```
-
-This will take a while. After it's done, you can head over to [Building and Running](#building-and-running).
+cd scripts
+./build-tools-and-chain.sh
+```  
+After it's done, you can head over to [Building and Running](#building-and-running).
 
 # Building and Running
 To build the OS itself, make sure you have [built the toolchain](#building-the-toolchain). After that, you can
 
 ```
 $ make
-```
-
-to build. If you want to run, you can either do
-
-```
-$ make qemu
-```
-
-or have the `RUN` environment variable set to 1, like so
-
-```
-$ RUN=1 make
 ```
 
 # Using
