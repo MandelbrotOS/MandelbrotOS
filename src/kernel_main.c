@@ -10,6 +10,7 @@
 #include <string.h>
 #include <drivers/pit.h>
 #include <drivers/kbd.h>
+#include <klog.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
@@ -33,10 +34,13 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
       (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 
-  init_fb(framebuffer_info);
-  init_pit();
-  init_kbd();
-  printf("Hello, world!\r\n");
+  if (init_fb(framebuffer_info) == 0) klog(0, "Framebuffer");
+  if (init_pit() == 0) klog(0, "PIT");
+  if (init_kbd() == 0) klog(0, "Keyboard");
+
+  sleep(1000);
+
+  printf("\n\n\nHello, world!\r\n");
 
   int cmd = 0;
   while (1) {
