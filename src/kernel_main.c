@@ -7,7 +7,9 @@
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include <drivers/pit.h>
+#include <drivers/kbd.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
@@ -35,10 +37,13 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_pit();
 
   printf("Hello, world!\r\n");
-  printf("Dividing by 0 in 5 seconds.");
-  sleep(5000);
-  printf("NOW! %i", 10/0);
 
-  while (1)
-    ;
+  int cmd = 0;
+  while (1) {
+    printf("$ ");
+    char *echo = getline(echo, 50);
+    printf("\r");
+    printf("You typed: %s\n", echo);
+    printf("\r");
+  }
 }
