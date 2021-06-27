@@ -40,7 +40,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
 
-  pcspkr_beep(400);
+  pcspkr_beep(400, 900);
 
   printf("\r\nKLOG TEST\r\n\r\n");
   klog(0, "Success colours");
