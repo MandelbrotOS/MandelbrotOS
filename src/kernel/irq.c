@@ -67,7 +67,7 @@ void irq_uninstall_handler(int irq) { irq_routines[irq] = 0; }
 
 void c_irq_handler(int irqno) {
   void (*handler)() = irq_routines[irqno - 32];
-  
+
   if (handler)
     handler();
 
