@@ -21,7 +21,7 @@ void pcspkr_tone_off() {
   pit_phase_c2(1);
 }
 
-void pcspkr_beep(uint32_t mst, hz) {
+void pcspkr_beep(uint32_t mst, uint32_t hz) {
   pcspkr_tone_on(hz);
   sleep(mst);
   pcspkr_tone_off();

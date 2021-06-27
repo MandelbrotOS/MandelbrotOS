@@ -6,7 +6,7 @@
 int init_pcspkr();
 void pcspkr_tone_on(uint32_t hz);
 void pcspkr_tone_off();
-void pcspkr_beep(uint32_t mst, hz);
+void pcspkr_beep(uint32_t mst, uint32_t hz);
 void pit_phase_c2(uint32_t hz);
 
 #endif
