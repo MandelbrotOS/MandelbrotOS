@@ -4,14 +4,14 @@
 
 volatile uint64_t timer_ticks = 0;
 
-void pit_phase(int hz){
+void pit_phase(int hz) {
   int divisor = 1193180 / hz;
   outb(0x43, 0x36);
   outb(0x40, divisor & 0xFF);
   outb(0x40, divisor >> 8);
 }
 
-void pit_handler() { timer_ticks++;}
+void pit_handler() { timer_ticks++; }
 
 void sleep(uint64_t ticks) {
   uint64_t rest_ticks = timer_ticks + ticks;

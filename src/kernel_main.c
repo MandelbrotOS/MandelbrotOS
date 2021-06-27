@@ -1,16 +1,16 @@
 #include <boot/stivale2.h>
+#include <drivers/kbd.h>
+#include <drivers/pit.h>
 #include <fb/fb.h>
 #include <kernel/gdt.h>
 #include <kernel/idt.h>
 #include <kernel/irq.h>
 #include <kernel/isr.h>
+#include <klog.h>
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <drivers/pit.h>
-#include <drivers/kbd.h>
-#include <klog.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
@@ -34,21 +34,20 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
       (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 
-  if (init_fb(framebuffer_info) == 0) klog(0, "Framebuffer");
-  if (init_pit() == 0) klog(0, "PIT");
-  if (init_kbd() == 0) klog(0, "Keyboard");
+  klog(init_fb(framebuffer_info), "Framebuffer");
+  klog(init_pit(), "PIT");
+  klog(init_kbd(), "Keyboard");
 
-  sleep(1000);
+  printf("\r\nKLOG TEST\r\n\r\n");
+  klog(0, "Success colours");
+  klog(1, "Failure colours");
+  klog(2, "Warning colours");
+  klog(3, "Info colours");
 
-  printf("\n\n\nHello, world!\r\n");
-
-  int cmd = 0;
   while (1) {
     char echo[100] = "";
     printf("$ ");
     getline(echo, 100);
-    printf("\r");
-    printf("You typed: %s\n", echo);
-    printf("\r");
+    printf("\nYou typed: %s\r\n", echo);
   }
 }
