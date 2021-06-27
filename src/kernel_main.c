@@ -1,5 +1,6 @@
 #include <boot/stivale2.h>
 #include <drivers/kbd.h>
+#include <drivers/pcspkr.h>
 #include <drivers/pit.h>
 #include <fb/fb.h>
 #include <kernel/gdt.h>
@@ -36,7 +37,10 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
 
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_pit(), "PIT");
+  klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
+
+  pcspkr_beep(400);
 
   printf("\r\nKLOG TEST\r\n\r\n");
   klog(0, "Success colours");
