@@ -8,6 +8,7 @@
 #include <kernel/irq.h>
 #include <kernel/isr.h>
 #include <klog.h>
+#include <mm/pmm.h>
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -34,27 +35,18 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_struct_tag_framebuffer *framebuffer_info =
       (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+  struct stivale2_struct_tag_memmap *memory_info =
+      (struct stivale2_struct_tag_memmap *)stivale2_get_tag(
+          bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 
   klog(init_fb(framebuffer_info), "Framebuffer");
+  klog(init_pmm(memory_info), "Physical memory management");
   klog(init_pit(), "PIT");
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
 
-  for (int i = 0; i < 3; i++) {
-    pcspkr_beep(100, 900 - i * 100);
-    sleep(500);
-  }
+  printf("Hello, world!\r\n");
 
-  printf("\r\nKLOG TEST\r\n\r\n");
-  klog(0, "Success colours");
-  klog(1, "Failure colours");
-  klog(2, "Warning colours");
-  klog(3, "Info colours");
-
-  while (1) {
-    char echo[100] = "";
-    printf("$ ");
-    getline(echo, 100);
-    printf("\nYou typed: %s\r\n", echo);
-  }
+  while (1)
+    ;
 }
