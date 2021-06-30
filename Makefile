@@ -4,7 +4,7 @@ LD = ld
 CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -serial stdio -smp 2 -soundhw pcspk
+QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -soundhw pcspk -monitor stdio
 
 OS = mandelbrotos.hdd
 KERNEL = mandelbrotos.elf

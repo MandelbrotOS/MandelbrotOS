@@ -9,6 +9,7 @@
 #include <kernel/isr.h>
 #include <klog.h>
 #include <mm/pmm.h>
+#include <mm/vmm.h>
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -27,11 +28,6 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
 }
 
 void kernel_main(struct stivale2_struct *bootloader_info) {
-  init_gdt();
-  init_idt();
-  init_isr();
-  init_irq();
-  asm volatile("sti");
   struct stivale2_struct_tag_framebuffer *framebuffer_info =
       (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
@@ -39,8 +35,18 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
       (struct stivale2_struct_tag_memmap *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 
+  init_gdt();
+  
+  init_pmm(memory_info);
+  init_vmm();
+  
+  init_idt();
+  init_isr();
+  init_irq(); 
+
+  asm volatile("sti");
+ 
   klog(init_fb(framebuffer_info), "Framebuffer");
-  klog(init_pmm(memory_info), "Physical memory management");
   klog(init_pit(), "PIT");
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");

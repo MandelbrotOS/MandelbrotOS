@@ -51,6 +51,12 @@ void *pmalloc(size_t pages) {
   return NULL;
 }
 
+void *pcalloc(size_t pages) {
+  void *ret = pmalloc(pages);
+  memset(ret, 0, pages * PAGE_SIZE);
+  return ret;
+}
+
 int init_pmm(struct stivale2_struct_tag_memmap *memory_info) {
   uintptr_t top;
 
