@@ -3,14 +3,12 @@
 #include <font.h>
 
 uint32_t *framebuffer;
-uint16_t fb_height;
-uint16_t fb_width;
+static uint16_t fb_height, fb_width;
 
 uint32_t curr_fg_col = 0xffffff;
 uint32_t curr_bg_col = 0x000000;
 
-int curr_x = 0;
-int curr_y = 0;
+static int curr_x = 0, curr_y = 0;
 
 int init_fb(struct stivale2_struct_tag_framebuffer *framebuffer_info) {
   framebuffer = (uint32_t *)framebuffer_info->framebuffer_addr;

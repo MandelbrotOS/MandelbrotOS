@@ -15,7 +15,7 @@
 #define BIT_TEST(__bit) ((pmm_bitmap[(__bit) / 8] >> ((__bit) % 8)) & 1)
 
 static uint8_t *pmm_bitmap = 0;
-uintptr_t highest_page = 0;
+static uintptr_t highest_page = 0;
 
 void print_pmm_bitmap() {
   for (size_t i = 0; i < ALIGN_UP(ALIGN_DOWN(highest_page) / PAGE_SIZE / 8);

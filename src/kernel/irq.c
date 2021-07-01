@@ -2,7 +2,7 @@
 #include <kernel/idt.h>
 #include <kernel/irq.h>
 
-void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 extern void pit_handler();
 

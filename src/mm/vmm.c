@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-uint64_t *kernel_pagemap;
+static uint64_t *kernel_pagemap;
 
 static uint64_t *get_next_level(uint64_t *table, size_t index) {
   if (!(table[index] & 1)) {
