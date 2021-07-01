@@ -3,6 +3,7 @@
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 static rsdp_t *rsdp;
 static rsdt_t *rsdt;
@@ -25,11 +26,7 @@ void *get_table(char *signature, int index) {
   int i = 0;
   for (int t = 0; t < entries; t++) {
     sdt_t *h = (sdt_t *)rsdt->sptr[t];
-    if (signature[0] == h->signature[0] &&
-      signature[1] == h->signature[1] &&
-      signature[2] == h->signature[2] &&
-      signature[3] == h->signature[3]) {
-	
+    if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
 	return (void *)h;
       else
@@ -49,7 +46,7 @@ int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
     rsdt = (rsdt_t *)rsdp->rsdt_address;
   } else {
     xsdt = (xsdt_t *)rsdp->xsdt_address;
-  }
+  } 
 
   return 0;
 }
