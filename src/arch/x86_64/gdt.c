@@ -1,8 +1,8 @@
 #include <kernel/gdt.h>
 #include <stdint.h>
 
-gdt_entry_t gdt[8];
-gdt_pointer_t gdt_ptr;
+static gdt_entry_t gdt[8];
+static gdt_pointer_t gdt_ptr;
 
 void load_gdt(gdt_pointer_t gdt_ptr_in) {
   asm volatile("lgdt %0" : : "m"(gdt_ptr_in) : "memory");

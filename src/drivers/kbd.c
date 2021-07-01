@@ -3,7 +3,7 @@
 #include <fb/fb.h>
 #include <kernel/irq.h>
 
-int _kkybrd_scancode_std[] = {
+static int _kkybrd_scancode_std[] = {
 
     //! key			scancode
     KEY_UNKNOWN,      // 0

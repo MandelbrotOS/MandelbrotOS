@@ -1,6 +1,6 @@
 #include <kernel/idt.h>
 
-idt_ptr_t idtp;
+static idt_ptr_t idtp;
 idt_entry_t idt[256];
 
 void idt_set_gate(idt_entry_t *entry, int user_space, void (*func)()) {

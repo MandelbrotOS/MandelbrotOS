@@ -1,11 +1,12 @@
 #include <acpi/acpi.h>
+#include <acpi/tables.h>
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-rsdp_t *rsdp;
-rsdt_t *rsdt;
-xsdt_t *xsdt;
+static rsdp_t *rsdp;
+static rsdt_t *rsdt;
+static xsdt_t *xsdt;
 
 // TODO: ACPI 2.0+ support
 
@@ -18,7 +19,7 @@ bool do_acpi_checksum(sdt_t *th) {
   return sum == 0;
 }
 
-void *get_acpi_table(char *signature) {
+void *get_table(char *signature) {
   int entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
 
   for (int i = 0; i < entries; i++) {

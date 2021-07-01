@@ -2,7 +2,7 @@
 #include <kernel/irq.h>
 #include <stdint.h>
 
-volatile uint64_t timer_ticks = 0;
+static volatile uint64_t timer_ticks = 0;
 
 void pit_phase(int hz) {
   int divisor = 1193180 / hz;
