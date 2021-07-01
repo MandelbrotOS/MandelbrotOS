@@ -13,26 +13,29 @@ static xsdt_t *xsdt;
 bool do_acpi_checksum(sdt_t *th) {
   uint8_t sum = 0;
 
-  for (int i = 0; i < th->length; i++)
+  for (uint32_t i = 0; i < th->length; i++)
     sum += ((char *)th)[i];
 
   return sum == 0;
 }
 
-void *get_table(char *signature) {
+void *get_table(char *signature, int index) {
   int entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
 
-  for (int i = 0; i < entries; i++) {
-    sdt_t *h = (sdt_t *)rsdt->sptr[i];
-    if (h->signature[0] == signature[0] &&
-	h->signature[1] == signature[1] &&
-	h->signature[2] == signature[2] &&
-	h->signature[3] == signature[3]) {
+  int i = 0;
+  for (int t = 0; t < entries; t++) {
+    sdt_t *h = (sdt_t *)rsdt->sptr[t];
+    if (signature[0] == h->signature[0] &&
+      signature[1] == h->signature[1] &&
+      signature[2] == h->signature[2] &&
+      signature[3] == h->signature[3]) {
 	
-	if (do_acpi_checksum(h))
-	  return (void *)h;
-	else
-	  return NULL;
+      if (do_acpi_checksum(h) && i == index)
+	return (void *)h;
+      else
+	return NULL;
+
+      i++;
     }
   }
 
