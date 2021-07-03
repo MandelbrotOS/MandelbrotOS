@@ -6,12 +6,12 @@
 
 typedef struct kheap_block {
   struct kheap_block *next;
-  size_t size;
-  size_t used;
-  size_t block_size;
+  uint64_t size;
+  uint64_t used;
+  uint64_t bsize;
 } kheap_block_t;
 
-typedef struct kheap {
+typedef struct _kheap_t {
   kheap_block_t *fblock;
 } kheap_t;
 
