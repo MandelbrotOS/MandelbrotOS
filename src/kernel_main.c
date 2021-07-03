@@ -10,6 +10,7 @@
 #include <kernel/irq.h>
 #include <kernel/isr.h>
 #include <klog.h>
+#include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <printf.h>
@@ -43,7 +44,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_gdt();
 
   init_pmm(memory_info);
-  init_vmm();
+  /* init_vmm(); */
 
   init_idt();
   init_isr();
@@ -54,11 +55,24 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_pit(), "PIT");
   klog(init_lapic(), "LAPIC");
+  klog(init_heap(), "Heap");
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
 
   printf("Hello, world!\r\n");
+
+  void *a = kmalloc(10);
+  printf("Alloced pointer at %p\r\n", a);
+  void *b = kmalloc(10);
+  printf("Alloced pointer at %p\r\n", b);
+  kfree(a);
+  printf("Freed first pointer\r\n");
+  void *c = kmalloc(1);
+  printf("Alloced pointer at %p\r\n", c);
+  kfree(c);
+  kfree(b);
+  printf("Freed remaining pointers\r\n");
 
   while (1)
     ;
