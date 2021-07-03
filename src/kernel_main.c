@@ -44,7 +44,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_gdt();
 
   init_pmm(memory_info);
-  init_vmm();
+  /* init_vmm(); */
 
   init_idt();
   init_isr();
