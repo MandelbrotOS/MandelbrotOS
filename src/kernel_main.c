@@ -44,7 +44,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_gdt();
 
   init_pmm(memory_info);
-  /* init_vmm(); */
+  init_vmm();
 
   init_idt();
   init_isr();
@@ -62,14 +62,15 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
 
   printf("Hello, world!\r\n");
 
-  void *a = kmalloc(10);
-  printf("Alloced pointer at %p\r\n", a);
+  char *a = kmalloc(10);
+  strcpy(a, "hello");
+  printf("Alloced pointer at %s\r\n", a);
   void *b = kmalloc(10);
-  printf("Alloced pointer at %p\r\n", b);
+  printf("Alloced pointer at %zu\r\n", b);
   kfree(a);
   printf("Freed first pointer\r\n");
   void *c = kmalloc(1);
-  printf("Alloced pointer at %p\r\n", c);
+  printf("Alloced pointer at %zu\r\n", c);
   kfree(c);
   kfree(b);
   printf("Freed remaining pointers\r\n");

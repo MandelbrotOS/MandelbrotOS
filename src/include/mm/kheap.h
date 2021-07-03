@@ -9,7 +9,6 @@ typedef struct kheap_block {
   size_t size;
   size_t used;
   size_t block_size;
-  size_t last_free_block;
 } kheap_block_t;
 
 typedef struct kheap {
