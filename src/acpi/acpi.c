@@ -1,12 +1,10 @@
 #include <acpi/acpi.h>
 #include <acpi/tables.h>
-#include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
-
 
 static rsdp_t *rsdp;
 static rsdt_t *rsdt;
@@ -23,19 +21,24 @@ bool do_acpi_checksum(sdt_t *th) {
   return sum == 0;
 }
 
-void *get_table(char *signature)
+void *get_table(char *signature, int index)
 {
   int entries;
   sdt_t *h;
   
   entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
 
+  int i = 0;
+
   for (int t = 0; t < entries; t++) {
     h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
 
-    if (!strncmp(signature, h->signature, 4))
-      if (do_acpi_checksum(h))
+    if (!strncmp(signature, h->signature, 4)) {
+      if (do_acpi_checksum(h) && i == index)
         return (void *)h;
+    
+      i++;
+    }
   }
 
   return NULL;
@@ -49,7 +52,7 @@ int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   else
     xsdt = (xsdt_t *)(rsdp->xsdt_address + KERNEL_MEM_OFFSET);
 
-  sdt_t *facp = get_table("FACP");
+  sdt_t *facp = get_table("FACP", 0);
   printf("%s\r\n", facp->signature);
 
   return 0;
