@@ -35,7 +35,7 @@ int init_gdt() {
                          .limit = 0x0,
                          .access = 0x0,
                          .granularity = 0x0}; // NULL descriptor
-  
+
   gdt[1] = (gdt_entry_t){.low = 0x0,
                          .mid = 0x0,
                          .high = 0x0,
@@ -49,21 +49,20 @@ int init_gdt() {
                          .limit = 0x0,
                          .access = 0x92,
                          .granularity = 0x0}; // Kernel data descriptor
-  
+
   gdt[3] = (gdt_entry_t){.low = 0x0,
                          .mid = 0x0,
                          .high = 0x0,
                          .limit = 0x0,
                          .access = 0xfa,
                          .granularity = 0x20}; // User data descriptor
-  
+
   gdt[4] = (gdt_entry_t){.low = 0x0,
                          .mid = 0x0,
                          .high = 0x0,
                          .limit = 0x0,
                          .access = 0xf2,
                          .granularity = 0x0}; // User data descriptor
-
 
   load_gdt(gdt_ptr);
 

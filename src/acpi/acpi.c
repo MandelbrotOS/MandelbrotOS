@@ -28,9 +28,9 @@ void *get_table(char *signature, int index) {
     sdt_t *h = (sdt_t *)(uint64_t)rsdt->sptr[t];
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
-	return (void *)h;
+        return (void *)h;
       else
-	return NULL;
+        return NULL;
 
       i++;
     }
@@ -41,12 +41,12 @@ void *get_table(char *signature, int index) {
 
 int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
-  
+
   if (!rsdp->revision) {
     rsdt = (rsdt_t *)(uint64_t)rsdp->rsdt_address;
   } else {
     xsdt = (xsdt_t *)rsdp->xsdt_address;
-  } 
+  }
 
   return 0;
 }

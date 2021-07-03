@@ -1,5 +1,6 @@
 #include <acpi/acpi.h>
 #include <boot/stivale2.h>
+#include <drivers/apic.h>
 #include <drivers/kbd.h>
 #include <drivers/pcspkr.h>
 #include <drivers/pit.h>
@@ -35,23 +36,24 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_struct_tag_memmap *memory_info =
       (struct stivale2_struct_tag_memmap *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_MEMMAP_ID);
-  struct stivale2_struct_tag_rsdp *rsdp_info = 
+  struct stivale2_struct_tag_rsdp *rsdp_info =
       (struct stivale2_struct_tag_rsdp *)stivale2_get_tag(
-	  bootloader_info, STIVALE2_STRUCT_TAG_RSDP_ID);
+          bootloader_info, STIVALE2_STRUCT_TAG_RSDP_ID);
 
   init_gdt();
-  
+
   init_pmm(memory_info);
   init_vmm();
-  
+
   init_idt();
   init_isr();
   init_irq();
 
   asm volatile("sti");
- 
+
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_pit(), "PIT");
+  klog(init_lapic(), "LAPIC");
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
