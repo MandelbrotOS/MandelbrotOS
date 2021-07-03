@@ -2,7 +2,7 @@
 #include <kernel_main.h>
 #include <stdint.h>
 
-static uint8_t stack[8192] = {0};
+static uint8_t stack[65536] = {0};
 
 static struct stivale2_header_tag_framebuffer fb_request = {
     .tag = {.identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID, .next = 0},
@@ -16,7 +16,7 @@ static struct stivale2_header_tag_smp smp_request = {
     .flags = 0};
 
 static __attribute__((section(".stivale2hdr"),
-               used)) struct stivale2_header header2 = {
+                      used)) struct stivale2_header header2 = {
     .entry_point = (uint64_t)kernel_main,
     .stack = (uintptr_t)stack + sizeof(stack),
     .flags = (1 << 1),

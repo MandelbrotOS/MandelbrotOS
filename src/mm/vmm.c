@@ -27,7 +27,7 @@ void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
   pml1[level1] = physical_address | flags;
 }
 
-void vmm_unmap_page(uint64_t* pagemap, uintptr_t virtual_address) {
+void vmm_unmap_page(uint64_t *pagemap, uintptr_t virtual_address) {
   size_t level4 = (size_t)(virtual_address & ((size_t)0x1ff << 39)) >> 39;
   size_t level3 = (size_t)(virtual_address & ((size_t)0x1ff << 30)) >> 30;
   size_t level2 = (size_t)(virtual_address & ((size_t)0x1ff << 21)) >> 21;
@@ -49,7 +49,7 @@ int init_vmm() {
   for (uintptr_t i = 0; i < 0x200000000; i += PAGE_SIZE)
     vmm_map_page(kernel_pagemap, i, i + PHYS_MEM_OFFSET, 3);
 
-  asm volatile ("mov %0, %%cr3" : : "r" (kernel_pagemap));
+  asm volatile("mov %0, %%cr3" : : "r"(kernel_pagemap));
 
   return 0;
 }
