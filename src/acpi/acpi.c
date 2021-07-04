@@ -21,11 +21,10 @@ bool do_acpi_checksum(sdt_t *th) {
   return sum == 0;
 }
 
-void *get_table(char *signature, int index)
-{
+void *get_table(char *signature, int index) {
   int entries;
   sdt_t *h;
-  
+
   entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
 
   int i = 0;
@@ -36,7 +35,7 @@ void *get_table(char *signature, int index)
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
         return (void *)h;
-    
+
       i++;
     }
   }

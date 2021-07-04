@@ -5,10 +5,6 @@
 #include <drivers/pcspkr.h>
 #include <drivers/pit.h>
 #include <fb/fb.h>
-#include <sys/gdt.h>
-#include <sys/idt.h>
-#include <sys/irq.h>
-#include <sys/isr.h>
 #include <klog.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>
@@ -17,6 +13,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/gdt.h>
+#include <sys/idt.h>
+#include <sys/irq.h>
+#include <sys/isr.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;

@@ -1,5 +1,5 @@
-#include <sys/idt.h>
 #include <stdint.h>
+#include <sys/idt.h>
 
 static idt_ptr_t idtp;
 idt_entry_t idt[256];

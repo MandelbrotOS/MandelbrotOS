@@ -1,6 +1,6 @@
 #include <asm.h>
-#include <sys/irq.h>
 #include <stdint.h>
+#include <sys/irq.h>
 
 static volatile uint64_t timer_ticks = 0;
 

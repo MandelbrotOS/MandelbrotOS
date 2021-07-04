@@ -1,6 +1,6 @@
+#include <printf.h>
 #include <sys/idt.h>
 #include <sys/isr.h>
-#include <printf.h>
 
 // ASM handlers
 extern void isr0();

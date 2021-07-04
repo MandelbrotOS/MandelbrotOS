@@ -1,5 +1,5 @@
-#include <sys/gdt.h>
 #include <stdint.h>
+#include <sys/gdt.h>
 
 static gdt_entry_t gdt[8];
 static gdt_pointer_t gdt_ptr;
