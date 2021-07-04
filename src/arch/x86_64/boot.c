@@ -1,5 +1,5 @@
 #include <boot/stivale2.h>
-#include <kernel_main.h>
+#include <main.h>
 #include <stdint.h>
 
 static uint8_t stack[65536] = {0};

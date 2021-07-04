@@ -1,7 +1,7 @@
 #include <asm.h>
 #include <drivers/kbd.h>
 #include <fb/fb.h>
-#include <kernel/irq.h>
+#include <sys/irq.h>
 
 static int _kkybrd_scancode_std[] = {
 

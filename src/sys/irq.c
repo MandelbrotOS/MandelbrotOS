@@ -1,6 +1,6 @@
 #include <asm.h>
-#include <kernel/idt.h>
-#include <kernel/irq.h>
+#include <sys/idt.h>
+#include <sys/irq.h>
 
 static void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0,
                                      0, 0, 0, 0, 0, 0, 0, 0};

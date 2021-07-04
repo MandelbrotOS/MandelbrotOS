@@ -5,10 +5,10 @@
 #include <drivers/pcspkr.h>
 #include <drivers/pit.h>
 #include <fb/fb.h>
-#include <kernel/gdt.h>
-#include <kernel/idt.h>
-#include <kernel/irq.h>
-#include <kernel/isr.h>
+#include <sys/gdt.h>
+#include <sys/idt.h>
+#include <sys/irq.h>
+#include <sys/isr.h>
 #include <klog.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>

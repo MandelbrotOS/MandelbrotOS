@@ -1,5 +1,5 @@
-#include <kernel/idt.h>
-#include <kernel/isr.h>
+#include <sys/idt.h>
+#include <sys/isr.h>
 #include <printf.h>
 
 // ASM handlers

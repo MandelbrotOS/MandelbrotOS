@@ -1,4 +1,4 @@
-#include <kernel/gdt.h>
+#include <sys/gdt.h>
 #include <stdint.h>
 
 static gdt_entry_t gdt[8];
