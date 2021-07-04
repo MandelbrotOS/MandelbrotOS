@@ -21,19 +21,6 @@ void strcat(char *dest, const char *src) {
     ;
 }
 
-void memcpy(void *dest, void *src, size_t n) {
-  char *csrc = (char *)src;
-  char *cdest = (char *)dest;
-  for (size_t i = 0; i < n; i++)
-    cdest[i] = csrc[i];
-}
-
-void memset(void *s, int c, unsigned int len) {
-  unsigned char *p = s;
-  while (len--)
-    *p++ = (uint8_t)c;
-}
-
 size_t strlen(const char *s) {
   size_t count = 0;
   while (*s != '\0') {
