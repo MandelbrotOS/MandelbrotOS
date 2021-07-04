@@ -4,11 +4,13 @@
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
-static rsdp_t *rsdp;
-static rsdt_t *rsdt;
-static xsdt_t *xsdt;
+rsdp_t *rsdp;
+rsdt_t *rsdt;
+xsdt_t *xsdt;
+madt_t *madt;
 
 // TODO: ACPI 2.0+ support
 
@@ -52,7 +54,6 @@ int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
     xsdt = (xsdt_t *)(rsdp->xsdt_address + KERNEL_MEM_OFFSET);
 
   sdt_t *facp = get_table("FACP", 0);
-  printf("%s\r\n", facp->signature);
 
   return 0;
 }

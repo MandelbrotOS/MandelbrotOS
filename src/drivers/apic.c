@@ -1,3 +1,5 @@
+#include <acpi/acpi.h>
+#include <acpi/tables.h>
 #include <asm.h>
 #include <drivers/apic.h>
 #include <mm/pmm.h>
