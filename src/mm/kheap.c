@@ -3,6 +3,7 @@
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 // Since I am lazy I did not write this.
 // Taken from: https://wiki.osdev.org/User:Pancakes/BitmapHeapImplementation
@@ -101,6 +102,22 @@ void kheap_free(kheap_t *heap, void *ptr) {
 void *kmalloc(size_t size) { return kheap_alloc(&kernel_heap, size); }
 
 void kfree(void *ptr) { kheap_free(&kernel_heap, ptr); }
+
+void *krealloc(void *ptr, size_t size) {
+  void *new_ptr;
+  if (size == 0)
+    new_ptr = NULL;
+  else if (!ptr)
+    new_ptr = kmalloc(size);
+  else {
+    new_ptr = kmalloc(size);
+    memcpy(new_ptr, ptr, size);
+  }
+
+  kfree(ptr);
+  /* printf("Exiting realloc"); */
+  return new_ptr;
+}
 
 int init_heap() {
   kheap_init(&kernel_heap);

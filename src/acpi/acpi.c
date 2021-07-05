@@ -1,5 +1,6 @@
 #include <acpi/acpi.h>
 #include <acpi/tables.h>
+#include <mm/kheap.h>
 #include <mm/vmm.h>
 #include <printf.h>
 #include <stdbool.h>
@@ -11,6 +12,17 @@ rsdp_t *rsdp;
 rsdt_t *rsdt;
 xsdt_t *xsdt;
 madt_t *madt;
+sdt_t *facp;
+
+madt_ioapic_t **madt_ioapics;
+madt_lapic_t **madt_lapics;
+madt_nmi_t **madt_nmis;
+madt_iso_t **madt_isos;
+
+size_t ioapic_len = 0;
+size_t lapic_len = 0;
+size_t nmi_len = 0;
+size_t iso_len = 0;
 
 // TODO: ACPI 2.0+ support
 
@@ -45,6 +57,40 @@ void *get_table(char *signature, int index) {
   return NULL;
 }
 
+void gather_madt() {
+  madt = get_table("APIC", 0);
+
+  madt_ioapics = kmalloc(sizeof(madt_ioapic_t *));
+  madt_lapics = kmalloc(sizeof(madt_lapic_t *));
+  madt_nmis = kmalloc(sizeof(madt_nmi_t *));
+  madt_isos = kmalloc(sizeof(madt_iso_t *));
+
+  for (size_t i = 0; i < (madt->header.length - (sizeof(madt_t)));) {
+    madt_header_t *header = (madt_header_t *)&madt->entries[i];
+
+    switch (header->id) {
+    case 0:
+      madt_lapics[lapic_len++] = (madt_lapic_t *)header;
+      krealloc(madt_lapics, sizeof(madt_lapic_t *) * (lapic_len + 1));
+      break;
+    case 1:
+      madt_ioapics[ioapic_len++] = (madt_ioapic_t *)header;
+      krealloc(madt_ioapics, sizeof(madt_ioapic_t *) * (ioapic_len + 1));
+      break;
+    case 2:
+      madt_nmis[nmi_len++] = (madt_nmi_t *)header;
+      krealloc(madt_nmis, sizeof(madt_nmi_t *) * (nmi_len + 1));
+      break;
+    case 3:
+      madt_isos[iso_len++] = (madt_iso_t *)header;
+      krealloc(madt_isos, sizeof(madt_iso_t *) * (iso_len + 1));
+      break;
+    }
+
+    i += header->length;
+  }
+}
+
 int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
 
@@ -53,7 +99,9 @@ int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   else
     xsdt = (xsdt_t *)(rsdp->xsdt_address + KERNEL_MEM_OFFSET);
 
-  sdt_t *facp = get_table("FACP", 0);
+  facp = get_table("FACP", 0);
+
+  gather_madt();
 
   return 0;
 }
