@@ -85,7 +85,7 @@ typedef struct mcfg_entry {
   uint16_t seg_grp;
   uint8_t sbus, ebus;
   uint32_t reserved;
-} __attribute__ ((packed)) mcfg_entry_t;
+} __attribute__((packed)) mcfg_entry_t;
 
 typedef struct _mcfg {
   sdt_t h;

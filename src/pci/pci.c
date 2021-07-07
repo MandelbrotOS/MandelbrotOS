@@ -1,5 +1,6 @@
 #include <pci/pci.h>
 
-void pci_enumerate() {
+int pci_enumerate() {
   pci_legacy_enumerate();
+  return 0;
 }

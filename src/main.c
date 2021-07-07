@@ -60,7 +60,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
-  pci_enumerate();
+  klog(pci_enumerate(), "PCI");
 
   printf("Hello, world!\r\n");
 
