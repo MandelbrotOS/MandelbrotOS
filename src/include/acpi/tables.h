@@ -62,7 +62,7 @@ typedef struct madt_ioapic {
   uint8_t apic_id;
   uint8_t reserved;
   uint32_t address;
-  uint32_t gsib;
+  uint32_t gsi;
 } __attribute__((packed)) madt_ioapic_t;
 
 typedef struct madt_iso {

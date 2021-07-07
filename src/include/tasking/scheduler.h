@@ -41,4 +41,6 @@ typedef struct process {
   thread_t *threads;
 } process_t;
 
+void scheduler_init();
+
 #endif

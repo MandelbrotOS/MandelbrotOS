@@ -36,15 +36,11 @@ bool do_acpi_checksum(sdt_t *th) {
 }
 
 void *get_table(char *signature, int index) {
-  int entries;
-  sdt_t *h;
-
-  entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
-
+  size_t entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
   int i = 0;
 
-  for (int t = 0; t < entries; t++) {
-    h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
+  for (size_t t = 0; t < entries; t++) {
+    sdt_t* h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
 
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)

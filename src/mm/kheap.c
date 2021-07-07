@@ -56,16 +56,16 @@ void *kheap_alloc(kheap_t *heap, uint64_t size) {
                              : size / block->bsize;
         uint8_t *bm = (uint8_t *)&block[1];
 
-        for (uint64_t x = 0; x < bcnt; ++x) {
+        for (uint64_t x = 0; x < bcnt; x++) {
           uint64_t y;
 
-          for (y = 0; bm[x + y] == 0 && y < bneed; ++y)
+          for (y = 0; bm[x + y] == 0 && y < bneed; y++)
             ;
 
           if (y == bneed) {
             uint8_t nid = kheap_get_nid(bm[x - 1], bm[x + y]);
 
-            for (uint64_t z = 0; z < y; ++z)
+            for (uint64_t z = 0; z < y; z++)
               bm[x + z] = nid;
 
             block->used += y;
@@ -76,9 +76,8 @@ void *kheap_alloc(kheap_t *heap, uint64_t size) {
         }
       }
     }
-    /* kheap_add_block(&kernel_heap, (uint64_t)(pmalloc(10) + PHYS_MEM_OFFSET),
-     */
-    /* 10 * PAGE_SIZE, BLOCK_SIZE); */
+    kheap_add_block(&kernel_heap, (void *)(pmalloc(10) + PHYS_MEM_OFFSET),
+                    10 * PAGE_SIZE, BLOCK_SIZE);
   }
 }
 
@@ -91,7 +90,7 @@ void kheap_free(kheap_t *heap, void *ptr) {
       uint8_t id = bm[bi];
 
       for (uint64_t x = bi; bm[x] == id && x < (block->size / block->bsize);
-           ++x)
+           x++)
         bm[x] = 0;
 
       return;
@@ -99,24 +98,36 @@ void kheap_free(kheap_t *heap, void *ptr) {
   }
 }
 
+void *kheap_realloc(kheap_t *heap, void *ptr, size_t size) {
+  for (kheap_block_t *block = heap->fblock; block; block = block->next) {
+    if ((uintptr_t)ptr > (uintptr_t)block &&
+        (uintptr_t)ptr < (uintptr_t)block + block->size) {
+      uint64_t bi = ((uintptr_t)ptr - (uintptr_t)&block[1]) / block->bsize;
+      uint8_t *bm = (uint8_t *)&block[1];
+      uint8_t id = bm[bi];
+
+      size_t x;
+      for (x = bi; bm[x] == id && x < (block->size / block->bsize); x++)
+        ;
+      x *= block->bsize;
+
+      void *new_ptr = kheap_alloc(heap, size);
+      memcpy(new_ptr, ptr, x);
+
+      kheap_free(heap, ptr);
+
+      return new_ptr;
+    }
+  }
+  return kheap_alloc(heap, size);
+}
+
 void *kmalloc(size_t size) { return kheap_alloc(&kernel_heap, size); }
 
 void kfree(void *ptr) { kheap_free(&kernel_heap, ptr); }
 
 void *krealloc(void *ptr, size_t size) {
-  void *new_ptr;
-  if (size == 0)
-    new_ptr = NULL;
-  else if (!ptr)
-    new_ptr = kmalloc(size);
-  else {
-    new_ptr = kmalloc(size);
-    memcpy(new_ptr, ptr, size);
-  }
-
-  kfree(ptr);
-  /* printf("Exiting realloc"); */
-  return new_ptr;
+  return kheap_realloc(&kernel_heap, ptr, size);
 }
 
 int init_heap() {

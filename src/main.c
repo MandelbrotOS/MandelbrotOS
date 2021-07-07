@@ -17,6 +17,7 @@
 #include <sys/idt.h>
 #include <sys/irq.h>
 #include <sys/isr.h>
+#include <tasking/scheduler.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
@@ -50,8 +51,6 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_isr();
   init_irq();
 
-  asm volatile("sti");
-
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_pit(), "PIT");
   klog(init_lapic(), "LAPIC");
@@ -59,6 +58,8 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
+
+  scheduler_init();
 
   printf("Hello, world!\r\n");
 
