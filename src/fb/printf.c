@@ -7,6 +7,7 @@
 #include <fb/fb.h>
 #include <printf.h>
 #include <string.h>
+#include <vprintf.h>
 
 // Not my implementation. Taken from https://wiki.osdev.org/User:A22347/Printf
 

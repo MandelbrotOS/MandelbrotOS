@@ -1,15 +1,17 @@
 #include <fb/fb.h>
 #include <klog.h>
 #include <printf.h>
+#include <stdarg.h>
 #include <stdint.h>
+#include <vprintf.h>
 
-#define KLOG_GREEN 0x11ff11
-#define KLOG_RED 0xff1111
-#define KLOG_YELLOW 0xffff11
-#define KLOG_BLUE 0x1111ff
+#define KLOG_GREEN 0x55FF55
+#define KLOG_RED 0xFF5555
+#define KLOG_YELLOW 0xFFFF55
+#define KLOG_BLUE 0x5555FF
 
-void klog(int type, char *message) {
-
+void klog(int type, char *message, ...) {
+  va_list list;
   uint32_t old_fg = curr_fg_col;
 
   switch (type) {
@@ -32,14 +34,19 @@ void klog(int type, char *message) {
     curr_fg_col = KLOG_YELLOW;
     printf("WARN");
     curr_fg_col = old_fg;
-    printf(" ] %s\r\n", message);
+    printf(" ]");
+    va_start(list, message);
+    vprintf(message, list);
     break;
   case 3:
     printf("[ ");
     curr_fg_col = KLOG_BLUE;
     printf("INFO");
     curr_fg_col = old_fg;
-    printf(" ] %s\r\n", message);
+    printf(" ] ");
+    va_start(list, message);
+    vprintf(message, list);
     break;
   }
+  va_end(list);
 }
