@@ -9,6 +9,7 @@
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
+#include <pci/pci.h>
 #include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -59,6 +60,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
+  pci_enumerate();
 
   printf("Hello, world!\r\n");
 
