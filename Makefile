@@ -4,7 +4,7 @@ LD = ld
 CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -machine q35 -soundhw pcspk -monitor stdio
+QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
 
 OS = mandelbrotos.hdd
 KERNEL = mandelbrotos.elf
@@ -17,6 +17,7 @@ CFLAGS := \
 	-Isrc/include \
 	-Wall \
 	-Wextra \
+	-Werror \
 	-lm \
 	-std=gnu99 \
 	-Isrc/include \
