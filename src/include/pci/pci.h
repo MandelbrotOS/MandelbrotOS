@@ -10,7 +10,7 @@ typedef struct pci_device {
   uint8_t class;
   uint8_t subclass;
   uint16_t device_id;
-  uint8_t vendor_id;
+  uint16_t vendor_id;
 } pci_t;
 
 extern const char *pci_device_classes[];
