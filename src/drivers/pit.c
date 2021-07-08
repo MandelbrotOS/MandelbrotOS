@@ -1,6 +1,7 @@
 #include <asm.h>
 #include <stdint.h>
 #include <sys/irq.h>
+#include <tasking/scheduler.h>
 
 static volatile uint64_t timer_ticks = 0;
 
@@ -11,7 +12,10 @@ void pit_phase(int hz) {
   outb(0x40, divisor >> 8);
 }
 
-void pit_handler() { timer_ticks++; }
+void pit_handler() {
+  timer_ticks++;
+  schedule();
+}
 
 void sleep(uint64_t ticks) {
   uint64_t rest_ticks = timer_ticks + ticks;

@@ -17,7 +17,6 @@ CFLAGS := \
 	-Isrc/include \
 	-Wall \
 	-Wextra \
-	-Werror \
 	-lm \
 	-std=gnu99 \
 	-Isrc/include \

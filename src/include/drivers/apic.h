@@ -5,8 +5,7 @@
 
 uint8_t lapic_get_id();
 void lapic_eoi();
-void ioapic_redirect_irq(uint8_t lapic_id, uint8_t irq, uint8_t vect,
-                         uint64_t flags);
+
 int init_lapic();
 
 #endif

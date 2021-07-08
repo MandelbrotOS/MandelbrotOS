@@ -40,7 +40,7 @@ void *get_table(char *signature, int index) {
   int i = 0;
 
   for (size_t t = 0; t < entries; t++) {
-    sdt_t* h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
+    sdt_t *h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
 
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)

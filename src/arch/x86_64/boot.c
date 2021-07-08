@@ -2,7 +2,7 @@
 #include <main.h>
 #include <stdint.h>
 
-static uint8_t stack[65536] = {0};
+static uint8_t stack[131072] = {0};
 
 static struct stivale2_header_tag_framebuffer fb_request = {
     .tag = {.identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID, .next = 0},

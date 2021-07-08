@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <boot/stivale2.h>
+
 typedef struct registers {
   uint64_t r15;
   uint64_t r14;
@@ -34,13 +36,11 @@ typedef struct thread {
   int exit_state;
   size_t tid;
   registers_t registers;
+  struct thread *next;
 } thread_t;
 
-typedef struct process {
-  size_t pid;
-  thread_t *threads;
-} process_t;
+void schedule();
 
-void scheduler_init();
+void scheduler_init(struct stivale2_struct_tag_smp *smp);
 
 #endif

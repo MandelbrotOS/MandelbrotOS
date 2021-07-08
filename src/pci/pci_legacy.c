@@ -1,8 +1,8 @@
 #include <asm.h>
+#include <klog.h>
 #include <mm/kheap.h>
 #include <pci/pci.h>
 #include <printf.h>
-#include <klog.h>
 
 uint64_t pci_devc = 0;
 pci_t *pci_devices;
@@ -98,6 +98,6 @@ void pci_legacy_enumerate() {
 
   for (size_t device = 0; device < pci_devc; device++)
     klog(3, "Vendor: %x, DID: %x, C: %x, SC: %x\r\n",
-           pci_devices[device].vendor_id, pci_devices[device].device_id,
-           pci_devices[device].class, pci_devices[device].subclass);
+         pci_devices[device].vendor_id, pci_devices[device].device_id,
+         pci_devices[device].class, pci_devices[device].subclass);
 }
