@@ -7,27 +7,22 @@
 uint64_t pci_devc = 0;
 pci_t *pci_devices;
 
-uint32_t pci_legacy_read_dword(uint8_t bus, uint8_t device, uint8_t function,
-                               uint8_t reg) {
+uint32_t pci_legacy_read_dword(uint8_t bus, uint8_t device, uint8_t function, uint8_t reg) {
   uint32_t target = (1 << 31) | ((uint32_t)bus << 16) |
-                    ((uint32_t)(device & 31) << 11) |
-                    ((uint32_t)(function & 7) << 8) | (reg & 0xFC);
+                    		((uint32_t)(device & 31) << 11) |
+                		((uint32_t)(function & 7) << 8) | (reg & 0xFC);
 
   outl(0xCF8, target);
 
   return inl(0xCFC);
 }
 
-uint16_t pci_legacy_get_vendor_id(uint8_t bus, uint8_t device,
-                                  uint8_t function) {
+uint16_t pci_legacy_get_vendor_id(uint8_t bus, uint8_t device, uint8_t function) {
   return (uint16_t)(pci_legacy_read_dword(bus, device, function, 0));
 }
 
-uint16_t pci_legacy_get_device_id(uint8_t bus, uint8_t device,
-                                  uint8_t function) {
-  return (
-      uint16_t)(((uint32_t)pci_legacy_read_dword(bus, device, function, 0)) >>
-                16);
+uint16_t pci_legacy_get_device_id(uint8_t bus, uint8_t device, uint8_t function) {
+  return (uint16_t)(pci_legacy_read_dword(bus, device, function, 0) >> 16);
 }
 
 uint8_t pci_legacy_get_class(uint8_t bus, uint8_t device, uint8_t function) {
@@ -97,7 +92,9 @@ void pci_legacy_enumerate() {
   pci_legacy_scan_bus(0);
 
   for (size_t device = 0; device < pci_devc; device++)
-    klog(3, "Vendor: %x, DID: %x, C: %x, SC: %x\r\n",
-         pci_devices[device].vendor_id, pci_devices[device].device_id,
-         pci_devices[device].class, pci_devices[device].subclass);
+    klog(3, "%s / %s / %s / %s\r\n",
+	pci_get_vendor_name(pci_devices[device].vendor_id),
+	pci_get_subclass_name(pci_devices[device].class, pci_devices[device].subclass),
+	pci_device_classes[pci_devices[device].class],
+	pci_get_device_name(pci_devices[device].vendor_id, pci_devices[device].device_id));
 }
