@@ -65,7 +65,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
 
   scheduler_init(smp_info);
 
-  printf("Hello, world!\r\n");
+  printf("Welcome to Mandelbrot OS!\r\n");
 
   while (1)
     ;
