@@ -13,6 +13,11 @@ typedef struct pci_device {
   uint8_t vendor_id;
 } pci_t;
 
+extern const char *pci_device_classes[];
+
+const char *pci_get_subclass_name(uint8_t class, uint8_t subclass);
+const char *pci_get_vendor_name(uint16_t vendor_id);
+const char *pci_get_device_name(uint16_t vendor_id, uint16_t device_id);
 void pci_legacy_enumerate();
 int pci_enumerate();
 
