@@ -4,8 +4,8 @@
 static gdt_entry_t gdt[8];
 static gdt_pointer_t gdt_ptr;
 
-void load_gdt(gdt_pointer_t gdt_ptr_in) {
-  asm volatile("lgdt %0" : : "m"(gdt_ptr_in) : "memory");
+void load_gdt() {
+  asm volatile("lgdt %0" : : "m"(gdt_ptr) : "memory");
   asm volatile("mov %%rsp, %%rax\n"
                "push $0x10\n"
                "push %%rax\n"
@@ -64,7 +64,7 @@ int init_gdt() {
                          .access = 0xf2,
                          .granularity = 0x0}; // User data descriptor
 
-  load_gdt(gdt_ptr);
+  load_gdt();
 
   return 0;
 }

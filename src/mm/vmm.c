@@ -40,6 +40,10 @@ void vmm_unmap_page(uint64_t *pagemap, uintptr_t virtual_address) {
   pml1[level1] = 0;
 }
 
+void vmm_switch_map_to_kern() {
+  asm volatile("mov %0, %%cr3" : : "r"(kernel_pagemap));
+}
+
 int init_vmm() {
   kernel_pagemap = (uint64_t *)pcalloc(1);
 
@@ -49,7 +53,7 @@ int init_vmm() {
   for (uintptr_t i = 0; i < 0x200000000; i += PAGE_SIZE)
     vmm_map_page(kernel_pagemap, i, i + PHYS_MEM_OFFSET, 3);
 
-  asm volatile("mov %0, %%cr3" : : "r"(kernel_pagemap));
+  vmm_switch_map_to_kern();
 
   return 0;
 }

@@ -31,6 +31,7 @@ typedef struct idt_ptr {
 extern idt_entry_t idt[256];
 
 void idt_set_gate(idt_entry_t *entry, int user_space, void (*func)());
+void load_idt();
 int init_idt();
 
 #endif

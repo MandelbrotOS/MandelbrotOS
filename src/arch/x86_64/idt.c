@@ -13,13 +13,15 @@ void idt_set_gate(idt_entry_t *entry, int user_space, void (*func)()) {
                  idt_a_type_interrupt;
 }
 
+void load_idt() { asm volatile("lidt %0" : : "m"(idtp)); }
+
 int init_idt() {
   asm volatile("cli");
 
   idtp.limit = sizeof(idt) - 1;
   idtp.base = (uint64_t)&idt;
 
-  asm volatile("lidt %0" : : "m"(idtp));
+  load_idt();
 
   return 0;
 }

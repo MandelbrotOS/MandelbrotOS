@@ -17,6 +17,8 @@ typedef struct gdt_entry {
   uint8_t high;
 } __attribute__((packed)) gdt_entry_t;
 
+void load_gdt();
+
 int init_gdt();
 
 #endif
