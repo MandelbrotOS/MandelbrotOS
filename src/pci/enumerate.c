@@ -4,6 +4,8 @@
 #include <pci/pci.h>
 #include <printf.h>
 
+mcfg_t *mcfg;
+
 void pci_enumerate_fn(uint64_t device_address, uint64_t bus, uint8_t device, uint8_t function) {
   uint64_t function_address = device_address + (function << 12);
 
@@ -26,7 +28,12 @@ void pci_enumerate_dev(uint64_t bus_address, uint64_t bus, uint8_t device) {
 
   if (!pci_device->device_id || pci_device->device_id == 0xFFFF) return;
 
-  for (uint8_t function = 0; function < 8; function++)
+  // We do not handle PCI to PCI or Cardbus bridges currently
+  if (pci_device->header_type & 0b1111111) return;
+
+  uint8_t functions = pci_device->header_type & (1 << 7) ? 8 : 1;
+
+  for (uint8_t function = 0; function < functions; function++)
     pci_enumerate_fn(device_address, bus, device, function);
 }
 
@@ -42,7 +49,7 @@ void pci_enumerate_bus(uint64_t base_address, uint64_t bus) {
 }
 
 int pci_enumerate() {
-  mcfg_t *mcfg = (mcfg_t *)get_table("MCFG", 0);
+  mcfg = (mcfg_t *)get_table("MCFG", 0);
 
   if (mcfg == NULL) return 1;
 
