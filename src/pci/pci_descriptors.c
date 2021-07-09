@@ -300,7 +300,7 @@ const char *pci_get_vendor_name(uint16_t vendor_id) {
   case 0x80EE:
       return "Oracle Corporation";
   default:
-      return vendor_id == 0x86 ? "fuck" : "Unknown vendor";
+      return "Unknown vendor";
   }
 }
 

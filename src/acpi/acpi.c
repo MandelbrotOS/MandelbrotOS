@@ -1,7 +1,7 @@
 #include <acpi/acpi.h>
 #include <acpi/tables.h>
 #include <mm/kheap.h>
-#include <mm/vmm.h>
+#include <mm/pmm.h>
 #include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -12,7 +12,6 @@ rsdp_t *rsdp;
 rsdt_t *rsdt;
 xsdt_t *xsdt;
 madt_t *madt;
-sdt_t *facp;
 
 madt_ioapic_t **madt_ioapics;
 madt_lapic_t **madt_lapics;
@@ -40,7 +39,7 @@ void *get_table(char *signature, int index) {
   int i = 0;
 
   for (size_t t = 0; t < entries; t++) {
-    sdt_t *h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + KERNEL_MEM_OFFSET);
+    sdt_t *h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + PHYS_MEM_OFFSET);
 
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
@@ -91,11 +90,9 @@ int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
 
   if (!rsdp->revision)
-    rsdt = (rsdt_t *)(rsdp->rsdt_address + KERNEL_MEM_OFFSET);
+    rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
   else
-    xsdt = (xsdt_t *)(rsdp->xsdt_address + KERNEL_MEM_OFFSET);
-
-  facp = get_table("FACP", 0);
+    xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET);
 
   gather_madt();
 
