@@ -11,6 +11,7 @@
 rsdp_t *rsdp;
 rsdt_t *rsdt;
 xsdt_t *xsdt;
+mcfg_t *mcfg;
 madt_t *madt;
 
 madt_ioapic_t **madt_ioapics;

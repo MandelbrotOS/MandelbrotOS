@@ -9,6 +9,7 @@ extern rsdp_t *rsdp;
 extern rsdt_t *rsdt;
 extern xsdt_t *xsdt;
 extern madt_t *madt;
+extern mcfg_t *mcfg;
 extern sdt_t *facp;
 
 extern madt_ioapic_t **madt_ioapics;
