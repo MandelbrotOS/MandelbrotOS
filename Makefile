@@ -1,32 +1,32 @@
 ARCH = x86_64
 
-LD = ld
+BUILDDIR = ./build
+BINDIR   = ./bin
+
+KERNEL = ./bin/mandelbrotos.elf
+OS = ./bin/mandelbrotos.hdd
+
 CC = gcc
+LD = ld
 AS = nasm
 
 QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
 
-OS = mandelbrotos.hdd
-KERNEL = mandelbrotos.elf
-
-ASFLAGS = -f elf64
-
 CFLAGS := \
-	-mcmodel=kernel \
-	-ffreestanding \
-	-Isrc/include \
 	-Wall \
 	-Wextra \
 	-Werror \
-	-lm \
+	-Wno-implicit-fallthrough \
 	-std=gnu99 \
 	-Isrc/include \
+	-ffreestanding \
+	-fno-pic -no-pie \
+	-fno-stack-protector \
+	-mcmodel=kernel \
 	-mgeneral-regs-only \
 	-mno-red-zone \
 	-pipe \
-	-fno-PIC -fno-pic -no-pie \
-	-fno-stack-protector \
-	-Wno-implicit-fallthrough 
+	-lm
 
 LDFLAGS := \
 	-static \
@@ -34,10 +34,11 @@ LDFLAGS := \
 	-nostdlib \
 	-z max-page-size=0x1000
 
+ASFLAGS = -f elf64
 
-CFILES := $(shell find src/ -name '*.c')
-ASFILES := $(shell find src/ -name '*.asm')
-OFILES := $(CFILES:.c=.o) $(ASFILES:.asm=.o)
+CFILES  := $(shell find src/ -type f -name '*.c')
+ASFILES := $(shell find src/ -type f -name '*.asm')
+OBJS    := $(CFILES:%.c=./build/%.o) $(ASFILES:%.asm=./build/%.o)
 
 all: $(OS) qemu
 
@@ -59,21 +60,24 @@ $(OS): $(KERNEL)
 	@ echo "[LIMINE] Install"
 	@ ./resources/limine-install $@
 
-$(KERNEL): $(OFILES) $(LIBGCC)
+$(KERNEL): $(OBJS) $(LIBGCC)
+	@ mkdir -p $(@D)
 	@ echo "[LD] $^"
 	@ $(LD) $(LDFLAGS) $^ -o $@
 
-%.o: %.c
+./build/%.o: %.c
+	@ mkdir -p $(@D)
 	@ echo "[CC] $<"
-	@ $(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.asm
+./build/%.o: %.asm
+	@ mkdir -p $(@D)
 	@ echo "[AS] $<"
 	@ $(AS) $(ASFLAGS) $< -o $@
 
 clean:
 	@ echo "[CLEAN]"
-	@ rm -rf $(OFILES) $(KERNEL) $(OS)
+	@ rm -rf $(BUILDDIR) $(BINDIR)
 
 qemu:
 	@ echo "[QEMU]"
