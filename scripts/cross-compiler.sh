@@ -63,3 +63,6 @@ cd ..
 
 rm -rf build
 
+sed -i 's/CC = gcc/CC = cross/bin/$(ARCH)-elf-gcc'
+sed -i 's/LD = ld/LD = cross/bin/$(ARCH)-elf-ld'
+

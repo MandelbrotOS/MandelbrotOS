@@ -10,7 +10,7 @@ CC = gcc
 LD = ld
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
+QEMU = qemu-system-$(ARCH) -smp 2 -M q35 -soundhw pcspk -monitor stdio
 
 CFLAGS := \
 	-Wall \
@@ -40,8 +40,9 @@ CFILES  := $(shell find src/ -type f -name '*.c')
 ASFILES := $(shell find src/ -type f -name '*.asm')
 OBJS    := $(CFILES:%.c=./build/%.o) $(ASFILES:%.asm=./build/%.o)
 
-all: $(OS) qemu
-
+.DEFAULT: all
+all: submodules $(OS) qemu
+	
 $(OS): $(KERNEL)
 	@ echo "[DD] $@"
 	@ dd if=/dev/zero of=$@ bs=1M seek=64 count=0
@@ -50,15 +51,15 @@ $(OS): $(KERNEL)
 	@ echo "[PARTED] Partion"
 	@ parted -s $@ mkpart primary 2048s 100%
 	@ echo "[ECHFS] Format"
-	@ ./resources/echfs-utils -g -p0 $@ quick-format 512
+	@ ./echfs/echfs-utils -g -p0 $@ quick-format 512
 	@ echo "[ECHFS] resources/limine.cfg"
-	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.cfg boot/limine.cfg
+	@ ./echfs/echfs-utils -g -p0 $@ import resources/limine.cfg boot/limine.cfg
 	@ echo "[ECHFS] resources/limine.sys"
-	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.sys boot/limine.sys
+	@ ./echfs/echfs-utils -g -p0 $@ import resources/limine.sys boot/limine.sys
 	@ echo "[ECHFS] boot/"
-	@ ./resources/echfs-utils -g -p0 $@ import $< boot/$<
+	@ ./echfs/echfs-utils -g -p0 $@ import $< boot/mandelbrotos.elf
 	@ echo "[LIMINE] Install"
-	@ ./resources/limine-install $@
+	@ ./limine/limine-install $@
 
 $(KERNEL): $(OBJS) $(LIBGCC)
 	@ mkdir -p $(@D)
@@ -75,11 +76,35 @@ $(KERNEL): $(OBJS) $(LIBGCC)
 	@ echo "[AS] $<"
 	@ $(AS) $(ASFLAGS) $< -o $@
 
+.PHONY: submodules
+submodules:
+	@ git submodule update --init
+	@ git submodule update --remote
+	@ make -C echfs utils
+
+.PHONY: clean
 clean:
 	@ echo "[CLEAN]"
-	@ rm -rf $(BUILDDIR) $(BINDIR)
+	@ rm -rf $(BUILDDIR) $(BINDIR) ./image ./tools
+	@ make -C echfs clean
 
+.PHONY: qemu
 qemu:
 	@ echo "[QEMU]"
-	@ $(QEMU)
+	@ $(QEMU) -hda $(OS)
+
+./tools/OVMF.fd:
+	@ mkdir -p ./tools
+	@ wget -P ./tools https://efi.akeo.ie/OVMF/OVMF-X64.zip
+	@ cd ./tools && unzip OVMF-X64.zip
+	@ rm -rf OVMF-X64.zip readme.txt
+
+.PHONY: test
+test: $(KERNEL) ./tools/OVMF.fd
+	@ mkdir -p ./image/EFI/BOOT
+	@ mkdir -p ./image/boot
+	@ cp ./limine/BOOTX64.EFI ./image/EFI/BOOT
+	@ cp ./resources/limine.cfg ./image
+	@ cp $< ./image/boot/mandelbrotos.elf
+	@ $(QEMU) -hda fat:rw:image -bios tools/OVMF.fd
 
