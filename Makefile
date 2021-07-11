@@ -4,10 +4,10 @@ LD = ld
 CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
+QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 2 -M q35 -soundhw pcspk -monitor stdio
 
-OS = mandelbrotos.hdd
-KERNEL = mandelbrotos.elf
+HDD = mandelbrotos.hdd
+KERNEL = $(BUILD_DIRECTORY)/mandelbrotos.elf
 
 ASFLAGS = -f elf64
 
@@ -24,7 +24,7 @@ CFLAGS := \
 	-mgeneral-regs-only \
 	-mno-red-zone \
 	-pipe \
-	-fno-PIC -fno-pic -no-pie \
+        -fno-pic -no-pie \
 	-fno-stack-protector \
 	-Wno-implicit-fallthrough 
 
@@ -37,45 +37,76 @@ LDFLAGS := \
 
 CFILES := $(shell find src/ -name '*.c')
 ASFILES := $(shell find src/ -name '*.asm')
-OFILES := $(CFILES:.c=.o) $(ASFILES:.asm=.o)
 
-all: $(OS) qemu
+OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.c.o, $(CFILES)) \
+        $(patsubst %.asm, $(BUILD_DIRECTORY)/%.asm.o, $(ASFILES))
 
-$(OS): $(KERNEL)
-	@ echo "[DD] $@"
+BUILD_DIRECTORY := build
+DIRECTORY_GUARD = @mkdir -p $(@D)
+
+all: $(HDD) qemu
+
+$(HDD): $(KERNEL)
+	@ echo "[HDD]"
 	@ dd if=/dev/zero of=$@ bs=1M seek=64 count=0
-	@ echo "[PARTED] GPT"
 	@ parted -s $@ mklabel gpt
-	@ echo "[PARTED] Partion"
 	@ parted -s $@ mkpart primary 2048s 100%
-	@ echo "[ECHFS] Format"
 	@ ./resources/echfs-utils -g -p0 $@ quick-format 512
-	@ echo "[ECHFS] resources/limine.cfg"
 	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.cfg boot/limine.cfg
-	@ echo "[ECHFS] resources/limine.sys"
 	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.sys boot/limine.sys
-	@ echo "[ECHFS] boot/"
-	@ ./resources/echfs-utils -g -p0 $@ import $< boot/$<
-	@ echo "[LIMINE] Install"
+	@ ./resources/echfs-utils -g -p0 $@ import $< boot/kernel
 	@ ./resources/limine-install $@
 
-$(KERNEL): $(OFILES) $(LIBGCC)
+$(KERNEL): $(OBJ)
 	@ echo "[LD] $^"
 	@ $(LD) $(LDFLAGS) $^ -o $@
 
-%.o: %.c
-	@ echo "[CC] $<"
+$(BUILD_DIRECTORY)/%.c.o: %.c
+	@ echo "[CC] $^"	
+	@ $(DIRECTORY_GUARD)
 	@ $(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.asm
-	@ echo "[AS] $<"
+$(BUILD_DIRECTORY)/%.asm.o: %.asm
+	@ echo "[AS] $^"
+	@ $(DIRECTORY_GUARD)
 	@ $(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	@ echo "[CLEAN]"
-	@ rm -rf $(OFILES) $(KERNEL) $(OS)
+	@ rm -rf $(BUILD_DIRECTORY) $(HDD)
 
-qemu:
-	@ echo "[QEMU]"
+qemu: $(HDD)
 	@ $(QEMU)
+
+toolchain:
+	# Limine
+	@ echo "[BUILD LIMINE]"
+	@ mv thirdparty/limine/limine-install-linux-x86_64 resources/limine-install
+	@ mv thirdparty/limine/limine.sys resources
+	@ mv thirdparty/limine/BOOTX64.EFI resources
+	 
+	# Echfs
+	@ echo "[BUILD ECHFS]"
+	@ cd thirdparty/echfs; make echfs-utils; make mkfs.echfs
+	@ mv thirdparty/echfs/echfs-utils resources
+
+toolchain_nonnative:
+	# Limine
+	@ echo "[BUILD LIMINE]"
+	@ mv thirdparty/limine/limine-install-linux-x86_64 resources/limine-install
+	@ mv thirdparty/limine/limine.sys resources
+	@ mv thirdparty/limine/BOOTX64.EFI resources
+	 
+	# Echfs
+	@ echo "[BUILD ECHFS]"
+	@ cd thirdparty/echfs; make echfs-utils; make mkfs.echfs
+	@ mv thirdparty/echfs/echfs-utils resources
+	 
+	# Cross compiler
+	@ echo "[BUILD CROSS COMPILER]"
+	@ ./cross-compiler.sh
+	 
+	# Set compiler 
+	@ echo "[SET MAKEFILE]"
+	@ sed -i 's/CC = gcc/CC = cross/bin/$(ARCH)-elf-gcc/g' Makefile
+	@ sed -i 's/LD = ld/LD = cross/bin/$(ARCH)-elf-ld/g' Makefile
 

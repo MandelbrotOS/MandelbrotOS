@@ -1,6 +1,6 @@
 # Welcome
 Welcome to the Mandelbrot Operating System, a community driven OS by the youth. 
-This OS is built by a humble group of teenagers over at [Discord](https://discord.gg/W523cD3Q3P). 
+This OS is built by a humble (Or not so humble idk) group of teenagers over at [Discord](https://discord.gg/W523cD3Q3P). 
 We do this solely to have fun and to learn. 
 We are not organized and are here to enjoy ourselves. 
 Sounds appealing? Create a pull request!
@@ -8,10 +8,6 @@ Sounds appealing? Create a pull request!
 # About 
 This project is made for fun and learning.
 It's like tracing OS history, but with modern knowledge and without a lot of budget lol
-
-# Where are we in the project
-- A filesystem is being developed. ATA is somewhat functional but still needs testing.
-- We have our own fork of limine which can boot from the flatfs.
 
 # Build Requirements
 
@@ -25,13 +21,11 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 Mandelbrot depends on some tools, like `limine-install`, `echfs-utils` and the GNU Toolchain.  
 If you are on an x86\_64 system run  
 ```
-cd scripts
-./build-tools.sh
+make toolchain
 ```  
 If you are not run
 ```
-cd scripts
-./build-tools-and-chain.sh
+make toolchain_nonnative
 ```  
 After it's done, you can head over to [Building and Running](#building-and-running).
 
@@ -39,8 +33,9 @@ After it's done, you can head over to [Building and Running](#building-and-runni
 To build the OS itself, make sure you have [built the toolchain](#building-the-toolchain). After that, you can
 
 ```
-$ make
-```
+make
+```   
+It will run the QEMU emulator by default.   
 
 # Using
 By default the OS does nothing as we don't have a userland but stuff can be added to the kernel for testing purposes. There will often be remaining test code that is left over.
@@ -67,3 +62,4 @@ All header files must have an ifndef  with the file name in screaming snake case
 
 # Using code
 This is an open source project. Reuse code. Just follow the license terms and we are good. :)
+
