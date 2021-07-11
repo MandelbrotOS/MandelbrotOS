@@ -78,8 +78,8 @@ $(KERNEL): $(OBJS) $(LIBGCC)
 
 .PHONY: submodules
 submodules:
-	@ git submodule update --init
-	@ git submodule update --remote
+	@ git submodule update --init --depth 1
+	@ git submodule update --remote --depth 1
 	@ make -C echfs utils
 
 .PHONY: clean
