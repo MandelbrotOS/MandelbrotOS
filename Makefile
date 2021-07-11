@@ -1,13 +1,14 @@
+GCC_PREFIX = x86_64-elf
 ARCH = x86_64
 
-LD = ld
-CC = gcc
+LD = $(GCC_PREFIX)-ld
+CC = $(GCC_PREFIX)-gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
+QEMU = qemu-system-$(ARCH) -cdrom $(ISO) -smp 2 -M q35 -soundhw pcspk -monitor stdio -enable-kvm
 
-OS = mandelbrotos.hdd
-KERNEL = mandelbrotos.elf
+ISO = mandelbrot.iso
+KERNEL = $(BUILD_DIRECTORY)/mandelbrotos.elf
 
 ASFLAGS = -f elf64
 
@@ -24,7 +25,7 @@ CFLAGS := \
 	-mgeneral-regs-only \
 	-mno-red-zone \
 	-pipe \
-	-fno-PIC -fno-pic -no-pie \
+        -fno-pic -no-pie \
 	-fno-stack-protector \
 	-Wno-implicit-fallthrough 
 
@@ -37,45 +38,33 @@ LDFLAGS := \
 
 CFILES := $(shell find src/ -name '*.c')
 ASFILES := $(shell find src/ -name '*.asm')
-OFILES := $(CFILES:.c=.o) $(ASFILES:.asm=.o)
 
-all: $(OS) qemu
+OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.c.o, $(CFILES)) \
+        $(patsubst %.asm, $(BUILD_DIRECTORY)/%.asm.o, $(ASFILES))
 
-$(OS): $(KERNEL)
-	@ echo "[DD] $@"
-	@ dd if=/dev/zero of=$@ bs=1M seek=64 count=0
-	@ echo "[PARTED] GPT"
-	@ parted -s $@ mklabel gpt
-	@ echo "[PARTED] Partion"
-	@ parted -s $@ mkpart primary 2048s 100%
-	@ echo "[ECHFS] Format"
-	@ ./resources/echfs-utils -g -p0 $@ quick-format 512
-	@ echo "[ECHFS] resources/limine.cfg"
-	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.cfg boot/limine.cfg
-	@ echo "[ECHFS] resources/limine.sys"
-	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.sys boot/limine.sys
-	@ echo "[ECHFS] boot/"
-	@ ./resources/echfs-utils -g -p0 $@ import $< boot/$<
-	@ echo "[LIMINE] Install"
-	@ ./resources/limine-install $@
+BUILD_DIRECTORY := build
+DIRECTORY_GUARD = @mkdir -p $(@D)
 
-$(KERNEL): $(OFILES) $(LIBGCC)
-	@ echo "[LD] $^"
-	@ $(LD) $(LDFLAGS) $^ -o $@
+all: $(ISO)
 
-%.o: %.c
-	@ echo "[CC] $<"
-	@ $(CC) $(CFLAGS) -c $< -o $@
+$(ISO): $(KERNEL)
+	scripts/make-image.sh > /dev/null 2>&1
 
-%.o: %.asm
-	@ echo "[AS] $<"
-	@ $(AS) $(ASFLAGS) $< -o $@
+$(KERNEL): $(OBJ) $(LIBGCC)
+	$(LD) $(LDFLAGS) $^ -o $@
+
+$(BUILD_DIRECTORY)/%.c.o: %.c
+	$(DIRECTORY_GUARD)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+$(BUILD_DIRECTORY)/%.asm.o: %.asm
+	$(DIRECTORY_GUARD)
+	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	@ echo "[CLEAN]"
-	@ rm -rf $(OFILES) $(KERNEL) $(OS)
+	rm -rf $(BUILD_DIRECTORY) $(ISO)
 
-qemu:
-	@ echo "[QEMU]"
-	@ $(QEMU)
+run: $(ISO)
+	$(QEMU)
 
