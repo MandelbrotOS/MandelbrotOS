@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern int is_caps;
+
 enum KBD_ENCODER_IO { KBD_ENC_INPUT_BUF = 0x60, KBD_ENC_CMD_REG = 0x60 };
 
 enum KBD_ENC_CMDS {
@@ -194,7 +196,7 @@ enum KEYCODE {
   KEY_KP_ENTER = 0x3010,
 
   KEY_TAB = 0x4000,
-  KEY_CAPSLOCK = 0x4001,
+  KEY_CAPSLOCK = 0x3A,
 
   // Modify keys ////////////////////////////
 

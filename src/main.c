@@ -41,9 +41,9 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_struct_tag_rsdp *rsdp_info =
       (struct stivale2_struct_tag_rsdp *)stivale2_get_tag(
           bootloader_info, STIVALE2_STRUCT_TAG_RSDP_ID);
-  struct stivale2_struct_tag_smp *smp_info =
-      (struct stivale2_struct_tag_smp *)stivale2_get_tag(
-          bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
+  //struct stivale2_struct_tag_smp *smp_info =
+  //    (struct stivale2_struct_tag_smp *)stivale2_get_tag(
+  //        bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
 
   init_gdt();
 
@@ -63,10 +63,15 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_lapic(), "LAPIC");
   klog(pci_enumerate(), "PCI");
 
-  scheduler_init(smp_info);
+  //scheduler_init(smp_info);
 
   printf("Hello, world!\r\n");
 
-  while (1)
-    ;
+  while (1) {
+    char echo[100] = "";
+    printf("$ ");
+    getline(echo, 100);
+    printf("You typed: %s\n", echo);
+    printf("\r");
+  }
 }
