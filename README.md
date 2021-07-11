@@ -21,9 +21,13 @@ It's like tracing OS history, but with modern knowledge and without a lot of bud
 ### Debian/Ubuntu
 - `sudo apt-get install build-essential qemu nasm xorriso wget mtools uuid-dev parted`
 
+# Cloning the repo
+In order to MandelbrotOS run, you have to clone the repository recursively via the command `git clone https://github.com/MandelbrotOS/MandelbrotOS --recursive`. This will initialize the submodules containing the tools our build system is using. Otherwise, youll have to initialize the submodules manually.
+
+
 # Building the Toolchain
 Mandelbrot depends on some tools, like `limine-install`, `echfs-utils` and the GNU Toolchain.  
-If you are on an x86\_64 system, orypu have a cross-conpiler able to produce binaries for x86_64-elf target, you can skip this step and go to [Building and Running](#building-and-running).
+If you are on an x86\_64 system, or you have a cross-compiler able to produce binaries for x86_64-elf target, you can skip this step and go to [Building and Running](#building-and-running).
  
 If you are not, run
 ```
@@ -33,21 +37,14 @@ cd scripts
 After it's done, you can head over to [Building and Running](#building-and-running).
 
 # Building and Running
-To build the OS itself, make sure you have [built the toolchain](#building-the-toolchain) and initialized the submodules (this can be done by `make submodules`. After that, you can:
+To build the OS itself, make sure you have [built the toolchain](#building-the-toolchain) if necessary. After that, you can:
 
 ```
-$ make
-```
-
-The complete sequence of commands would be:
-```
-$ cd scripts && ./cross-compiler.sh # Only if a cross-toolchain is required
-$ make submodules
 $ make
 ```
 
 # Testing
-By default, the `make` command produces a bootable RAW image. To test MandelbrotOS without creating it issue `make test` after initializing the submodules.
+By default, the `make` command produces a bootable RAW image. To test MandelbrotOS without creating it issue `make test`.
 
 # Using
 By default the OS does nothing as we don't have a userland but stuff can be added to the kernel for testing purposes. There will often be remaining test code that is left over.

@@ -76,12 +76,6 @@ $(KERNEL): $(OBJS) $(LIBGCC)
 	@ echo "[AS] $<"
 	@ $(AS) $(ASFLAGS) $< -o $@
 
-.PHONY: submodules
-submodules:
-	@ git submodule update --init --depth 1
-	@ git submodule update --remote --depth 1
-	@ make -C echfs echfs-utils
-
 .PHONY: clean
 clean:
 	@ echo "[CLEAN]"
