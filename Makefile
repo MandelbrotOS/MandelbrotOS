@@ -1,13 +1,12 @@
-GCC_PREFIX = x86_64-elf
 ARCH = x86_64
 
-LD = $(GCC_PREFIX)-ld
-CC = $(GCC_PREFIX)-gcc
+LD = ld
+CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -cdrom $(ISO) -smp 2 -M q35 -soundhw pcspk -monitor stdio -enable-kvm
+QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 2 -M q35 -soundhw pcspk -monitor stdio
 
-ISO = mandelbrot.iso
+HDD = mandelbrotos.hdd
 KERNEL = $(BUILD_DIRECTORY)/mandelbrotos.elf
 
 ASFLAGS = -f elf64
@@ -45,26 +44,69 @@ OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.c.o, $(CFILES)) \
 BUILD_DIRECTORY := build
 DIRECTORY_GUARD = @mkdir -p $(@D)
 
-all: $(ISO)
+all: $(HDD) qemu
 
-$(ISO): $(KERNEL)
-	scripts/make-image.sh > /dev/null 2>&1
+$(HDD): $(KERNEL)
+	@ echo "[HDD]"
+	@ dd if=/dev/zero of=$@ bs=1M seek=64 count=0
+	@ parted -s $@ mklabel gpt
+	@ parted -s $@ mkpart primary 2048s 100%
+	@ ./resources/echfs-utils -g -p0 $@ quick-format 512
+	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.cfg boot/limine.cfg
+	@ ./resources/echfs-utils -g -p0 $@ import resources/limine.sys boot/limine.sys
+	@ ./resources/echfs-utils -g -p0 $@ import $< boot/kernel
+	@ ./resources/limine-install $@
 
-$(KERNEL): $(OBJ) $(LIBGCC)
-	$(LD) $(LDFLAGS) $^ -o $@
+$(KERNEL): $(OBJ)
+	@ echo "[LD] $^"
+	@ $(LD) $(LDFLAGS) $^ -o $@
 
 $(BUILD_DIRECTORY)/%.c.o: %.c
-	$(DIRECTORY_GUARD)
-	$(CC) $(CFLAGS) -c $< -o $@
-
+	@ echo "[CC] $^"	
+	@ $(DIRECTORY_GUARD)
+	@ $(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIRECTORY)/%.asm.o: %.asm
-	$(DIRECTORY_GUARD)
-	$(AS) $(ASFLAGS) $< -o $@
+	@ echo "[AS] $^"
+	@ $(DIRECTORY_GUARD)
+	@ $(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIRECTORY) $(ISO)
+	@ rm -rf $(BUILD_DIRECTORY) $(HDD)
 
-run: $(ISO)
-	$(QEMU)
+qemu: $(HDD)
+	@ $(QEMU)
+
+toolchain:
+	# Limine
+	@ echo "[BUILD LIMINE]"
+	@ mv thirdparty/limine/limine-install-linux-x86_64 resources/limine-install
+	@ mv thirdparty/limine/limine.sys resources
+	@ mv thirdparty/limine/BOOTX64.EFI resources
+	 
+	# Echfs
+	@ echo "[BUILD ECHFS]"
+	@ cd thirdparty/echfs; make echfs-utils; make mkfs.echfs
+	@ mv thirdparty/echfs/echfs-utils resources
+
+toolchain_nonnative:
+	# Limine
+	@ echo "[BUILD LIMINE]"
+	@ mv thirdparty/limine/limine-install-linux-x86_64 resources/limine-install
+	@ mv thirdparty/limine/limine.sys resources
+	@ mv thirdparty/limine/BOOTX64.EFI resources
+	 
+	# Echfs
+	@ echo "[BUILD ECHFS]"
+	@ cd thirdparty/echfs; make echfs-utils; make mkfs.echfs
+	@ mv thirdparty/echfs/echfs-utils resources
+	 
+	# Cross compiler
+	@ echo "[BUILD CROSS COMPILER]"
+	@ ./cross-compiler.sh
+	 
+	# Set compiler 
+	@ echo "[SET MAKEFILE]"
+	@ sed -i 's/CC = gcc/CC = cross/bin/$(ARCH)-elf-gcc/g' Makefile
+	@ sed -i 's/LD = ld/LD = cross/bin/$(ARCH)-elf-ld/g' Makefile
 
