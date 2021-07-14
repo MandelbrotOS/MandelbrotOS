@@ -3,6 +3,7 @@
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
+#include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/gdt.h>
@@ -17,15 +18,21 @@ void core_init() {
   cpu_locals_t *local = kmalloc(sizeof(cpu_locals_t));
   set_locals(local);
 
-  while (1)
-    asm volatile("sti\n"
-                 "hlt\n");
+  asm volatile("1:\n"
+               "sti\n"
+               "hlt\n"
+               "jmp 1b\n");
 }
 
 int init_smp(struct stivale2_struct_tag_smp *smp_info) {
-  for (size_t i = 1; i < smp_info->cpu_count; i++) {
+  uint8_t bsp_lapic_id = smp_info->bsp_lapic_id;
+
+  for (size_t i = 0; i < smp_info->cpu_count; i++) {
+    if (smp_info->smp_info[i].lapic_id == bsp_lapic_id)
+      continue;
+
     smp_info->smp_info[i].target_stack =
-        (uint64_t)pmalloc(32) + (PAGE_SIZE * 32);
+        (uint64_t)pmalloc(32) + (PAGE_SIZE * 32) + PHYS_MEM_OFFSET;
     smp_info->smp_info[i].goto_address = (uint64_t)core_init;
   }
 

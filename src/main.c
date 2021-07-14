@@ -19,6 +19,7 @@
 #include <sys/irq.h>
 #include <sys/isr.h>
 #include <tasking/scheduler.h>
+#include <tasking/smp.h>
 
 void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
@@ -62,6 +63,7 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_acpi(rsdp_info), "ACPI");
   klog(init_lapic(), "LAPIC");
   klog(pci_enumerate(), "PCI");
+  klog(init_smp(smp_info), "SMP");
 
   scheduler_init(smp_info);
 

@@ -4,7 +4,7 @@ LD = ld
 CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 2 -M q35 -soundhw pcspk -monitor stdio
+QEMU = qemu-system-$(ARCH) -hda $(OS) -smp 4 -M q35 -soundhw pcspk -monitor stdio
 
 OS = mandelbrotos.hdd
 KERNEL = mandelbrotos.elf
@@ -39,7 +39,7 @@ CFILES := $(shell find src/ -name '*.c')
 ASFILES := $(shell find src/ -name '*.asm')
 OFILES := $(CFILES:.c=.o) $(ASFILES:.asm=.o)
 
-all: $(OS) qemu
+all: clean $(OS) qemu
 
 $(OS): $(KERNEL)
 	@ echo "[DD] $@"
