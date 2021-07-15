@@ -12,9 +12,10 @@ void pit_phase(int hz) {
   outb(0x40, divisor >> 8);
 }
 
-void pit_handler() {
+void pit_handler(uint64_t rsp) {
   timer_ticks++;
-  schedule();
+  if (timer_ticks % 100 == 0)
+    schedule(rsp);
 }
 
 void sleep(uint64_t ticks) {

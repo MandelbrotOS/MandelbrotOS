@@ -1,18 +1,82 @@
 extern c_isr_handler
 extern c_irq_handler
 
+%macro pushaq 0
+    push rax
+    push rbx
+    push rcx
+    push rdx
+    push rsi
+    push rdi
+    push rbp
+    push r8
+    push r9
+    push r10
+    push r11
+    push r12
+    push r13
+    push r14
+    push r15
+%endmacro
+
+%macro popaq 0
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop r11
+    pop r10
+    pop r9
+    pop r8
+    pop rbp
+    pop rdi
+    pop rsi
+    pop rdx
+    pop rcx
+    pop rbx
+    pop rax
+%endmacro
+
 isr_stub:
+  cld
+  pushaq
+
+  mov rsi, rsp
   call c_isr_handler
+  add rsp, 16
+  
+  popaq
+
   iretq
 
 irq_stub:
+  cld
+  pushaq
+
+  mov rsi, rsp
   call c_irq_handler
+  add rsp, 16
+  
+  popaq
+
   iretq
 
 %macro ISR 1
   global isr%1
   isr%1:
     cli
+    push 0
+    push %1
+    mov rdi, %1
+    jmp isr_stub
+    ret
+%endmacro
+
+%macro ISR_ERR 1
+  global isr%1
+  isr%1:
+    cli
+    push %1
     mov rdi, %1
     jmp isr_stub
     ret
@@ -22,6 +86,8 @@ irq_stub:
   global irq%1
   irq%1:
     cli
+    push 0
+    push %1
     mov rdi, %2
     jmp irq_stub
     ret
@@ -35,16 +101,16 @@ ISR 4
 ISR 5
 ISR 6
 ISR 7
-ISR 8
+ISR_ERR 8
 ISR 9
-ISR 10
-ISR 11
-ISR 12
-ISR 13 
-ISR 14 
+ISR_ERR 10
+ISR_ERR 11
+ISR_ERR 12
+ISR_ERR 13 
+ISR_ERR 14 
 ISR 15 
 ISR 16 
-ISR 17
+ISR_ERR 17
 ISR 18 
 ISR 19 
 ISR 20

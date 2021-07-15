@@ -1,8 +1,9 @@
 #include <printf.h>
+#include <registers.h>
+#include <stdint.h>
 #include <sys/idt.h>
 #include <sys/isr.h>
 
-// ASM handlers
 extern void isr0();
 extern void isr1();
 extern void isr2();
@@ -36,7 +37,6 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
-// Exception messages
 char *exception_messages[] = {
     "Division By Zero",
     "Debug",
@@ -73,7 +73,6 @@ char *exception_messages[] = {
     "Security Exception",
 };
 
-// Initializes ISR's
 int init_isr() {
   idt_set_gate(&idt[0], 0, isr0);
   idt_set_gate(&idt[1], 0, isr1);
@@ -111,9 +110,9 @@ int init_isr() {
   return 0;
 }
 
-// Run whenever a fult is detected
-void c_isr_handler(int ex_no) {
-  printf("\r\n%s: FAULT!\r\n", exception_messages[ex_no]);
+void c_isr_handler(uint64_t ex_no, uint64_t rsp) {
+  printf("\r\n%s: FAULT!\r\nRIP: %lu\r\n", exception_messages[ex_no],
+         ((registers_t *)rsp)->rip);
   while (1)
     ;
 }

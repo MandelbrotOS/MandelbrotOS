@@ -1,4 +1,5 @@
 #include <asm.h>
+#include <stdint.h>
 #include <sys/idt.h>
 #include <sys/irq.h>
 
@@ -66,11 +67,11 @@ void irq_install_handler(int irq, void (*handler)()) {
 
 void irq_uninstall_handler(int irq) { irq_routines[irq] = 0; }
 
-void c_irq_handler(int irqno) {
+void c_irq_handler(uint64_t irqno, uint64_t rsp) {
   void (*handler)() = irq_routines[irqno - 32];
 
   if (handler)
-    handler();
+    handler(rsp);
 
   if (irqno >= 40)
     outb(0xA0, 0x20);
