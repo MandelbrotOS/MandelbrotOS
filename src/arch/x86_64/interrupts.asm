@@ -38,26 +38,28 @@ extern c_irq_handler
 %endmacro
 
 isr_stub:
-  cld
   pushaq
 
+  mov rdi, [rsp + 120]
   mov rsi, rsp
   call c_isr_handler
-  add rsp, 16
   
   popaq
+  
+  add rsp, 16
 
   iretq
 
 irq_stub:
-  cld
   pushaq
 
+  mov rdi, [rsp + 120]
   mov rsi, rsp
   call c_irq_handler
-  add rsp, 16
   
   popaq
+  
+  add rsp, 16
 
   iretq
 
@@ -67,9 +69,7 @@ irq_stub:
     cli
     push 0
     push %1
-    mov rdi, %1
     jmp isr_stub
-    ret
 %endmacro
 
 %macro ISR_ERR 1
@@ -77,20 +77,16 @@ irq_stub:
   isr%1:
     cli
     push %1
-    mov rdi, %1
     jmp isr_stub
-    ret
 %endmacro
 
-%macro IRQ 2
+%macro IRQ 1
   global irq%1
   irq%1:
     cli
     push 0
     push %1
-    mov rdi, %2
     jmp irq_stub
-    ret
 %endmacro
 
 ISR 0
@@ -126,20 +122,20 @@ ISR 29
 ISR 30
 ISR 31
 
-IRQ 0, 32
-IRQ 1, 33
-IRQ 2, 34
-IRQ 3, 35
-IRQ 4, 36
-IRQ 5, 37
-IRQ 6, 38
-IRQ 7, 39
-IRQ 8, 40
-IRQ 9, 41
-IRQ 10, 42
-IRQ 11, 43
-IRQ 12, 44
-IRQ 13, 45
-IRQ 14, 46
-IRQ 15, 47
+IRQ 0
+IRQ 1
+IRQ 2
+IRQ 3
+IRQ 4
+IRQ 5
+IRQ 6
+IRQ 7
+IRQ 8
+IRQ 9
+IRQ 10
+IRQ 11
+IRQ 12
+IRQ 13
+IRQ 14
+IRQ 15
 
