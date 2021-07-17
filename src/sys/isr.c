@@ -114,5 +114,6 @@ void c_isr_handler(uint64_t ex_no, uint64_t rsp) {
   printf("\r\n%s: FAULT!\r\nRIP: %lu\r\n", exception_messages[ex_no],
          ((registers_t *)rsp)->rip);
   while (1)
-    ;
+    asm volatile("cli\n"
+                 "hlt\n");
 }
