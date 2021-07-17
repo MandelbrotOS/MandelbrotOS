@@ -129,6 +129,8 @@ void getline(char *string, int len) {
   putchar('\r');
 }
 
+is_caps = 0;
+
 char getchar() {
   uint8_t code = 0;
   uint8_t key = 0;
@@ -136,8 +138,15 @@ char getchar() {
     if (kbd_ctrl_read_status() & KBD_CTRL_STATS_MASK_OUT_BUF) {
       code = kbd_enc_read_buf();
       if (code <= 0x58) {
-        key = _kkybrd_scancode_std[code];
-        break;
+        if (code == KEY_CAPSLOCK && is_caps == 0) { is_caps = 1; break; }
+        if (code == KEY_CAPSLOCK && is_caps == 1) { is_caps = 0; break; }
+        if (is_caps) {
+          key = _kkybrd_scancode_std[code] - 32;
+          break;
+        } else {
+          key = _kkybrd_scancode_std[code];
+          break;
+        }
       }
     }
   }
