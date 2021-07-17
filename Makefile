@@ -16,6 +16,7 @@ CFLAGS := \
 	-ffreestanding \
 	-Isrc/include \
 	-Wall \
+	-Werror \
 	-Wextra \
 	-lm \
 	-std=gnu99 \
@@ -25,7 +26,8 @@ CFLAGS := \
 	-pipe \
         -fno-pic -no-pie \
 	-fno-stack-protector \
-	-Wno-implicit-fallthrough 
+	-Wno-implicit-fallthrough \
+	-Wno-error=unused-parameter
 
 LDFLAGS := \
 	-static \

@@ -53,7 +53,7 @@ void *pmalloc(size_t pages) {
 
 void *pcalloc(size_t pages) {
   void *ret = pmalloc(pages);
-  memset(ret, 0, pages * PAGE_SIZE);
+  memset(ret + PHYS_MEM_OFFSET, 0, pages * PAGE_SIZE);
   return ret;
 }
 

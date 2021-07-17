@@ -11,9 +11,20 @@ typedef struct thread {
   int state;
   int exit_state;
   size_t tid;
+  size_t core;
   registers_t registers;
   struct thread *next;
 } thread_t;
+
+typedef struct task_queue {
+  thread_t *current_thread;
+  size_t thread_count;
+} task_queue_t;
+
+typedef struct scheduler {
+  task_queue_t *task_queues;
+  size_t thread_count;
+} scheduler_t;
 
 void schedule(uint64_t rsp);
 
