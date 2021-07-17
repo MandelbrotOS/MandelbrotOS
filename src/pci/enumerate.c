@@ -40,7 +40,7 @@ void pci_enumerate_dev(uint64_t bus_address, uint64_t bus, uint8_t device) {
 }
 
 void pci_enumerate_bus(uint64_t base_address, uint64_t bus) {
-  uint64_t bus_address = base_address + (bus << 20) + PHYS_MEM_OFFSET;
+  uint64_t bus_address = base_address + (bus << 20);
 
   pci_device_t *pci_bus = (pci_device_t *)bus_address;
 
@@ -61,7 +61,7 @@ int pci_enumerate() {
 
   for (int t = 0; t < entries; t++)
     for (int bus = mcfg->entries[t].sbus; bus < mcfg->entries[t].ebus; bus++)
-      pci_enumerate_bus(mcfg->entries[t].base_address, bus);
+      pci_enumerate_bus(mcfg->entries[t].base_address + PHYS_MEM_OFFSET, bus);
 
   return 0;
 }

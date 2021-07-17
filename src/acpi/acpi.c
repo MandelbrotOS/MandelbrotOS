@@ -36,11 +36,21 @@ bool do_acpi_checksum(sdt_t *th) {
 }
 
 void *get_table(char *signature, int index) {
-  size_t entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
+  size_t entries;
+
+  if (rsdp->revision <= 2)
+    entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
+  else
+    entries = (xsdt->h.length - sizeof(xsdt->h)) / 8;
+
   int i = 0;
+  sdt_t *h;
 
   for (size_t t = 0; t < entries; t++) {
-    sdt_t *h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + PHYS_MEM_OFFSET);
+    if (rsdp->revision <= 2)
+      h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + PHYS_MEM_OFFSET);
+    else
+      h = (sdt_t *)(uint64_t)(xsdt->sptr[t] + PHYS_MEM_OFFSET);
 
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
@@ -90,9 +100,9 @@ void gather_madt() {
 int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
 
-  if (!rsdp->revision)
-    rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
-  else
+  rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
+
+  if (rsdp->revision >= 2)
     xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET);
 
   gather_madt();
