@@ -20,6 +20,7 @@ CFLAGS := \
 	-Wextra \
 	-lm \
 	-std=gnu99 \
+	-O2 \
 	-Isrc/include \
 	-mgeneral-regs-only \
 	-mno-red-zone \
@@ -27,6 +28,7 @@ CFLAGS := \
         -fno-pic -no-pie \
 	-fno-stack-protector \
 	-Wno-implicit-fallthrough \
+	-Wno-maybe-uninitialized \
 	-Wno-error=unused-parameter
 
 LDFLAGS := \

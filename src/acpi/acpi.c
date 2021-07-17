@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <klog.h>
 
 rsdp_t *rsdp;
 rsdt_t *rsdt;
@@ -90,12 +91,12 @@ void gather_madt() {
 int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
 
-  if (!rsdp->revision)
+  /* if (!rsdp->revision) */
     rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
-  else
-    xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET);
+  /* else */
+    /* xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET); */
 
-  gather_madt();
+  /* gather_madt(); */
 
   return 0;
 }
