@@ -67,7 +67,10 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(pci_enumerate(), "PCI");
   klog(init_smp(smp_info), "SMP");
 
-  scheduler_init(smp_info);
+  asm volatile("sti");
+  ioapic_redirect_irq(smp_info->bsp_lapic_id, 0, 48, 0);
+
+  /* scheduler_init(smp_info); */
 
   printf("Hello, world!\r\n");
 
