@@ -1,5 +1,6 @@
 #ifndef __ASM_H__
 #define __ASM_H__
+
 #include <stdint.h>
 
 static inline void outb(uint16_t port, uint8_t val) {

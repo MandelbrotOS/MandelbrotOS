@@ -130,8 +130,8 @@ void *krealloc(void *ptr, size_t size) {
   return kheap_realloc(&kernel_heap, ptr, size);
 }
 
-void* kcalloc(size_t size) {
-  void* ret = kmalloc(size);
+void *kcalloc(size_t size) {
+  void *ret = kmalloc(size);
   memset(ret, 0, size);
   return ret;
 }

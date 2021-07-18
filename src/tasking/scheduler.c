@@ -1,3 +1,4 @@
+#include <asm.h>
 #include <boot/stivale2.h>
 #include <drivers/apic.h>
 #include <mm/kheap.h>
@@ -12,9 +13,7 @@
 #define ALIVE 0
 #define DEAD 1
 
-struct stivale2_struct_tag_smp *smp;
 size_t current_tid = 0;
-scheduler_t sched;
 
 void kidle() {
   printf("Reached kidle\r\n");
@@ -45,23 +44,9 @@ thread_t *create_kernel_thread(void *addr) {
   return thread;
 }
 
-void exectute_thread() {}
-
-void schedule(uint64_t rsp) {
-}
+void schedule(uint64_t rsp) {}
 
 void scheduler_init(struct stivale2_struct_tag_smp *smp_info) {
-  smp = kmalloc(sizeof(struct stivale2_struct_tag_smp));
-  memcpy(smp, smp_info, sizeof(struct stivale2_struct_tag_smp));
-
-  sched.thread_count = 0;
-  sched.task_queues = kmalloc(sizeof(task_queue_t) * smp_info->cpu_count);
-
-  for (size_t i = 0; i < smp_info->cpu_count; i++) {
-    sched.task_queues[i].thread_count = 0;
-    sched.task_queues[i].current_thread = create_kernel_thread(kidle);
-  }
-
   printf("We have %lu cores \r\n", smp_info->cpu_count);
 
   while (1)

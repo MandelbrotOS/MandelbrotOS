@@ -54,6 +54,9 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   init_idt();
   init_isr();
   init_irq();
+  
+  disable_pic();
+  init_lapic();
 
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_pit(), "PIT");
@@ -61,7 +64,6 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_pcspkr(), "PC speaker");
   klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
-  klog(init_lapic(), "LAPIC");
   klog(pci_enumerate(), "PCI");
   klog(init_smp(smp_info), "SMP");
 

@@ -6,6 +6,7 @@
 uint8_t lapic_get_id();
 void lapic_eoi();
 
-int init_lapic();
+void disable_pic();
+void init_lapic();
 
 #endif

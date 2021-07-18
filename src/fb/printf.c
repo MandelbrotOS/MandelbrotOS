@@ -78,8 +78,8 @@ char *__int_str(intmax_t i, char b[], int base, bool plusSignIfNeeded,
 }
 
 char *__uint_str(uintmax_t i, char b[], int base, bool plusSignIfNeeded,
-                bool spaceSignIfNeeded, int paddingNo, bool justify,
-                bool zeroPad) {
+                 bool spaceSignIfNeeded, int paddingNo, bool justify,
+                 bool zeroPad) {
 
   char digit[32] = {0};
   memset(digit, 0, 32);
@@ -279,56 +279,56 @@ int vprintf(const char *format, va_list list) {
         case 0: {
           unsigned int integer = va_arg(list, unsigned int);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'H': {
           unsigned char integer = (unsigned char)va_arg(list, unsigned int);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'h': {
           unsigned short int integer = va_arg(list, unsigned int);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'l': {
           unsigned long integer = va_arg(list, unsigned long);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'q': {
           unsigned long long integer = va_arg(list, unsigned long long);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'j': {
           uintmax_t integer = va_arg(list, uintmax_t);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 'z': {
           size_t integer = va_arg(list, size_t);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }
         case 't': {
           ptrdiff_t integer = va_arg(list, ptrdiff_t);
           __uint_str(integer, intStrBuffer, base, plusSign, spaceNoSign,
-                    lengthSpec, leftJustify, zeroPad);
+                     lengthSpec, leftJustify, zeroPad);
           displayString(intStrBuffer, &chars);
           break;
         }

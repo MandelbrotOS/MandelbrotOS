@@ -1,5 +1,6 @@
 #include <acpi/acpi.h>
 #include <acpi/tables.h>
+#include <klog.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <printf.h>
@@ -7,7 +8,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <klog.h>
 
 rsdp_t *rsdp;
 rsdt_t *rsdt;
@@ -37,11 +37,21 @@ bool do_acpi_checksum(sdt_t *th) {
 }
 
 void *get_table(char *signature, int index) {
-  size_t entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
+  size_t entries;
+
+  if (rsdp->revision <= 2)
+    entries = (rsdt->h.length - sizeof(rsdt->h)) / 4;
+  else
+    entries = (xsdt->h.length - sizeof(xsdt->h)) / 8;
+
   int i = 0;
+  sdt_t *h;
 
   for (size_t t = 0; t < entries; t++) {
-    sdt_t *h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + PHYS_MEM_OFFSET);
+    if (rsdp->revision <= 2)
+      h = (sdt_t *)(uint64_t)(rsdt->sptr[t] + PHYS_MEM_OFFSET);
+    else
+      h = (sdt_t *)(uint64_t)(xsdt->sptr[t] + PHYS_MEM_OFFSET);
 
     if (!strncmp(signature, h->signature, 4)) {
       if (do_acpi_checksum(h) && i == index)
@@ -68,19 +78,33 @@ void gather_madt() {
     switch (header->id) {
     case 0:
       madt_lapics[lapic_len++] = (madt_lapic_t *)header;
-      krealloc(madt_lapics, sizeof(madt_lapic_t *) * (lapic_len + 1));
+      madt_lapic_t **lapic_re =
+          kmalloc(sizeof(madt_lapic_t *) * (lapic_len + 1));
+      memcpy(lapic_re, madt_lapics, (sizeof(madt_lapic_t *) * lapic_len));
+      kfree(madt_lapics);
+      madt_lapics = lapic_re;
       break;
     case 1:
       madt_ioapics[ioapic_len++] = (madt_ioapic_t *)header;
-      krealloc(madt_ioapics, sizeof(madt_ioapic_t *) * (ioapic_len + 1));
+      madt_ioapic_t **ioapic_re =
+          kmalloc(sizeof(madt_ioapic_t *) * (ioapic_len + 1));
+      memcpy(ioapic_re, madt_ioapics, (sizeof(madt_ioapic_t *) * ioapic_len));
+      kfree(madt_ioapics);
+      madt_ioapics = ioapic_re;
       break;
     case 2:
       madt_nmis[nmi_len++] = (madt_nmi_t *)header;
-      krealloc(madt_nmis, sizeof(madt_nmi_t *) * (nmi_len + 1));
+      madt_nmi_t **nmi_re = kmalloc(sizeof(madt_nmi_t *) * (nmi_len + 1));
+      memcpy(nmi_re, madt_nmis, (sizeof(madt_nmi_t *) * nmi_len));
+      kfree(madt_nmis);
+      madt_nmis = nmi_re;
       break;
     case 3:
       madt_isos[iso_len++] = (madt_iso_t *)header;
-      krealloc(madt_isos, sizeof(madt_iso_t *) * (iso_len + 1));
+      madt_iso_t **iso_re = kmalloc(sizeof(madt_iso_t *) * (iso_len + 1));
+      memcpy(iso_re, madt_isos, (sizeof(madt_iso_t *) * iso_len));
+      kfree(madt_isos);
+      madt_isos = iso_re;
       break;
     }
 
@@ -90,13 +114,12 @@ void gather_madt() {
 
 int init_acpi(struct stivale2_struct_tag_rsdp *rsdp_info) {
   rsdp = (rsdp_t *)rsdp_info->rsdp;
+  rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
 
-  /* if (!rsdp->revision) */
-    rsdt = (rsdt_t *)(rsdp->rsdt_address + PHYS_MEM_OFFSET);
-  /* else */
-    /* xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET); */
+  if (rsdp->revision >= 2)
+    xsdt = (xsdt_t *)(rsdp->xsdt_address + PHYS_MEM_OFFSET);
 
-  /* gather_madt(); */
+  gather_madt();
 
   return 0;
 }

@@ -15,6 +15,11 @@
 #define IOAPIC_REG_IOWIN 0x10
 #define IOAPIC_REG_VER 1
 
+void disable_pic() {
+  outb(0xa1, 0xff);
+  outb(0x21, 0xff);
+}
+
 uint32_t lapic_read(size_t reg) {
   return *((uint32_t *)(((rdmsr(0x1b) & 0xfffff000) + PHYS_MEM_OFFSET) + reg));
 }
@@ -41,7 +46,6 @@ void lapic_send_ipi(uint8_t lapic_id, uint8_t vect) {
   lapic_write(LAPIC_REG_ICR0, vect);
 }
 
-int init_lapic() {
+void init_lapic() {
   lapic_enable(0xf0);
-  return 0;
 }
