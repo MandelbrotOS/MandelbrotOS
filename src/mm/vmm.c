@@ -1,3 +1,4 @@
+#include <lock.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <stddef.h>
@@ -15,6 +16,8 @@ static uint64_t *get_next_level(uint64_t *table, size_t index) {
 
 void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
                   uintptr_t virtual_address, uint64_t flags) {
+  MAKE_LOCK(vmm_map_lock);
+
   size_t level4 = (size_t)(virtual_address & ((size_t)0x1ff << 39)) >> 39;
   size_t level3 = (size_t)(virtual_address & ((size_t)0x1ff << 30)) >> 30;
   size_t level2 = (size_t)(virtual_address & ((size_t)0x1ff << 21)) >> 21;
@@ -25,9 +28,13 @@ void vmm_map_page(uint64_t *pagemap, uintptr_t physical_address,
   uint64_t *pml1 = get_next_level(pml2, level2);
 
   pml1[level1] = physical_address | flags;
+
+  UNLOCK(vmm_map_lock);
 }
 
 void vmm_unmap_page(uint64_t *pagemap, uintptr_t virtual_address) {
+  MAKE_LOCK(vmm_unmap_lock);
+
   size_t level4 = (size_t)(virtual_address & ((size_t)0x1ff << 39)) >> 39;
   size_t level3 = (size_t)(virtual_address & ((size_t)0x1ff << 30)) >> 30;
   size_t level2 = (size_t)(virtual_address & ((size_t)0x1ff << 21)) >> 21;
@@ -38,6 +45,8 @@ void vmm_unmap_page(uint64_t *pagemap, uintptr_t virtual_address) {
   uint64_t *pml1 = get_next_level(pml2, level2);
 
   pml1[level1] = 0;
+
+  UNLOCK(vmm_unmap_lock);
 }
 
 void vmm_switch_map_to_kern() {

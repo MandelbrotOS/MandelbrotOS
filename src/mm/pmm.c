@@ -1,7 +1,7 @@
 #include <boot/stivale2.h>
 #include <klog.h>
+#include <lock.h>
 #include <mm/pmm.h>
-#include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -17,16 +17,17 @@
 static uint8_t *pmm_bitmap = 0;
 static uintptr_t highest_page = 0;
 
-void print_pmm_bitmap() {
-  for (size_t i = 0; i < ALIGN_UP(ALIGN_DOWN(highest_page) / PAGE_SIZE / 8);
-       i++)
-    printf("%u", BIT_TEST(i));
-  printf("\r\n");
+void free_page(void *adr) { 
+  MAKE_LOCK(pmm_free_lock);
+  BIT_CLEAR((size_t)adr / PAGE_SIZE); 
+  UNLOCK(pmm_free_lock);
 }
 
-void free_page(void *adr) { BIT_CLEAR((size_t)adr / PAGE_SIZE); }
-
-void alloc_page(void *adr) { BIT_SET((size_t)adr / PAGE_SIZE); }
+void alloc_page(void *adr) { 
+  MAKE_LOCK(pmm_alloc_lock);
+  BIT_SET((size_t)adr / PAGE_SIZE); 
+  UNLOCK(pmm_alloc_lock);
+}
 
 void free_pages(void *adr, size_t page_count) {
   for (size_t i = 0; i < page_count; i++)

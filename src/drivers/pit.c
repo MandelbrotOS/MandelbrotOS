@@ -15,9 +15,7 @@ void pit_phase(int hz) {
   outb(0x40, divisor >> 8);
 }
 
-void pit_handler(uint64_t rsp) {
-  timer_ticks++;
-}
+void pit_handler(uint64_t rsp) { timer_ticks++; }
 
 void sleep(uint64_t ticks) {
   uint64_t rest_ticks = timer_ticks + ticks;

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <sys/idt.h>
 #include <sys/irq.h>
+#include <lock.h>
 
 static void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0,
                                      0, 0, 0, 0, 0, 0, 0, 0};
@@ -63,10 +64,16 @@ int init_irq() {
 }
 
 void irq_install_handler(int irq, void (*handler)()) {
+  MAKE_LOCK(irq_install_lock);
   irq_routines[irq] = handler;
+  UNLOCK(irq_install_lock);
 }
 
-void irq_uninstall_handler(int irq) { irq_routines[irq] = 0; }
+void irq_uninstall_handler(int irq) { 
+  MAKE_LOCK(irq_uninstall_lock);
+  irq_routines[irq] = 0; 
+  UNLOCK(irq_uninstall_lock);
+}
 
 void c_irq_handler(uint64_t irqno, uint64_t rsp) {
   void (*handler)() = irq_routines[irqno];
