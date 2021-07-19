@@ -1,4 +1,6 @@
+#include <acpi/acpi.h>
 #include <asm.h>
+#include <drivers/apic.h>
 #include <drivers/kbd.h>
 #include <fb/fb.h>
 #include <sys/irq.h>
@@ -113,6 +115,7 @@ void kbd_handler() { kbd_ctrl_read_status(); }
 
 int init_kbd() {
   irq_install_handler(1, kbd_handler);
+  ioapic_redirect_irq(madt_lapics[0]->apic_id, 1, 33, 1);
   return 0;
 }
 

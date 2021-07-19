@@ -1,5 +1,6 @@
 #include <boot/stivale2.h>
 #include <cpu_locals.h>
+#include <drivers/apic.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
@@ -9,7 +10,6 @@
 #include <sys/gdt.h>
 #include <sys/idt.h>
 #include <tasking/smp.h>
-#include <drivers/apic.h>
 
 void core_init() {
   load_gdt();

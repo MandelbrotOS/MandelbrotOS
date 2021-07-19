@@ -9,6 +9,7 @@ void lapic_eoi();
 void disable_pic();
 void init_lapic();
 
-void ioapic_redirect_irq(uint8_t lapic_id, uint8_t irq, uint8_t vect, uint64_t flags);
+void ioapic_redirect_irq(uint8_t lapic_id, uint8_t irq, uint8_t vect,
+                         int status);
 
 #endif

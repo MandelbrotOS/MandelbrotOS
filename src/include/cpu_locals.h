@@ -9,7 +9,6 @@
 typedef struct cpu_locals {
   thread_t *current_thread;
   size_t task_count;
-  size_t cpu_number;
 } cpu_locals_t;
 
 static inline cpu_locals_t *get_locals() {

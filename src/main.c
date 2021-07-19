@@ -47,32 +47,26 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
           bootloader_info, STIVALE2_STRUCT_TAG_SMP_ID);
 
   init_gdt();
+  init_idt();
+  init_isr();
+  init_irq();
 
   init_pmm(memory_info);
   init_vmm();
 
-  init_idt();
-  init_isr();
-  init_irq();
-  
   disable_pic();
   init_lapic();
 
   klog(init_fb(framebuffer_info), "Framebuffer");
-  klog(init_pit(), "PIT");
   klog(init_heap(), "Heap");
   klog(init_pcspkr(), "PC speaker");
-  klog(init_kbd(), "Keyboard");
   klog(init_acpi(rsdp_info), "ACPI");
+  klog(init_pit(), "PIT");
+  klog(init_kbd(), "Keyboard");
   klog(pci_enumerate(), "PCI");
   klog(init_smp(smp_info), "SMP");
 
-  asm volatile("sti");
-  ioapic_redirect_irq(smp_info->bsp_lapic_id, 0, 48, 0);
-
-  /* scheduler_init(smp_info); */
-
-  printf("Hello, world!\r\n");
+  scheduler_init(smp_info);
 
   while (1)
     ;

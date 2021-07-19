@@ -1,4 +1,5 @@
 #include <asm.h>
+#include <drivers/apic.h>
 #include <stdint.h>
 #include <sys/idt.h>
 #include <sys/irq.h>
@@ -25,7 +26,7 @@ extern void irq13();
 extern void irq14();
 extern void irq15();
 
-void irq_remap(void) {
+void pic_remap(void) {
   outb(0x20, 0x11);
   outb(0xA0, 0x11);
   outb(0x21, 0x20);
@@ -39,7 +40,7 @@ void irq_remap(void) {
 }
 
 int init_irq() {
-  irq_remap();
+  pic_remap();
 
   idt_set_gate(&idt[32 + 0], 0, irq0);
   idt_set_gate(&idt[32 + 1], 0, irq1);
@@ -77,4 +78,6 @@ void c_irq_handler(uint64_t irqno, uint64_t rsp) {
     outb(0xA0, 0x20);
 
   outb(0x20, 0x20);
+
+  lapic_eoi();
 }

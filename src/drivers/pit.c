@@ -1,7 +1,10 @@
+#include <acpi/acpi.h>
 #include <asm.h>
+#include <drivers/apic.h>
+#include <drivers/pit.h>
+#include <printf.h>
 #include <stdint.h>
 #include <sys/irq.h>
-#include <printf.h>
 
 static volatile uint64_t timer_ticks = 0;
 
@@ -14,7 +17,6 @@ void pit_phase(int hz) {
 
 void pit_handler(uint64_t rsp) {
   timer_ticks++;
-  printf("yeee");
 }
 
 void sleep(uint64_t ticks) {
@@ -26,5 +28,6 @@ void sleep(uint64_t ticks) {
 int init_pit() {
   pit_phase(1000); // Phase to vibrate once every millisecond;
   irq_install_handler(0, pit_handler);
+  ioapic_redirect_irq(madt_lapics[0]->apic_id, 2, 32, 1);
   return 0;
 }
