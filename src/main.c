@@ -32,6 +32,8 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   }
 }
 
+void k_thread() { printf("Whoa. We have jumped to threading. Pretty neat huh?\r\n"); }
+
 void kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_struct_tag_framebuffer *framebuffer_info =
       (struct stivale2_struct_tag_framebuffer *)stivale2_get_tag(
@@ -56,17 +58,18 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
 
   disable_pic();
   init_lapic();
+  lapic_timer_init();
 
   klog(init_fb(framebuffer_info), "Framebuffer");
   klog(init_heap(), "Heap");
   klog(init_pcspkr(), "PC speaker");
   klog(init_acpi(rsdp_info), "ACPI");
-  klog(init_pit(), "PIT");
   klog(init_kbd(), "Keyboard");
   klog(pci_enumerate(), "PCI");
   klog(init_smp(smp_info), "SMP");
+  klog(init_pit(), "PIT");
 
-  scheduler_init(smp_info);
+  scheduler_init((uintptr_t)k_thread);
 
   while (1)
     ;

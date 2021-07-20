@@ -2,14 +2,21 @@
 #include <acpi/tables.h>
 #include <asm.h>
 #include <drivers/apic.h>
+#include <drivers/pit.h>
 #include <mm/pmm.h>
 #include <stdint.h>
 
-#define LAPIC_REG_TIMER_SPURIOUS 0x0f0
+#define LAPIC_REG_SPURIOUS 0x0f0
+#define LAPIC_REG_TIMER 0x320
+#define LAPIC_REG_TIMER_INITCNT 0x380
+#define LAPIC_REG_TIMER_CURCNT 0x390
+#define LAPIC_REG_TIMER_DIV 0x3e0
 #define LAPIC_REG_EOI 0x0b0
 #define LAPIC_REG_ICR0 0x300
 #define LAPIC_REG_ICR1 0x310
 #define LAPIC_APIC_ID 0x20
+
+#define LAPIC_TIMER_MS 50
 
 #define IOAPIC_REG_IOREGSEL 0
 #define IOAPIC_REG_IOWIN 0x10
@@ -29,8 +36,8 @@ void lapic_write(size_t reg, uint32_t data) {
 }
 
 void lapic_enable(uint8_t vect) {
-  lapic_write(LAPIC_REG_TIMER_SPURIOUS,
-              lapic_read(LAPIC_REG_TIMER_SPURIOUS) | (1 << 8) | vect);
+  lapic_write(LAPIC_REG_SPURIOUS,
+              lapic_read(LAPIC_REG_SPURIOUS) | (1 << 8) | vect);
 }
 
 uint8_t lapic_get_id() { return (uint8_t)(lapic_read(LAPIC_APIC_ID) >> 24); }
@@ -102,3 +109,35 @@ void ioapic_redirect_irq(uint8_t lapic_id, uint8_t irq, uint8_t vect,
   }
   ioapic_redirect_gsi(lapic_id, irq, vect, 0, status);
 }
+
+uint32_t pit_read_count(void) {
+  outb(0x43, 0);
+  uint32_t counter = inb(0x40);
+  counter |= inb(0x40) << 8;
+
+  return counter;
+}
+
+void lapic_timer_init() {
+  outb(0x43, 0x36);
+  outb(0x40, (1193180 / 1000) & 0xff);
+  outb(0x40, ((1193180 / 1000) >> 8) & 0xFF);
+
+  lapic_write(LAPIC_REG_TIMER_DIV, 0x3);
+  lapic_write(LAPIC_REG_TIMER_INITCNT, 0xFFFFFFFF);
+
+  outb(0x43, 0x30);
+  outb(0x40, LAPIC_TIMER_MS & 0xff);
+  outb(0x40, (LAPIC_TIMER_MS >> 8) & 0xff);
+  while (pit_read_count() == 0)
+      ;
+
+  lapic_write(LAPIC_REG_TIMER, 0x10000);
+
+  uint32_t tick = 0xFFFFFFFF - lapic_read(LAPIC_REG_TIMER_CURCNT);
+
+  lapic_write(LAPIC_REG_TIMER, SCHEDULE_REG | 0x20000);
+  lapic_write(LAPIC_REG_TIMER_DIV, 0x3);
+  lapic_write(LAPIC_REG_TIMER_INITCNT, tick);
+}
+

@@ -17,15 +17,15 @@
 static uint8_t *pmm_bitmap = 0;
 static uintptr_t highest_page = 0;
 
-void free_page(void *adr) { 
+void free_page(void *adr) {
   MAKE_LOCK(pmm_free_lock);
-  BIT_CLEAR((size_t)adr / PAGE_SIZE); 
+  BIT_CLEAR((size_t)adr / PAGE_SIZE);
   UNLOCK(pmm_free_lock);
 }
 
-void alloc_page(void *adr) { 
+void alloc_page(void *adr) {
   MAKE_LOCK(pmm_alloc_lock);
-  BIT_SET((size_t)adr / PAGE_SIZE); 
+  BIT_SET((size_t)adr / PAGE_SIZE);
   UNLOCK(pmm_alloc_lock);
 }
 

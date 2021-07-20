@@ -7,7 +7,10 @@
 #include <tasking/scheduler.h>
 
 typedef struct cpu_locals {
-  thread_t *current_thread;
+  size_t current_pid;
+  size_t current_tid;
+  size_t cpu_number;
+  size_t lapic_id;
   size_t task_count;
 } cpu_locals_t;
 

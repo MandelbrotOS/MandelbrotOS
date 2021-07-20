@@ -1,6 +1,8 @@
+#include <acpi/acpi.h>
 #include <asm.h>
 #include <boot/stivale2.h>
 #include <drivers/apic.h>
+#include <lock.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <printf.h>
@@ -9,46 +11,52 @@
 #include <string.h>
 #include <sys/irq.h>
 #include <tasking/scheduler.h>
+#include <cpu_locals.h>
 
 #define ALIVE 0
 #define DEAD 1
 
 size_t current_tid = 0;
+size_t current_pid = 0;
+size_t thread_count = 0;
 
-void kidle() {
-  printf("Reached kidle\r\n");
-  while (1)
-    ;
-}
+thread_t *current_thread;
 
-thread_t *create_kernel_thread(void *addr) {
-  thread_t *thread = kcalloc(sizeof(thread_t));
-  if (!thread)
-    return NULL;
+size_t create_kernel_thread(uintptr_t addr, char *name) {
+  thread_t *thread = kmalloc(sizeof(thread_t));
 
   thread->tid = current_tid++;
   thread->exit_state = -1;
   thread->state = ALIVE;
   thread->tid = current_tid++;
+  thread->name = name;
   thread->registers.cs = 0x08;
   thread->registers.ss = 0x10;
   thread->registers.rip = (uint64_t)addr;
   thread->registers.rflags = 0x202;
   thread->registers.rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET;
 
-  if (!thread->registers.rsp) {
-    kfree(thread);
-    return NULL;
-  }
+  MAKE_LOCK(add_thread_lock);
 
-  return thread;
+  thread_count++;
+  thread->next = current_thread->next;
+  current_thread->next = thread;
+
+  UNLOCK(add_thread_lock);
+
+  return thread->tid;
 }
 
 void schedule(uint64_t rsp) {}
 
-void scheduler_init(struct stivale2_struct_tag_smp *smp_info) {
-  printf("We have %lu cores \r\n", smp_info->cpu_count);
+void scheduler_init(uintptr_t addr) {
+  current_thread = kmalloc(sizeof(thread_t));
+  create_kernel_thread(addr, "kinit");
 
+  printf("Reached threading\r\n");
+
+  irq_install_handler(SCHEDULE_REG - 32, schedule);
+  
   while (1)
     asm volatile("sti");
 }
