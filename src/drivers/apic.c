@@ -130,7 +130,7 @@ void lapic_timer_init() {
   outb(0x40, LAPIC_TIMER_MS & 0xff);
   outb(0x40, (LAPIC_TIMER_MS >> 8) & 0xff);
   while (pit_read_count() == 0)
-      ;
+    ;
 
   lapic_write(LAPIC_REG_TIMER, 0x10000);
 
@@ -140,4 +140,3 @@ void lapic_timer_init() {
   lapic_write(LAPIC_REG_TIMER_DIV, 0x3);
   lapic_write(LAPIC_REG_TIMER_INITCNT, tick);
 }
-

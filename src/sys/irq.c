@@ -5,8 +5,7 @@
 #include <sys/idt.h>
 #include <sys/irq.h>
 
-static void (*irq_routines[16])() = {0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0};
+static void (*irq_routines[17])(uint64_t rsp) = {0};
 
 extern void pit_handler();
 
@@ -26,6 +25,7 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+extern void irq16();
 
 void pic_remap(void) {
   outb(0x20, 0x11);
@@ -59,6 +59,7 @@ int init_irq() {
   idt_set_gate(&idt[32 + 13], 0, irq13);
   idt_set_gate(&idt[32 + 14], 0, irq14);
   idt_set_gate(&idt[32 + 15], 0, irq15);
+  idt_set_gate(&idt[32 + 16], 0, irq16);
 
   return 0;
 }

@@ -1,9 +1,9 @@
+#include <cpu_locals.h>
 #include <printf.h>
 #include <registers.h>
 #include <stdint.h>
 #include <sys/idt.h>
 #include <sys/isr.h>
-#include <cpu_locals.h>
 
 extern void isr0();
 extern void isr1();
@@ -112,9 +112,9 @@ int init_isr() {
 }
 
 void c_isr_handler(uint64_t ex_no, uint64_t rsp) {
-  /* asm volatile("cli"); */
-  printf("\r\nCPU %lu: %s: FAULT!\r\n", get_locals()->cpu_number, exception_messages[ex_no]);
-  /* printf("\r\n%s: FAULT\r\n", exception_messages[ex_no]); */
+  (void)rsp;
+  printf("\r\nCPU %lu: %s: FAULT!\r\n", get_locals()->cpu_number,
+         exception_messages[ex_no]);
   while (1)
     asm volatile("cli\n"
                  "hlt\n");

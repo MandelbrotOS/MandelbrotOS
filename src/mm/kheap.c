@@ -1,6 +1,5 @@
 #include <mm/kheap.h>
 #include <mm/pmm.h>
-#include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

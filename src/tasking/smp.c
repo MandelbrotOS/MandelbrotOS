@@ -4,7 +4,6 @@
 #include <mm/kheap.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
-#include <printf.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/gdt.h>
@@ -21,7 +20,7 @@ void core_init(struct stivale2_smp_info *smp_info) {
   vmm_switch_map_to_kern();
   init_lapic();
   lapic_timer_init();
-  
+
   cpu_locals_t *local = kcalloc(sizeof(cpu_locals_t));
   local->cpu_number = smp_info->extra_argument;
   local->lapic_id = smp_info->lapic_id;

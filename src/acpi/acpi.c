@@ -3,7 +3,6 @@
 #include <klog.h>
 #include <mm/kheap.h>
 #include <mm/pmm.h>
-#include <printf.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

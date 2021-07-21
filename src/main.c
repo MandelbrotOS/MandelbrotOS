@@ -32,7 +32,9 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   }
 }
 
-void k_thread() { printf("Whoa. We have jumped to threading. Pretty neat huh?\r\n"); }
+void k_thread() {
+  printf("Whoa. We have jumped to threading. Pretty neat huh?\r\n");
+}
 
 void kernel_main(struct stivale2_struct *bootloader_info) {
   struct stivale2_struct_tag_framebuffer *framebuffer_info =

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define SCHEDULE_REG 34
+#define SCHEDULE_REG 48
 
 uint8_t lapic_get_id();
 void lapic_eoi();

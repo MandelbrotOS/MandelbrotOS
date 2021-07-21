@@ -2,7 +2,6 @@
 #include <asm.h>
 #include <drivers/apic.h>
 #include <drivers/pit.h>
-#include <printf.h>
 #include <stdint.h>
 #include <sys/irq.h>
 

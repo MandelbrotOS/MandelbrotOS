@@ -3,7 +3,6 @@
 #include <klog.h>
 #include <mm/pmm.h>
 #include <pci/pci.h>
-#include <printf.h>
 
 void pci_enumerate_fn(uint64_t device_address, uint64_t bus, uint8_t device,
                       uint8_t function) {
