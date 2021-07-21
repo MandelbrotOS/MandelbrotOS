@@ -24,7 +24,6 @@ void core_init(struct stivale2_smp_info *smp_info) {
   cpu_locals_t *local = kcalloc(sizeof(cpu_locals_t));
   local->cpu_number = smp_info->extra_argument;
   local->lapic_id = smp_info->lapic_id;
-  local->task_count = 0;
   set_locals(local);
 
   asm volatile("1:\n"
@@ -41,7 +40,6 @@ int init_smp(struct stivale2_struct_tag_smp *smp_info) {
       cpu_locals_t *local = kcalloc(sizeof(cpu_locals_t));
       local->cpu_number = i;
       local->lapic_id = bsp_lapic_id;
-      local->task_count = 0;
       set_locals(local);
       continue;
     }

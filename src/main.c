@@ -34,6 +34,7 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
 
 void k_thread() {
   printf("Whoa. We have jumped to threading. Pretty neat huh?\r\n");
+  while (1);
 }
 
 void kernel_main(struct stivale2_struct *bootloader_info) {

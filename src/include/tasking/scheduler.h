@@ -11,8 +11,8 @@ typedef struct thread {
   char *name;
   int state;
   int exit_state;
+  int run_once;
   size_t tid;
-  uint64_t cr3;
   registers_t registers;
   struct thread *next;
 } thread_t;
