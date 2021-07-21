@@ -12,6 +12,7 @@ typedef struct thread {
   int state;
   int exit_state;
   int run_once;
+  int running;
   size_t tid;
   registers_t registers;
   struct thread *next;
