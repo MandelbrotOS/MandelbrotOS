@@ -14,10 +14,6 @@
   __sync_synchronize();                                                        \
   name##Locked = 0;
 
-#define LOCK(name)                                                             \
-  __sync_synchronize();                                                        \
-  name##Locked = 1;
-
 #define MAKE_LOCK(name)                                                        \
   DECLARE_LOCK(name);                                                          \
   LOCK(name);
