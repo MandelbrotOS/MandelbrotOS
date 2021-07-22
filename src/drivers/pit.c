@@ -25,6 +25,14 @@ void sleep(uint64_t ticks) {
     ;
 }
 
+uint32_t pit_read_count() {
+  outb(0x43, 0);
+  uint32_t counter = inb(0x40);
+  counter |= inb(0x40) << 8;
+
+  return counter;
+}
+
 int init_pit() {
   pit_phase(1000); // Phase to vibrate once every millisecond;
   irq_install_handler(0, pit_handler);
