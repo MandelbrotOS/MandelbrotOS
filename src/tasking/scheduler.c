@@ -10,6 +10,7 @@
 #include <mm/pmm.h>
 #include <printf.h>
 #include <registers.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/irq.h>
@@ -23,19 +24,21 @@ size_t thread_count = 0;
 
 thread_t *current_thread;
 
+// TODO Fix sleep
 void thread1() {
   while (1) {
-    /* printf("Hello from thread 1\r\n"); */
     serial_print("Hello from thread 1\r\n");
-    sleep(100);
+    for (volatile size_t i = 0; i < 500000; i++)
+      asm volatile("nop");
   }
 }
 
+// TODO Fix sleep
 void thread2() {
   while (1) {
-    /* printf("Hello from thread 2\r\n"); */
     serial_print("Hello from thread 2\r\n");
-    sleep(100);
+    for (volatile size_t i = 0; i < 500000; i++)
+      asm volatile("nop");
   }
 }
 
@@ -78,57 +81,53 @@ size_t create_kernel_thread(uintptr_t addr, char *name) {
 }
 
 void schedule(uint64_t rsp) {
-  MAKE_LOCK(schedule_lock);
+  MAKE_LOCK(sched_lock);
 
   current_thread->running = 0;
-  cpu_locals_t *locals = get_locals();
 
   if (current_thread->run_once)
     memcpy(&current_thread->registers, (registers_t *)rsp, sizeof(registers_t));
   else
     current_thread->run_once = 1;
 
-  thread_t *old_curr = current_thread;
+  if (thread_count == 1)
+    goto run_thread;
 
   for (size_t i = 0; i < thread_count; i++) {
     current_thread = current_thread->next;
-    if (current_thread->state == ALIVE && !current_thread->running) {
-      locals->current_tid = current_thread->tid;
-      current_thread->running = 1;
-
-      lapic_eoi();
-
-      asm volatile("mov %0, %%rsp\n"
-                   "pop %%r15\n"
-                   "pop %%r14\n"
-                   "pop %%r13\n"
-                   "pop %%r12\n"
-                   "pop %%r11\n"
-                   "pop %%r10\n"
-                   "pop %%r9\n"
-                   "pop %%r8\n"
-                   "pop %%rbp\n"
-                   "pop %%rdi\n"
-                   "pop %%rsi\n"
-                   "pop %%rdx\n"
-                   "pop %%rcx\n"
-                   "pop %%rbx\n"
-                   "pop %%rax\n"
-                   "add $16, %%rsp\n" ::"r"(&current_thread->registers)
-                   : "memory");
-
-      UNLOCK(schedule_lock);
-
-      asm volatile("iretq");
-    }
+    if (!current_thread->running && current_thread->state == ALIVE)
+      goto run_thread;
   }
 
-  current_thread = old_curr;
+  current_thread = current_thread->next;
+
+run_thread:
   current_thread->running = 1;
-
   lapic_eoi();
+  UNLOCK(sched_lock);
 
-  UNLOCK(schedule_lock);
+  asm volatile("mov %0, %%rsp\n"
+               "pop %%r15\n"
+               "pop %%r14\n"
+               "pop %%r13\n"
+               "pop %%r12\n"
+               "pop %%r11\n"
+               "pop %%r10\n"
+               "pop %%r9\n"
+               "pop %%r8\n"
+               "pop %%rbp\n"
+               "pop %%rdi\n"
+               "pop %%rsi\n"
+               "pop %%rdx\n"
+               "pop %%rcx\n"
+               "pop %%rbx\n"
+               "pop %%rax\n"
+               "add $16, %%rsp\n"
+               "iretq\n"
+               :
+               : "r"(&current_thread->registers)
+               : "memory");
+  serial_print("uh oh\r\n");
 }
 
 void scheduler_init(uintptr_t addr) {
@@ -149,8 +148,6 @@ void scheduler_init(uintptr_t addr) {
 
   thread_count++;
   current_thread->next = current_thread;
-
-  printf("Reached threading\r\n");
 
   create_kernel_thread((uintptr_t)thread1, "Thread 1");
   create_kernel_thread((uintptr_t)thread2, "Thread 2");

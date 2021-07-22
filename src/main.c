@@ -33,12 +33,16 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
   }
 }
 
+// TODO Fix sleep
 void k_thread() {
-  while (1) {
-    /* printf("Whoa. We have jumped to threading. Pretty neat huh?\r\n"); */
-    serial_print("Whoa. We have jumped to threading. Pretty neat huh?\r\n");
-    sleep(100);
-  }
+  /* while (1) { */
+  /* serial_print("Whoa. We have jumped to threading. Pretty neat huh?\r\n"); */
+  /* for (volatile size_t i = 0; i < 500000; i++) */
+  /* asm volatile("nop"); */
+  /* } */
+  printf("Hi there :)\r\n");
+  while (1)
+    ;
 }
 
 void kernel_main(struct stivale2_struct *bootloader_info) {

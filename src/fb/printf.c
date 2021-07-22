@@ -153,7 +153,7 @@ void displayString(char *c, int *a) {
 }
 
 int vprintf(const char *format, va_list list) {
-  MAKE_LOCK(vprintf_lock);
+  /* MAKE_LOCK(vprintf_lock); */
   int chars = 0;
   char intStrBuffer[256] = {0};
 
@@ -476,7 +476,7 @@ int vprintf(const char *format, va_list list) {
     }
   }
 
-  UNLOCK(vprintf_lock);
+  /* UNLOCK(vprintf_lock); */
   return chars;
 }
 

@@ -4,8 +4,8 @@ LD = ld
 CC = gcc
 AS = nasm
 
-QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 1 -M q35 -soundhw pcspk -serial stdio
-# QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 3 -M q35 -soundhw pcspk -serial stdio
+# QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 1 -M q35 -soundhw pcspk -serial stdio
+QEMU = qemu-system-$(ARCH) -hdd $(HDD) -smp 2 -M q35 -soundhw pcspk -serial stdio
 
 HDD = mandelbrotos.hdd
 KERNEL = $(BUILD_DIRECTORY)/mandelbrotos.elf

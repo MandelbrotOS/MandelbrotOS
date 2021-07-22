@@ -20,25 +20,25 @@ int init_fb(struct stivale2_struct_tag_framebuffer *framebuffer_info) {
 }
 
 void set_bg(uint32_t bg_col) {
-  MAKE_LOCK(set_bg_lock);
+  /* MAKE_LOCK(set_bg_lock); */
   curr_bg_col = bg_col;
-  UNLOCK(set_bg_lock);
+  /* UNLOCK(set_bg_lock); */
 }
 
 void set_fg(uint32_t fg_col) {
-  MAKE_LOCK(set_fg_lock);
+  /* MAKE_LOCK(set_fg_lock); */
   curr_fg_col = fg_col;
-  UNLOCK(set_fg_lock);
+  /* UNLOCK(set_fg_lock); */
 }
 
 void putpixel(int x, int y, uint32_t color) {
-  MAKE_LOCK(putpixel_lock);
+  /* MAKE_LOCK(putpixel_lock); */
   framebuffer[y * fb_width + x] = color;
-  UNLOCK(putpixel_lock);
+  /* UNLOCK(putpixel_lock); */
 }
 
 void putnc(int x, int y, char c, uint32_t fgc, uint32_t bgc) {
-  MAKE_LOCK(putnc_lock);
+  /* MAKE_LOCK(putnc_lock); */
   for (int ly = 0; ly < FONT_HEIGHT; ly++) {
     for (int lx = 0; lx < FONT_WIDTH; lx++) {
       uint8_t pixel = font_array[(c * FONT_CHAR_DEFINITION) + ly];
@@ -48,18 +48,18 @@ void putnc(int x, int y, char c, uint32_t fgc, uint32_t bgc) {
         framebuffer[x + ((FONT_WIDTH - 1) - lx) + ((y + ly) * fb_width)] = bgc;
     }
   }
-  UNLOCK(putnc_lock);
+  /* UNLOCK(putnc_lock); */
 }
 
 void knewline() {
-  MAKE_LOCK(newline_lock);
+  /* MAKE_LOCK(newline_lock); */
   for (int i = 0; i < fb_width * (fb_height - FONT_HEIGHT); i++)
     framebuffer[i] = (framebuffer + fb_width * FONT_HEIGHT)[i];
-  UNLOCK(newline_lock);
+  /* UNLOCK(newline_lock); */
 }
 
 void putc(char c, uint32_t fgc, uint32_t bgc) {
-  MAKE_LOCK(putc_lock);
+  /* MAKE_LOCK(putc_lock); */
   switch (c) {
   case '\n':
     if (curr_y + FONT_HEIGHT > fb_height)
@@ -93,7 +93,7 @@ void putc(char c, uint32_t fgc, uint32_t bgc) {
     putnc(curr_x, curr_y, c, fgc, bgc);
     curr_x += FONT_WIDTH;
   }
-  UNLOCK(putc_lock);
+  /* UNLOCK(putc_lock); */
 }
 
 void putchar(char c) { putc(c, curr_fg_col, curr_bg_col); }
