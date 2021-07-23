@@ -20,6 +20,6 @@ typedef struct thread {
 
 void schedule(uint64_t rsp);
 
-void scheduler_init(uintptr_t addr);
+void scheduler_init(uintptr_t addr, struct stivale2_struct_tag_smp *smp_info);
 
 #endif

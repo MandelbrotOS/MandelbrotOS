@@ -48,21 +48,28 @@ void k_idle() {
 }
 
 size_t create_kernel_thread(uintptr_t addr, char *name) {
-  thread_t *thread = kmalloc(sizeof(thread_t));
+  thread_t *thread = kcalloc(sizeof(thread_t));
+
   if (!thread)
     return -1;
 
-  thread->tid = current_tid++;
-  thread->exit_state = -1;
-  thread->state = ALIVE;
-  thread->name = name;
-  thread->run_once = 0;
-  thread->running = 0;
-  thread->registers.cs = 0x08;
-  thread->registers.ss = 0x10;
-  thread->registers.rip = (uint64_t)addr;
-  thread->registers.rflags = 0x202;
-  thread->registers.rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET;
+  *thread = (thread_t){
+      .tid = current_tid++,
+      .exit_state = -1,
+      .state = ALIVE,
+      .name = name,
+      .run_once = 0,
+      .running = 0,
+      .registers =
+          (registers_t){
+              .cs = 0x08,
+              .ss = 0x10,
+              .rip = (uint64_t)addr,
+              .rflags = 0x202,
+              .rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET,
+          },
+      .next = NULL,
+  };
 
   if (!thread->registers.rsp) {
     kfree(thread);
@@ -89,9 +96,6 @@ void schedule(uint64_t rsp) {
     memcpy(&current_thread->registers, (registers_t *)rsp, sizeof(registers_t));
   else
     current_thread->run_once = 1;
-
-  if (thread_count == 1)
-    goto run_thread;
 
   for (size_t i = 0; i < thread_count; i++) {
     current_thread = current_thread->next;
@@ -129,24 +133,25 @@ run_thread:
                : "memory");
 }
 
-void scheduler_init(uintptr_t addr) {
-  current_thread = kmalloc(sizeof(thread_t));
+void scheduler_init(uintptr_t addr, struct stivale2_struct_tag_smp *smp_info) {
+  current_thread = kcalloc(sizeof(thread_t));
 
   *current_thread = (thread_t){
-  	.tid = current_tid++,
-  	.exit_state = -1,
-  	.state = ALIVE,
-  	.name = "k_init",
-  	.run_once = 0,
-  	.running = 0,
-  	.registers = (registers_t){
-	  .cs = 0x08,
-	  .ss = 0x10,
-	  .rip = (uint64_t)addr,
-	  .rflags = 0x202,
-	  .rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET,
-  	},
-	.next = NULL,
+      .tid = current_tid++,
+      .exit_state = -1,
+      .state = ALIVE,
+      .name = "k_init",
+      .run_once = 0,
+      .running = 0,
+      .registers =
+          (registers_t){
+              .cs = 0x08,
+              .ss = 0x10,
+              .rip = (uint64_t)addr,
+              .rflags = 0x202,
+              .rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET,
+          },
+      .next = NULL,
   };
 
   thread_count++;
@@ -154,12 +159,14 @@ void scheduler_init(uintptr_t addr) {
 
   create_kernel_thread((uintptr_t)thread1, "Thread 1");
   create_kernel_thread((uintptr_t)thread2, "Thread 2");
-  create_kernel_thread((uintptr_t)k_idle, "Kidle1");
-  create_kernel_thread((uintptr_t)k_idle, "Kidle2");
-  create_kernel_thread((uintptr_t)k_idle, "Kidle3");
+  
+  for (size_t i = 0; i < smp_info->cpu_count; i++)
+    create_kernel_thread((uintptr_t)k_idle, "Kidle");
 
   irq_install_handler(SCHEDULE_REG - 32, schedule);
 
-  while (1)
-    asm volatile("sti");
+  asm volatile("1:\n"
+               "sti\n"
+               "hlt\n"
+               "jmp 1b\n");
 }

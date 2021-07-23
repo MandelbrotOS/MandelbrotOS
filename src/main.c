@@ -35,11 +35,6 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
 
 // TODO Fix sleep
 void k_thread() {
-  /* while (1) { */
-  /* serial_print("Whoa. We have jumped to threading. Pretty neat huh?\r\n"); */
-  /* for (volatile size_t i = 0; i < 500000; i++) */
-  /* asm volatile("nop"); */
-  /* } */
   while (1) {
     serial_print("3  3  3  3  3\r\n");
     for (volatile size_t i = 0; i < 5000000; i++)
@@ -80,15 +75,12 @@ void kernel_main(struct stivale2_struct *bootloader_info) {
   klog(init_acpi(rsdp_info), "ACPI");
   klog(init_kbd(), "Keyboard");
   klog(pci_enumerate(), "PCI");
-
-  asm volatile("sti");
-
   klog(init_pit(), "PIT");
   klog(init_smp(smp_info), "SMP");
 
   serial_print("Hello, world!");
 
-  scheduler_init((uintptr_t)k_thread);
+  scheduler_init((uintptr_t)k_thread, smp_info);
 
   while (1)
     ;
