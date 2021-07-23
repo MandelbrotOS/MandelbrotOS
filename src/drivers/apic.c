@@ -111,22 +111,11 @@ void ioapic_redirect_irq(uint8_t lapic_id, uint8_t irq, uint8_t vect,
 }
 
 void lapic_timer_init() {
-  int divisor = 1193180 / 1000;
-  uint16_t ms = 1;
-
-  outb(0x43, 0x36);
-  outb(0x40, divisor & 0xff);
-  outb(0x40, (divisor >> 8) & 0xFF);
-
   lapic_write(LAPIC_REG_TIMER_DIV, 0x3);
   lapic_write(LAPIC_REG_TIMER_INITCNT, 0xFFFFFFFF);
 
-  outb(0x43, 0x30);
-  outb(0x40, ms & 0xff);
-  outb(0x40, (ms >> 8) & 0xff);
-
-  while (pit_read_count() != 0)
-    ;
+  for (volatile size_t i = 0; i < 10000000; i++) // TODO: Make this not suck
+    asm volatile("nop");
 
   lapic_write(LAPIC_REG_TIMER, 0x10000);
 

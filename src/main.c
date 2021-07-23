@@ -40,9 +40,11 @@ void k_thread() {
   /* for (volatile size_t i = 0; i < 500000; i++) */
   /* asm volatile("nop"); */
   /* } */
-  printf("Hi there :)\r\n");
-  while (1)
-    ;
+  while (1) {
+    serial_print("3  3  3  3  3\r\n");
+    for (volatile size_t i = 0; i < 5000000; i++)
+      asm volatile("nop");
+  }
 }
 
 void kernel_main(struct stivale2_struct *bootloader_info) {

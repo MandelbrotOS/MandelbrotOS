@@ -27,8 +27,8 @@ thread_t *current_thread;
 // TODO Fix sleep
 void thread1() {
   while (1) {
-    serial_print("Hello from thread 1\r\n");
-    for (volatile size_t i = 0; i < 500000; i++)
+    serial_print("11111\r\n");
+    for (volatile size_t i = 0; i < 5000000; i++)
       asm volatile("nop");
   }
 }
@@ -36,8 +36,8 @@ void thread1() {
 // TODO Fix sleep
 void thread2() {
   while (1) {
-    serial_print("Hello from thread 2\r\n");
-    for (volatile size_t i = 0; i < 500000; i++)
+    serial_print("2 2 2 2 2\r\n");
+    for (volatile size_t i = 0; i < 5000000; i++)
       asm volatile("nop");
   }
 }
@@ -127,7 +127,6 @@ run_thread:
                :
                : "r"(&current_thread->registers)
                : "memory");
-  serial_print("uh oh\r\n");
 }
 
 void scheduler_init(uintptr_t addr) {
@@ -151,6 +150,9 @@ void scheduler_init(uintptr_t addr) {
 
   create_kernel_thread((uintptr_t)thread1, "Thread 1");
   create_kernel_thread((uintptr_t)thread2, "Thread 2");
+  create_kernel_thread((uintptr_t)k_idle, "Kidle1");
+  create_kernel_thread((uintptr_t)k_idle, "Kidle2");
+  create_kernel_thread((uintptr_t)k_idle, "Kidle3");
 
   irq_install_handler(SCHEDULE_REG - 32, schedule);
 
