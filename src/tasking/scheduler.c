@@ -132,18 +132,22 @@ run_thread:
 void scheduler_init(uintptr_t addr) {
   current_thread = kmalloc(sizeof(thread_t));
 
-  current_thread->tid = current_tid++;
-  current_thread->exit_state = -1;
-  current_thread->state = ALIVE;
-  current_thread->name = "k_init";
-  current_thread->run_once = 0;
-  current_thread->running = 0;
-  current_thread->registers.cs = 0x08;
-  current_thread->registers.ss = 0x10;
-  current_thread->registers.rip = (uint64_t)addr;
-  current_thread->registers.rflags = 0x202;
-  current_thread->registers.rsp =
-      (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET;
+  *current_thread = (thread_t){
+  	.tid = current_tid++,
+  	.exit_state = -1,
+  	.state = ALIVE,
+  	.name = "k_init",
+  	.run_once = 0,
+  	.running = 0,
+  	.registers = (registers_t){
+	  .cs = 0x08,
+	  .ss = 0x10,
+	  .rip = (uint64_t)addr,
+	  .rflags = 0x202,
+	  .rsp = (uint64_t)pcalloc(1) + PAGE_SIZE + PHYS_MEM_OFFSET,
+  	},
+	.next = NULL,
+  };
 
   thread_count++;
   current_thread->next = current_thread;
