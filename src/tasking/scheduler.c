@@ -28,7 +28,7 @@ thread_t *current_thread;
 void thread1() {
   while (1) {
     serial_print("11111\r\n");
-    for (volatile size_t i = 0; i < 5000000; i++)
+    for (volatile size_t i = 0; i < 25000000; i++)
       asm volatile("nop");
   }
 }
@@ -37,7 +37,7 @@ void thread1() {
 void thread2() {
   while (1) {
     serial_print("2 2 2 2 2\r\n");
-    for (volatile size_t i = 0; i < 5000000; i++)
+    for (volatile size_t i = 0; i < 25000000; i++)
       asm volatile("nop");
   }
 }
@@ -159,7 +159,7 @@ void scheduler_init(uintptr_t addr, struct stivale2_struct_tag_smp *smp_info) {
 
   create_kernel_thread((uintptr_t)thread1, "Thread 1");
   create_kernel_thread((uintptr_t)thread2, "Thread 2");
-  
+
   for (size_t i = 0; i < smp_info->cpu_count; i++)
     create_kernel_thread((uintptr_t)k_idle, "Kidle");
 

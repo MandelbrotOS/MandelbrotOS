@@ -37,7 +37,7 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
 void k_thread() {
   while (1) {
     serial_print("3  3  3  3  3\r\n");
-    for (volatile size_t i = 0; i < 5000000; i++)
+    for (volatile size_t i = 0; i < 25000000; i++)
       asm volatile("nop");
   }
 }
